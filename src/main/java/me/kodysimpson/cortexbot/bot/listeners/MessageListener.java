@@ -1,0 +1,92 @@
+package me.kodysimpson.cortexbot.bot.listeners;
+
+import me.kodysimpson.cortexbot.bot.DiscordConfiguration;
+import me.kodysimpson.cortexbot.model.Bounty;
+import me.kodysimpson.cortexbot.model.Member;
+import me.kodysimpson.cortexbot.model.Message;
+import me.kodysimpson.cortexbot.repositories.BountyRepository;
+import me.kodysimpson.cortexbot.repositories.MemberRepository;
+import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
+import net.dv8tion.jda.api.hooks.ListenerAdapter;
+
+import javax.annotation.Nonnull;
+import java.util.Objects;
+import java.util.Random;
+
+public class MessageListener extends ListenerAdapter{
+
+    private final Random random;
+    MemberRepository memberRepository;
+    BountyRepository bountyRepository;
+    DiscordConfiguration discordConfiguration;
+
+    public MessageListener(MemberRepository memberRepository, BountyRepository bountyRepository, DiscordConfiguration discordConfiguration){
+        this.random = new Random();
+        this.memberRepository = memberRepository;
+        this.bountyRepository = bountyRepository;
+        this.discordConfiguration = discordConfiguration;
+    }
+
+
+    @Override
+    public void onGuildMessageReceived(@Nonnull GuildMessageReceivedEvent event) {
+
+        if (!event.getAuthor().isBot()) {
+            if (memberRepository.existsByUserID(event.getAuthor().getId())) {
+
+                Member member = memberRepository.findByUserIDIs(event.getAuthor().getId());
+
+                member.setMessagesSent(member.getMessagesSent() + 1);
+
+                if (random.nextInt(5) == 3)
+                    member.setPoints(member.getPoints() + random.nextInt(7));
+
+                memberRepository.save(member);
+
+            } else {
+
+                Member member = new Member();
+
+                member.setUserID(event.getAuthor().getId());
+
+                member.setMessagesSent(1);
+                member.setPoints(1);
+
+                memberRepository.save(member);
+
+            }
+
+            //Check to see if they are messaging in a bounty channel
+            if (bountyRepository.existsByChannelID(event.getChannel().getId())) {
+
+                Bounty bounty = bountyRepository.findBountyByChannelID(event.getChannel().getId());
+
+                Message message = new Message();
+                message.setMessage(event.getMessage().getContentRaw());
+                message.setDiscordUserID(event.getAuthor().getId());
+                message.setDiscordMessageID(event.getMessageIdLong());
+
+                bounty.getResponses().add(message);
+
+                bountyRepository.save(bounty);
+
+            }
+            if (event.getChannel().getIdLong() == (discordConfiguration.getSuggestionsChannelId())){
+                EmbedBuilder eb = new EmbedBuilder();
+                eb.setAuthor(event.getAuthor().getName(), null, event.getAuthor().getAvatarUrl())
+                        .setDescription(event.getMessage().getContentRaw());
+                eb.setColor(event.getMember().getColorRaw());
+                event.getChannel().sendMessage(eb.build()).queue(m -> {
+                    m.addReaction(Objects.requireNonNull(event.getGuild().getEmoteById(discordConfiguration.getGreenTickId()))).queue();
+                    m.addReaction(Objects.requireNonNull(event.getGuild().getEmoteById(discordConfiguration.getNeutralTickId()))).queue();
+                    m.addReaction(Objects.requireNonNull(event.getGuild().getEmoteById(discordConfiguration.getRedTickId()))).queue();
+                });
+                event.getMessage().delete().queue();
+            }
+
+
+        }
+    }
+
+}
