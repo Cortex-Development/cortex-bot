@@ -58,9 +58,9 @@ public class MessageListener extends ListenerAdapter{
             }
 
             //Check to see if they are messaging in a bounty channel
-            if (bountyRepository.existsByChannelID(event.getChannel().getId())) {
+            if (bountyRepository.existsByChannelID(event.getChannel().getIdLong())) {
 
-                Bounty bounty = bountyRepository.findBountyByChannelID(event.getChannel().getId());
+                Bounty bounty = bountyRepository.findBountyByChannelID(event.getChannel().getIdLong());
 
                 Message message = new Message();
                 message.setMessage(event.getMessage().getContentRaw());
@@ -72,6 +72,8 @@ public class MessageListener extends ListenerAdapter{
                 bountyRepository.save(bounty);
 
             }
+
+
             if (event.getChannel().getIdLong() == (discordConfiguration.getSuggestionsChannelId())){
                 EmbedBuilder eb = new EmbedBuilder();
                 eb.setAuthor(event.getAuthor().getName(), null, event.getAuthor().getAvatarUrl())

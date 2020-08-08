@@ -18,6 +18,7 @@ import net.dv8tion.jda.api.exceptions.InsufficientPermissionException;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.cache.CacheFlag;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
@@ -102,6 +103,7 @@ public class DiscordBotService {
                 .addRolePermissionOverride(Long.valueOf(discordConfiguration.getEveryoneRoleId()), null, Collections.singleton(Permission.VIEW_CHANNEL))
                 .queue(textChannel -> {
                     bounty.setChannelID(textChannel.getIdLong());
+                    bountyRepository.save(bounty);
 
                     MessageBuilder message = new MessageBuilder()
                             .append("Title: ", MessageBuilder.Formatting.BOLD).append(bounty.getTitle() + "\n")
@@ -156,7 +158,10 @@ public class DiscordBotService {
         }
     }
 
+    @Scheduled(fixedRate = 10000)
     public void applyRegularRoles() {
+
+        System.out.println("Updating top regulars");
 
         ArrayList<String> topTen = (ArrayList<String>) memberRepository.findAll()
                 .stream()

@@ -36,8 +36,8 @@ public class ReactionListener extends ListenerAdapter {
         if (event.getChannel().getIdLong() == discordConfiguration.getWantedChannelId()) {
             event.getReaction().removeReaction(event.getUser()).queue();
 
-            if (bountyRepository.existsBountyByBountyMessageID(event.getMessageId())) {
-                Bounty foundBounty = bountyRepository.findBountyByBountyMessageID(event.getMessageId());
+            if (bountyRepository.existsBountyByBountyMessageID(event.getMessageIdLong())) {
+                Bounty foundBounty = bountyRepository.findBountyByBountyMessageID(event.getMessageIdLong());
 
                 if (!isDiscordUserAlreadyInChannel(foundBounty, event.getUserId())) {
 
@@ -54,9 +54,9 @@ public class ReactionListener extends ListenerAdapter {
         } else {
 
             //see if the reaction was made in a bounty channel
-            if (bountyRepository.existsByChannelID(event.getChannel().getId())) {
+            if (bountyRepository.existsByChannelID(event.getChannel().getIdLong())) {
 
-                Bounty bounty = bountyRepository.findBountyByChannelID(event.getChannel().getId());
+                Bounty bounty = bountyRepository.findBountyByChannelID(event.getChannel().getIdLong());
 
                 ArrayList<Message> messages = (ArrayList<Message>) bounty.getResponses();
 
@@ -89,9 +89,9 @@ public class ReactionListener extends ListenerAdapter {
         if (event.getUser().isBot()) return;
 
         //see if the reaction was made in a bounty channel
-        if (bountyRepository.existsByChannelID(event.getChannel().getId())) {
+        if (bountyRepository.existsByChannelID(event.getChannel().getIdLong())) {
 
-            Bounty bounty = bountyRepository.findBountyByChannelID(event.getChannel().getId());
+            Bounty bounty = bountyRepository.findBountyByChannelID(event.getChannel().getIdLong());
 
             ArrayList<Message> messages = (ArrayList<Message>) bounty.getResponses();
 

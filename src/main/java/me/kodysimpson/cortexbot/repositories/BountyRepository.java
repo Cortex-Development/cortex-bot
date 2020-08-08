@@ -5,13 +5,13 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 
 public interface BountyRepository extends MongoRepository<Bounty, String> {
 
-    boolean existsBountyByBountyMessageID(String messageID);
+    boolean existsBountyByBountyMessageID(long bountyMessageID);
 
-    Bounty findBountyByBountyMessageID(String id);
+    Bounty findBountyByBountyMessageID(long bountyMessageID);
 
-    boolean existsByChannelID(String channelID);
+    boolean existsByChannelID(long channelID);
 
-    Bounty findBountyByChannelID(String id);
+    Bounty findBountyByChannelID(long id);
 
 }
 
