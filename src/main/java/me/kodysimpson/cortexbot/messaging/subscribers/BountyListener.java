@@ -1,7 +1,7 @@
-package me.kodysimpson.cortexbot.messaging.receivers;
+package me.kodysimpson.cortexbot.messaging.subscribers;
 
-import me.kodysimpson.cortexbot.services.DiscordBotService;
 import me.kodysimpson.cortexbot.model.Bounty;
+import me.kodysimpson.cortexbot.services.DiscordBotService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jms.annotation.JmsListener;
 import org.springframework.messaging.handler.annotation.Payload;

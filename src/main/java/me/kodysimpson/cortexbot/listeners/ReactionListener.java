@@ -19,12 +19,10 @@ public class ReactionListener extends ListenerAdapter {
     BountyRepository bountyRepository;
     DiscordConfiguration discordConfiguration;
 
-
     public ReactionListener(BountyRepository bountyRepository, DiscordConfiguration discordConfiguration){
         this.bountyRepository = bountyRepository;
         this.discordConfiguration = discordConfiguration;
     }
-
 
     @Override
     public void onGuildMessageReactionAdd(@Nonnull GuildMessageReactionAddEvent event) {
