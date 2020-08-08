@@ -1,23 +1,23 @@
-package me.kodysimpson.cortexbot.bot;
+package me.kodysimpson.cortexbot.services;
 
 import com.jagrosh.jdautilities.command.CommandClientBuilder;
-import me.kodysimpson.cortexbot.bot.commands.*;
-import me.kodysimpson.cortexbot.bot.listeners.MessageListener;
-import me.kodysimpson.cortexbot.bot.listeners.OtherListener;
-import me.kodysimpson.cortexbot.bot.listeners.ReactionListener;
+import lombok.RequiredArgsConstructor;
+import me.kodysimpson.cortexbot.config.DiscordConfiguration;
+import me.kodysimpson.cortexbot.commands.*;
+import me.kodysimpson.cortexbot.listeners.MessageListener;
+import me.kodysimpson.cortexbot.listeners.OtherListener;
+import me.kodysimpson.cortexbot.listeners.ReactionListener;
 import me.kodysimpson.cortexbot.model.Bounty;
 import me.kodysimpson.cortexbot.model.Member;
 import me.kodysimpson.cortexbot.repositories.BountyRepository;
 import me.kodysimpson.cortexbot.repositories.MemberRepository;
 import me.kodysimpson.cortexbot.repositories.UserRepository;
-import me.kodysimpson.cortexbot.services.MemberService;
 import net.dv8tion.jda.api.*;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.exceptions.HierarchyException;
 import net.dv8tion.jda.api.exceptions.InsufficientPermissionException;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.cache.CacheFlag;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -28,25 +28,16 @@ import java.util.*;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@RequiredArgsConstructor
 @Service
 public class DiscordBotService {
 
-    @Autowired
-    private MemberRepository memberRepository;
-
-    @Autowired
-    private BountyRepository bountyRepository;
-
-    @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private MemberService memberService;
+    private final MemberRepository memberRepository;
+    private final BountyRepository bountyRepository;
+    private final UserRepository userRepository;
+    private final DiscordConfiguration discordConfiguration;
 
     private JDA api;
-
-    @Autowired
-    DiscordConfiguration discordConfiguration;
 
     @PostConstruct
     public void init() {
@@ -158,7 +149,7 @@ public class DiscordBotService {
         }
     }
 
-    @Scheduled(fixedRate = 10000)
+    @Scheduled(fixedRate = 1000)
     public void applyRegularRoles() {
 
         System.out.println("Updating top regulars");
@@ -191,10 +182,25 @@ public class DiscordBotService {
         EmbedBuilder embed = new EmbedBuilder();
         embed.setColor(Color.BLUE);
         embed.setAuthor("Website");
-        embed.setTitle(memberService.getUsername(message) + " has posted");
+        embed.setTitle(getUsername(message) + " has posted");
         embed.appendDescription(message.getMessage());
 
         getGuild().getTextChannelById(bounty.getChannelID()).sendMessage(embed.build()).queue();
+
+    }
+
+    public String getUsername(String userId){
+
+        return getApi().retrieveUserById(userId, true).complete().getAsTag();
+    }
+
+    public String getUsername(me.kodysimpson.cortexbot.model.Message message){
+
+        if (message.isDiscordMessage()){
+            return getUsername(message.getDiscordUserID());
+        }else{
+            return userRepository.findById(message.getUserID()).get().getUsername();
+        }
 
     }
 

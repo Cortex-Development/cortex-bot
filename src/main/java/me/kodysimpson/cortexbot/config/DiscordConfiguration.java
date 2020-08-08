@@ -1,4 +1,4 @@
-package me.kodysimpson.cortexbot.bot;
+package me.kodysimpson.cortexbot.config;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;

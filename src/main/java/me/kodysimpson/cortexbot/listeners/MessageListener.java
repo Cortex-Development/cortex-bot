@@ -1,6 +1,6 @@
-package me.kodysimpson.cortexbot.bot.listeners;
+package me.kodysimpson.cortexbot.listeners;
 
-import me.kodysimpson.cortexbot.bot.DiscordConfiguration;
+import me.kodysimpson.cortexbot.config.DiscordConfiguration;
 import me.kodysimpson.cortexbot.model.Bounty;
 import me.kodysimpson.cortexbot.model.Member;
 import me.kodysimpson.cortexbot.model.Message;

@@ -1,8 +1,8 @@
-package me.kodysimpson.cortexbot.bot.commands;
+package me.kodysimpson.cortexbot.commands;
 
 import com.jagrosh.jdautilities.command.Command;
 import com.jagrosh.jdautilities.command.CommandEvent;
-import me.kodysimpson.cortexbot.bot.DiscordConfiguration;
+import me.kodysimpson.cortexbot.config.DiscordConfiguration;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageReaction;
