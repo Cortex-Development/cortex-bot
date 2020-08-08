@@ -27,11 +27,13 @@ public class ReactionListener extends ListenerAdapter {
     @Override
     public void onGuildMessageReactionAdd(@Nonnull GuildMessageReactionAddEvent event) {
 
-        if (event.getGuild().getIdLong() == discordConfiguration.getGuildId()) return;
-        if (event.getReactionEmote().getEmote().getIdLong() == discordConfiguration.getGreenTickId() && event.getReactionEmote().getEmote().getIdLong() == discordConfiguration.getRedTickId()) return;
+        if (event.getGuild().getIdLong() != discordConfiguration.getGuildId()) return;
+        if (event.getReactionEmote().getEmote().getIdLong() == discordConfiguration.getGreenTickId() && event.getReactionEmote().getEmote().getIdLong() == discordConfiguration.getRedTickId())
+            return;
         if (event.getUser().isBot()) return;
 
         if (event.getChannel().getIdLong() == discordConfiguration.getWantedChannelId()) {
+
             event.getReaction().removeReaction(event.getUser()).queue();
 
             if (bountyRepository.existsBountyByBountyMessageID(event.getMessageIdLong())) {
@@ -82,8 +84,9 @@ public class ReactionListener extends ListenerAdapter {
     @Override
     public void onGuildMessageReactionRemove(@Nonnull GuildMessageReactionRemoveEvent event) {
 
-        if (event.getGuild().getIdLong() == discordConfiguration.getGuildId()) return;
-        if (event.getReactionEmote().getEmote().getIdLong() == discordConfiguration.getGreenTickId() && event.getReactionEmote().getEmote().getIdLong() == discordConfiguration.getRedTickId()) return;
+        if (event.getGuild().getIdLong() != discordConfiguration.getGuildId()) return;
+        if (event.getReactionEmote().getEmote().getIdLong() == discordConfiguration.getGreenTickId() && event.getReactionEmote().getEmote().getIdLong() == discordConfiguration.getRedTickId())
+            return;
         if (event.getUser().isBot()) return;
 
         //see if the reaction was made in a bounty channel
