@@ -2,8 +2,8 @@ package me.kodysimpson.cortexbot.services;
 
 import com.jagrosh.jdautilities.command.CommandClientBuilder;
 import lombok.RequiredArgsConstructor;
-import me.kodysimpson.cortexbot.config.DiscordConfiguration;
 import me.kodysimpson.cortexbot.commands.*;
+import me.kodysimpson.cortexbot.config.DiscordConfiguration;
 import me.kodysimpson.cortexbot.listeners.MessageListener;
 import me.kodysimpson.cortexbot.listeners.OtherListener;
 import me.kodysimpson.cortexbot.listeners.ReactionListener;
@@ -24,8 +24,8 @@ import org.springframework.stereotype.Service;
 import javax.annotation.PostConstruct;
 import javax.security.auth.login.LoginException;
 import java.awt.*;
-import java.util.*;
 import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -149,10 +149,11 @@ public class DiscordBotService {
         }
     }
 
-    @Scheduled(fixedRate = 1000)
+    /**
+     * Will give the Regular role to top ten on the leaderboard every 1 hour
+     */
+    @Scheduled(fixedRate = 3600000)
     public void applyRegularRoles() {
-
-        System.out.println("Updating top regulars");
 
         ArrayList<String> topTen = (ArrayList<String>) memberRepository.findAll()
                 .stream()
