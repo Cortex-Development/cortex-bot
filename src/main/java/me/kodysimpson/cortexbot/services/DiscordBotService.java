@@ -55,7 +55,9 @@ public class DiscordBotService {
                     .addCommand(new WebsiteCommand())
                     .addCommand(new BountyCommand())
                     .addCommand(new SuggestionCommand(discordConfiguration))
-                    .addCommand(new CodeBlockCommand());
+                    .addCommand(new CodeBlockCommand())
+                    .addCommand(new JavaTutCommand());
+
 
             api = JDABuilder.create(List.of(GatewayIntent.GUILD_EMOJIS, GatewayIntent.GUILD_MEMBERS,
                     GatewayIntent.GUILD_MESSAGES, GatewayIntent.DIRECT_MESSAGES, GatewayIntent.GUILD_MESSAGE_REACTIONS))
