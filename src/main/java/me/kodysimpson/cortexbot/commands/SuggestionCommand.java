@@ -57,16 +57,20 @@ public class SuggestionCommand extends Command {
             if (it.hasNext()) {
                 Integer amount = it.next();
                 ArrayList<Message> messagelist = map.get(amount);
-                for (Message m : messagelist) {
+                int j = 0;
+                while (i < 10 && j < messagelist.size()){
                     i++;
+                    Message m = messagelist.get(j);
                     String content = m.getEmbeds().size() > 0 ? m.getEmbeds().get(0).getDescription() : m.getContentRaw();
                     sb.append(amount >= 0 ? ":arrow_up_small: " : ":arrow_down_small: ").append(amount).append(": ")
                             .append(content.length() > 50 ? content.substring(0, 50) : content)
                             .append(content.length() > 50 ? "..." : "")
-                            /*.append("    [jump](")
-                            .append(m.getJumpUrl()).append(")"*/
+                            .append("    [jump](")
+                            .append(m.getJumpUrl()).append(")")
                             .append("\n");
+                    j++;
                 }
+
             } else {
                 i = 10;
             }
