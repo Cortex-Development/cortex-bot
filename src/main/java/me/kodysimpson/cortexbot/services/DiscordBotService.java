@@ -12,6 +12,7 @@ import me.kodysimpson.cortexbot.model.Member;
 import me.kodysimpson.cortexbot.repositories.BountyRepository;
 import me.kodysimpson.cortexbot.repositories.MemberRepository;
 import me.kodysimpson.cortexbot.repositories.UserRepository;
+import me.kodysimpson.cortexbot.utils.VersionUtil;
 import net.dv8tion.jda.api.*;
 import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.exceptions.HierarchyException;
@@ -42,7 +43,7 @@ public class DiscordBotService {
     @PostConstruct
     public void init() {
         try {
-
+            VersionUtil versionUtil = new VersionUtil();
             CommandClientBuilder commandClient = new CommandClientBuilder()
                     .setPrefix("$")
 
@@ -55,7 +56,11 @@ public class DiscordBotService {
                     .addCommand(new WebsiteCommand())
                     .addCommand(new BountyCommand())
                     .addCommand(new SuggestionCommand(discordConfiguration))
-                    .addCommand(new CodeBlockCommand());
+                    .addCommand(new CodeBlockCommand())
+                    .addCommand(new JavaTutCommand())
+                    .addCommand(new BuildCommand(versionUtil))
+                    .addCommand(new PomCommand(versionUtil));
+
 
             api = JDABuilder.create(List.of(GatewayIntent.GUILD_EMOJIS, GatewayIntent.GUILD_MEMBERS,
                     GatewayIntent.GUILD_MESSAGES, GatewayIntent.DIRECT_MESSAGES, GatewayIntent.GUILD_MESSAGE_REACTIONS))

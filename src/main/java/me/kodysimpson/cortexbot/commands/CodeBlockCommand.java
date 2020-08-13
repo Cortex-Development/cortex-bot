@@ -9,6 +9,8 @@ public class CodeBlockCommand extends Command {
     public CodeBlockCommand(){
         this.name = "code";
         this.aliases = new String[]{"codeblock"};
+        this.category = new Category("Programming");
+        this.help = "Get information on how to properly post your code";
     }
 
 
