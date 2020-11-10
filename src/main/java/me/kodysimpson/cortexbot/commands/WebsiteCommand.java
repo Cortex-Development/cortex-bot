@@ -12,6 +12,6 @@ public class WebsiteCommand extends Command {
 
     @Override
     protected void execute(CommandEvent commandEvent) {
-        commandEvent.getChannel().sendMessage("https://cortexdev.herokuapp.com").queue();
+        commandEvent.getChannel().sendMessage("https://cortexdev.us").queue();
     }
 }

@@ -1,17 +1,14 @@
 package me.kodysimpson.cortexbot.model;
 
 import lombok.Data;
-
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 /**
  * The Member class represents each user in the discord server
  * , used to track score and such
  */
-@Entity
+@Document
 @Data
 public class Member {
 
@@ -19,8 +16,7 @@ public class Member {
      * Unique ID identifier for each Discord Member
      */
     @Id
-    @GeneratedValue(strategy= GenerationType.AUTO)
-    private Long id;
+    private String id;
 
     /**
      * Their discord unique ID
@@ -35,8 +31,6 @@ public class Member {
      * The amount of messages sent by this user on discord
      */
     private long messagesSent;
-
-
 
 
 }

@@ -1,10 +1,7 @@
 package me.kodysimpson.cortexbot.listeners;
 
 import me.kodysimpson.cortexbot.config.DiscordConfiguration;
-import me.kodysimpson.cortexbot.model.Bounty;
 import me.kodysimpson.cortexbot.model.Member;
-import me.kodysimpson.cortexbot.model.Message;
-import me.kodysimpson.cortexbot.repositories.BountyRepository;
 import me.kodysimpson.cortexbot.repositories.MemberRepository;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
@@ -18,13 +15,11 @@ public class MessageListener extends ListenerAdapter{
 
     private final Random random;
     MemberRepository memberRepository;
-    BountyRepository bountyRepository;
     DiscordConfiguration discordConfiguration;
 
-    public MessageListener(MemberRepository memberRepository, BountyRepository bountyRepository, DiscordConfiguration discordConfiguration){
+    public MessageListener(MemberRepository memberRepository, DiscordConfiguration discordConfiguration){
         this.random = new Random();
         this.memberRepository = memberRepository;
-        this.bountyRepository = bountyRepository;
         this.discordConfiguration = discordConfiguration;
     }
 
@@ -54,22 +49,6 @@ public class MessageListener extends ListenerAdapter{
                 member.setPoints(1);
 
                 memberRepository.save(member);
-
-            }
-
-            //Check to see if they are messaging in a bounty channel
-            if (bountyRepository.existsByChannelID(event.getChannel().getIdLong())) {
-
-                Bounty bounty = bountyRepository.findBountyByChannelID(event.getChannel().getIdLong());
-
-                Message message = new Message();
-                message.setMessage(event.getMessage().getContentRaw());
-                message.setDiscordUserID(event.getAuthor().getId());
-                message.setDiscordMessageID(event.getMessageIdLong());
-
-                bounty.getResponses().add(message);
-
-                bountyRepository.save(bounty);
 
             }
 

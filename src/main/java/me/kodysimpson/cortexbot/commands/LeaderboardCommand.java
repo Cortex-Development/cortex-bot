@@ -41,7 +41,7 @@ public class LeaderboardCommand extends Command {
             message.append("(" + (i + 1) + ") - ", MessageBuilder.Formatting.BOLD).append(topTen.get(i).getAsTag() + "\n");
         }
 
-        message.append("\nYou can view the full leaderboard here: https://cortexdev.herokuapp.com/leaderboard").append("\n");
+        message.append("\nYou can view the full leaderboard here: https://cortexdev.us/leaderboard").append("\n");
         message.append("--------------------------------------------------------------------------------------------------", MessageBuilder.Formatting.STRIKETHROUGH);
 
         commandEvent.getChannel().sendMessage(message.build()).queue();

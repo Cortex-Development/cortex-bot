@@ -31,7 +31,7 @@ public class CodeBlockCommand extends Command {
                         "}\n" +
                         "```", false)
                 .addField("\u200b",
-                        "Use [Hastebin](https://hastebin.com/) for larger segments of code!", false)
+                        "Use [CortexDev](https://cortexdev.us/code) for larger segments of code!", false)
                 .build());
     }
 }

@@ -6,10 +6,7 @@ import me.kodysimpson.cortexbot.commands.*;
 import me.kodysimpson.cortexbot.config.DiscordConfiguration;
 import me.kodysimpson.cortexbot.listeners.MessageListener;
 import me.kodysimpson.cortexbot.listeners.OtherListener;
-import me.kodysimpson.cortexbot.listeners.ReactionListener;
-import me.kodysimpson.cortexbot.model.Bounty;
 import me.kodysimpson.cortexbot.model.Member;
-import me.kodysimpson.cortexbot.repositories.BountyRepository;
 import me.kodysimpson.cortexbot.repositories.MemberRepository;
 import me.kodysimpson.cortexbot.repositories.UserRepository;
 import me.kodysimpson.cortexbot.utils.VersionUtil;
@@ -24,7 +21,6 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 import javax.security.auth.login.LoginException;
-import java.awt.*;
 import java.util.List;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -34,7 +30,6 @@ import java.util.stream.Collectors;
 public class DiscordBotService {
 
     private final MemberRepository memberRepository;
-    private final BountyRepository bountyRepository;
     private final UserRepository userRepository;
     private final DiscordConfiguration discordConfiguration;
 
@@ -54,7 +49,6 @@ public class DiscordBotService {
                     //Add commands
                     .addCommand(new LeaderboardCommand(memberRepository))
                     .addCommand(new WebsiteCommand())
-                    .addCommand(new BountyCommand())
                     .addCommand(new SuggestionCommand(discordConfiguration))
                     .addCommand(new CodeBlockCommand())
                     .addCommand(new JavaTutCommand())
@@ -67,8 +61,7 @@ public class DiscordBotService {
                     .setToken(discordConfiguration.getBotToken())
                     .disableCache(CacheFlag.ACTIVITY, CacheFlag.VOICE_STATE, CacheFlag.CLIENT_STATUS)
                     .addEventListeners(commandClient.build())
-                    .addEventListeners(new MessageListener(memberRepository, bountyRepository, discordConfiguration))
-                    .addEventListeners(new ReactionListener(bountyRepository, discordConfiguration))
+                    .addEventListeners(new MessageListener(memberRepository, discordConfiguration))
                     .addEventListeners(new OtherListener(this, discordConfiguration))
                     .setAutoReconnect(true)
                     .setBulkDeleteSplittingEnabled(false)
@@ -88,59 +81,6 @@ public class DiscordBotService {
         return api.getGuildById(discordConfiguration.getGuildId());
     }
 
-    public void postBounty(Bounty bounty) throws Exception{
-
-        me.kodysimpson.cortexbot.model.User user = bounty.getOwner();
-
-        //Create channel thread for the bounty
-        getGuild().createTextChannel("bounty-" + bounty.getId())
-                .setTopic("View on website: https://cortexdev.herokuapp.com/" + bounty.getId())
-                .setParent(getGuild().getCategoryById(discordConfiguration.getBountyCategoryId()))
-                .addRolePermissionOverride(Long.valueOf(discordConfiguration.getEveryoneRoleId()), null, Collections.singleton(Permission.VIEW_CHANNEL))
-                .queue(textChannel -> {
-                    bounty.setChannelID(textChannel.getIdLong());
-                    bountyRepository.save(bounty);
-
-                    MessageBuilder message = new MessageBuilder()
-                            .append("Title: ", MessageBuilder.Formatting.BOLD).append(bounty.getTitle() + "\n")
-                            .append("Description of Issue: ", MessageBuilder.Formatting.BOLD ).append(bounty.getDescription() + "\n")
-                            .append("Language/Library: ", MessageBuilder.Formatting.BOLD).append(bounty.getTags() + "\n")
-                            .append("Link to Code: ", MessageBuilder.Formatting.BOLD).append(bounty.getLinkToCode() + "\n")
-                            .append("\nDiscuss below how to solve the issue. You can upvote ideas and solutions by reacting to a message with the green checkmark." +
-                                    "Downvote with the red X emoji.");
-
-                    textChannel.sendMessage(message.build()).queue();
-
-                });
-
-        TextChannel channel = api.getTextChannelById(discordConfiguration.getWantedChannelId());
-
-        if (channel != null) {
-
-            EmbedBuilder embed = new EmbedBuilder()
-                    .setColor(Color.blue)
-                    .setAuthor("Posted by " + user.getFirstName() + " " + user.getLastName())
-                    .setTitle("NEW BOUNTY: " + bounty.getTitle())
-                    .setDescription(bounty.getDescription())
-                    .addField("Link: ", "https://cortexdev.herokuapp.com/bounty/" + bounty.getId(), true)
-                    .addField("", "Click the Checkmark below to join the discussion.", false);
-
-            Emote emote = channel.getGuild().getEmoteById(discordConfiguration.getGreenTickId());
-
-            channel.sendMessage(embed.build()).queue(message -> {
-                bounty.setBountyMessageID(message.getIdLong());
-                if (emote != null){
-                    message.addReaction(emote).queue();
-                }
-                bountyRepository.save(bounty);
-            });
-
-        }else{
-            throw new Exception("Unable to post Bounty");
-        }
-
-    }
-
     public void addRoleToMember(net.dv8tion.jda.api.entities.Member member, long roleId) {
         try {
             Role role = member.getGuild().getRoleById(roleId);
@@ -157,7 +97,7 @@ public class DiscordBotService {
     /**
      * Will give the Regular role to top ten on the leaderboard every 1 hour
      */
-    @Scheduled(fixedRate = 3600000)
+    @Scheduled(fixedRate = 3600000, initialDelay = 5000L)
     public void applyRegularRoles() {
 
         ArrayList<String> topTen = (ArrayList<String>) memberRepository.findAll()
@@ -183,18 +123,6 @@ public class DiscordBotService {
 
     }
 
-    public void postBountyMessage(Bounty bounty, me.kodysimpson.cortexbot.model.Message message) throws Exception{
-
-        EmbedBuilder embed = new EmbedBuilder();
-        embed.setColor(Color.BLUE);
-        embed.setAuthor("Website");
-        embed.setTitle(getUsername(message) + " has posted");
-        embed.appendDescription(message.getMessage());
-
-        getGuild().getTextChannelById(bounty.getChannelID()).sendMessage(embed.build()).queue();
-
-    }
-
     public String getUsername(String userId){
 
         return getApi().retrieveUserById(userId, true).complete().getAsTag();
@@ -209,6 +137,5 @@ public class DiscordBotService {
         }
 
     }
-
 
 }

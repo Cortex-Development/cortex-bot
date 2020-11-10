@@ -15,12 +15,6 @@ public class DiscordConfiguration {
     @Value("${discord.channel.suggestions}")
     private Long suggestionsChannelId;
 
-    @Value("${discord.channel.wanted}")
-    private Long wantedChannelId;
-
-    @Value("${discord.category.bounty}")
-    private Long bountyCategoryId;
-
     @Value("${discord.role.regular}")
     private Long regularRoleId;
 
@@ -78,13 +72,5 @@ public class DiscordConfiguration {
 
     public Long getSuggestionsChannelId() {
         return suggestionsChannelId;
-    }
-
-    public Long getWantedChannelId() {
-        return wantedChannelId;
-    }
-
-    public Long getBountyCategoryId() {
-        return bountyCategoryId;
     }
 }
