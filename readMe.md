@@ -3,9 +3,7 @@ This is a discord bot for the Cortex Development community: https://discord.gg/q
 
 ## Technology Stack
  - Spring Boot
-    - Spring Data JPA
     - Spring Data MongoDB
- - H2/MySQL 
  - JDA/JDAUtils
 
 ## How does it work?
