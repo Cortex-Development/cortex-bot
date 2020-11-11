@@ -53,6 +53,7 @@ public class DiscordBotService {
                     .addCommand(new CodeBlockCommand())
                     .addCommand(new JavaTutCommand())
                     .addCommand(new BuildCommand(versionUtil))
+                    .addCommand(new PointsCommand(memberRepository))
                     .addCommand(new PomCommand(versionUtil));
 
 
