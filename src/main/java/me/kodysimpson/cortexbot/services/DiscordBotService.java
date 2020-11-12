@@ -24,6 +24,7 @@ import javax.security.auth.login.LoginException;
 import java.util.List;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 @RequiredArgsConstructor
 @Service
@@ -53,8 +54,8 @@ public class DiscordBotService {
                     .addCommand(new CodeBlockCommand())
                     .addCommand(new JavaTutCommand())
                     .addCommand(new BuildCommand(versionUtil))
-                    .addCommand(new PointsCommand(memberRepository))
-                    .addCommand(new GivePointsCommand(memberRepository, discordConfiguration))
+                    .addCommand(new PointsCommand(memberRepository, this))
+                    .addCommand(new GivePointsCommand(memberRepository, discordConfiguration, this))
                     .addCommand(new PomCommand(versionUtil));
 
 
@@ -137,6 +138,28 @@ public class DiscordBotService {
             return userRepository.findById(message.getUserID()).get().getUsername();
         }
 
+    }
+
+    /**
+     * @param identifier Can be a user id, username, or tag
+     * @return null if no user found or the found User
+     */
+    public User findUser(String identifier){
+
+        User user;
+        if (identifier.startsWith("<@!")){
+            user = getApi().getUserById(identifier.substring(3, identifier.length() - 1));
+        }else if (IntStream.range(0, identifier.length()).boxed().map(identifier::charAt).allMatch(Character::isDigit)){
+            user = getApi().getUserById(identifier);
+        }else{
+            List<User> users = getApi().getUsersByName(identifier, true);
+            if (!users.isEmpty()){
+                user = users.get(0);
+            }else{
+                user = null;
+            }
+        }
+        return user;
     }
 
 }

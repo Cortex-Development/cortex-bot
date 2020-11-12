@@ -32,6 +32,12 @@ public class Member {
      */
     private long messagesSent;
 
-
+    public void setPoints(long points) {
+        if (points <= 0){
+            this.points = 0;
+        }else{
+            this.points = points;
+        }
+    }
 }
 
