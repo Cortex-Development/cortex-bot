@@ -14,8 +14,8 @@ import java.util.Random;
 public class MessageListener extends ListenerAdapter{
 
     private final Random random;
-    MemberRepository memberRepository;
-    DiscordConfiguration discordConfiguration;
+    private final MemberRepository memberRepository;
+    private final DiscordConfiguration discordConfiguration;
 
     public MessageListener(MemberRepository memberRepository, DiscordConfiguration discordConfiguration){
         this.random = new Random();

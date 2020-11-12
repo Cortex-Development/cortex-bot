@@ -70,7 +70,7 @@ public class GivePointsCommand extends Command {
                                 member.setPoints(member.getPoints() + Integer.parseInt(points));
                                 memberRepository.save(member);
 
-                                event.reply(points + " points has been given to " + user.getName() + ".");
+                                event.reply(points + " points have been given to " + user.getName() + ".");
 
                                 user.openPrivateChannel().flatMap(channel -> {
                                     return channel.sendMessage("You have been given " + points + " points. " +
