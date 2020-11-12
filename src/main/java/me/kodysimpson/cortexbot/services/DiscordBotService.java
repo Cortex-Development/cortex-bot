@@ -54,6 +54,7 @@ public class DiscordBotService {
                     .addCommand(new JavaTutCommand())
                     .addCommand(new BuildCommand(versionUtil))
                     .addCommand(new PointsCommand(memberRepository))
+                    .addCommand(new GivePointsCommand(memberRepository, discordConfiguration))
                     .addCommand(new PomCommand(versionUtil));
 
 
@@ -67,7 +68,6 @@ public class DiscordBotService {
                     .setAutoReconnect(true)
                     .setBulkDeleteSplittingEnabled(false)
                     .build();
-
 
         } catch (LoginException e) {
             e.printStackTrace();
