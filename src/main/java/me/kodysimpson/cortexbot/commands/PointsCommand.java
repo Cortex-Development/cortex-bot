@@ -32,7 +32,7 @@ public class PointsCommand extends Command {
             if (member != null){
                 event.reply("You have " + member.getPoints() + " point(s).");
             }else{
-                event.reply("You don't exist.");
+                event.reply("You don't exist!");
             }
 
         }else{
