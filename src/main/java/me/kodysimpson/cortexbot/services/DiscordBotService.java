@@ -3,6 +3,8 @@ package me.kodysimpson.cortexbot.services;
 import com.jagrosh.jdautilities.command.CommandClientBuilder;
 import lombok.RequiredArgsConstructor;
 import me.kodysimpson.cortexbot.commands.*;
+import me.kodysimpson.cortexbot.commands.staffcommands.GivePointsCommand;
+import me.kodysimpson.cortexbot.commands.staffcommands.MuteCommand;
 import me.kodysimpson.cortexbot.config.DiscordConfiguration;
 import me.kodysimpson.cortexbot.listeners.MessageListener;
 import me.kodysimpson.cortexbot.listeners.OtherListener;
@@ -56,6 +58,7 @@ public class DiscordBotService {
                     .addCommand(new BuildCommand(versionUtil))
                     .addCommand(new PointsCommand(memberRepository, this))
                     .addCommand(new GivePointsCommand(memberRepository, discordConfiguration, this))
+                    .addCommand(new MuteCommand(discordConfiguration, memberRepository, this))
                     .addCommand(new PomCommand(versionUtil));
 
 
