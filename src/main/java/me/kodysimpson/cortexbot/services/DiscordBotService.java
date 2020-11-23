@@ -6,8 +6,8 @@ import me.kodysimpson.cortexbot.commands.*;
 import me.kodysimpson.cortexbot.commands.staffcommands.GivePointsCommand;
 import me.kodysimpson.cortexbot.commands.staffcommands.MuteCommand;
 import me.kodysimpson.cortexbot.config.DiscordConfiguration;
-import me.kodysimpson.cortexbot.listeners.MessageListener;
-import me.kodysimpson.cortexbot.listeners.OtherListener;
+import me.kodysimpson.cortexbot.listeners.MessageListeners;
+import me.kodysimpson.cortexbot.listeners.NewMemberListener;
 import me.kodysimpson.cortexbot.model.Member;
 import me.kodysimpson.cortexbot.repositories.MemberRepository;
 import me.kodysimpson.cortexbot.repositories.UserRepository;
@@ -17,6 +17,7 @@ import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.exceptions.HierarchyException;
 import net.dv8tion.jda.api.exceptions.InsufficientPermissionException;
 import net.dv8tion.jda.api.requests.GatewayIntent;
+import net.dv8tion.jda.api.requests.RestAction;
 import net.dv8tion.jda.api.utils.cache.CacheFlag;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -25,6 +26,8 @@ import javax.annotation.PostConstruct;
 import javax.security.auth.login.LoginException;
 import java.util.List;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -67,8 +70,8 @@ public class DiscordBotService {
                     .setToken(discordConfiguration.getBotToken())
                     .disableCache(CacheFlag.ACTIVITY, CacheFlag.VOICE_STATE, CacheFlag.CLIENT_STATUS)
                     .addEventListeners(commandClient.build())
-                    .addEventListeners(new MessageListener(memberRepository, discordConfiguration))
-                    .addEventListeners(new OtherListener(this, discordConfiguration))
+                    .addEventListeners(new MessageListeners(memberRepository, discordConfiguration))
+                    .addEventListeners(new NewMemberListener(this, discordConfiguration))
                     .setAutoReconnect(true)
                     .setBulkDeleteSplittingEnabled(false)
                     .build();
@@ -91,7 +94,20 @@ public class DiscordBotService {
             Role role = member.getGuild().getRoleById(roleId);
 
             if (role != null) {
-                getGuild().addRoleToMember(member, role).queue();
+                getGuild().addRoleToMember(member, role).queueAfter(1, TimeUnit.MINUTES);
+            }
+        } catch (IllegalArgumentException | InsufficientPermissionException | HierarchyException e) {
+            System.out.println(member.getUser().getAsTag() + " did not get the role on join");
+            System.out.println(e);
+        }
+    }
+
+    public void addRoleToMember(net.dv8tion.jda.api.entities.Member member, long roleId, Consumer<Void> successResponse) {
+        try {
+            Role role = member.getGuild().getRoleById(roleId);
+
+            if (role != null) {
+                getGuild().addRoleToMember(member, role).queueAfter(1, TimeUnit.MINUTES, successResponse);
             }
         } catch (IllegalArgumentException | InsufficientPermissionException | HierarchyException e) {
             System.out.println(member.getUser().getAsTag() + " did not get the role on join");

@@ -20,6 +20,7 @@ public class LeaderboardCommand extends Command {
         this.help = "Get the top ten leaderboard rankings";
         this.guildOnly = false;
         this.memberRepository = memberRepository;
+        this.aliases = new String[]{"lb"};
     }
 
     @Override
@@ -38,7 +39,7 @@ public class LeaderboardCommand extends Command {
         message.append("Top Ten Leaderboard Rankings", MessageBuilder.Formatting.BOLD).append("\n\n");
 
         for (int i = 0; i < topTen.size(); i++){
-            message.append("(" + (i + 1) + ") - ", MessageBuilder.Formatting.BOLD).append(topTen.get(i).getAsTag() + "\n");
+            message.append("(" + (i + 1) + ") - ", MessageBuilder.Formatting.BOLD).append(topTen.get(i).getAsTag()).append("\n");
         }
 
         message.append("\nYou can view the full leaderboard here: https://cortexdev.us/leaderboard").append("\n");

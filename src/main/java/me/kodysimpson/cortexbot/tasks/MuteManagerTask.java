@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import java.util.Objects;
+
 @Service
 public class MuteManagerTask {
 
@@ -25,10 +27,14 @@ public class MuteManagerTask {
 
         Role mutedRole = discordBotService.getGuild().getRoleById(discordConfiguration.getMuteRole());
 
-        memberRepository.findAll().stream()
-                .filter(member -> !member.isCurrentlyMuted())
-                .filter(member -> discordBotService.getGuild().getMemberById(member.getUserID()).getRoles().contains(mutedRole))
-                .forEach(member -> discordBotService.getGuild().removeRoleFromMember(member.getUserID(), mutedRole).queue());
+        if (mutedRole != null){
+            memberRepository.findAll().stream()
+                    .filter(member -> !member.isCurrentlyMuted())
+                    .filter(member -> Objects.requireNonNull(discordBotService.getGuild().getMemberById(member.getUserID())).getRoles().contains(mutedRole))
+                    .forEach(member -> discordBotService.getGuild().removeRoleFromMember(member.getUserID(), mutedRole).queue());
+        }else{
+            System.out.println("An invalid ID might be set for the mute role");
+        }
 
     }
 

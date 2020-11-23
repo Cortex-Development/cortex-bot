@@ -11,13 +11,13 @@ import javax.annotation.Nonnull;
 import java.util.Objects;
 import java.util.Random;
 
-public class MessageListener extends ListenerAdapter{
+public class MessageListeners extends ListenerAdapter{
 
     private final Random random;
     private final MemberRepository memberRepository;
     private final DiscordConfiguration discordConfiguration;
 
-    public MessageListener(MemberRepository memberRepository, DiscordConfiguration discordConfiguration){
+    public MessageListeners(MemberRepository memberRepository, DiscordConfiguration discordConfiguration){
         this.random = new Random();
         this.memberRepository = memberRepository;
         this.discordConfiguration = discordConfiguration;
