@@ -39,7 +39,7 @@ public class MuteCommand extends Command {
         if (event.getMember().isOwner() || event.getMember().getRoles().contains(event.getJDA().getRoleById(discordConfiguration.getStaffRole()))){
 
             if (args.isEmpty()){
-                event.reply("Provide a person to mute. Ex: $mute 250856681724968960 being too sexy");
+                event.reply("Provide a person to mute. Ex: $mute 250856681724968960 10d5m5h20min400s being too sexy");
             }else{
 
                 String[] arguments = args.split(" ");
@@ -106,7 +106,7 @@ public class MuteCommand extends Command {
                             discordBotService.getGuild().addRoleToMember(member.getUserID(), mutedRole).queue();
 
                         }catch (NumberFormatException ex){
-                            event.reply("Unable to process request, invalid points value provided.");
+                            event.reply("Unable to process request, invalid arguments provided.");
                         }
 
                     }else{

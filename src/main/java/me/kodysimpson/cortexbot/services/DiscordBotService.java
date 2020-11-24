@@ -17,7 +17,6 @@ import net.dv8tion.jda.api.entities.*;
 import net.dv8tion.jda.api.exceptions.HierarchyException;
 import net.dv8tion.jda.api.exceptions.InsufficientPermissionException;
 import net.dv8tion.jda.api.requests.GatewayIntent;
-import net.dv8tion.jda.api.requests.RestAction;
 import net.dv8tion.jda.api.utils.cache.CacheFlag;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -53,7 +52,7 @@ public class DiscordBotService {
                     .setActivity(Activity.listening("$help"))
 
                     //Add commands
-                    .addCommand(new LeaderboardCommand(memberRepository))
+                    .addCommand(new LeaderboardCommand(memberRepository, this))
                     .addCommand(new WebsiteCommand())
                     .addCommand(new SuggestionCommand(discordConfiguration))
                     .addCommand(new CodeBlockCommand())
@@ -144,19 +143,9 @@ public class DiscordBotService {
 
     }
 
-    public String getUsername(String userId){
+    public String getUsernameFromUserID(String userId){
 
         return getApi().retrieveUserById(userId, true).complete().getAsTag();
-    }
-
-    public String getUsername(me.kodysimpson.cortexbot.model.Message message){
-
-        if (message.isDiscordMessage()){
-            return getUsername(message.getDiscordUserID());
-        }else{
-            return userRepository.findById(message.getUserID()).get().getUsername();
-        }
-
     }
 
     /**
