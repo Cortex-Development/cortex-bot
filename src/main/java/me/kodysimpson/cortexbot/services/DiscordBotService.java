@@ -46,11 +46,9 @@ public class DiscordBotService {
             VersionUtil versionUtil = new VersionUtil();
             CommandClientBuilder commandClient = new CommandClientBuilder()
                     .setPrefix("$")
-
                     .setOwnerId(discordConfiguration.getOwnerId())
                     .setHelpWord("help")
                     .setActivity(Activity.listening("$help"))
-
                     //Add commands
                     .addCommand(new LeaderboardCommand(memberRepository, this))
                     .addCommand(new WebsiteCommand())
@@ -69,7 +67,7 @@ public class DiscordBotService {
                     .setToken(discordConfiguration.getBotToken())
                     .disableCache(CacheFlag.ACTIVITY, CacheFlag.VOICE_STATE, CacheFlag.CLIENT_STATUS)
                     .addEventListeners(commandClient.build())
-                    .addEventListeners(new MessageListeners(memberRepository, discordConfiguration))
+                    .addEventListeners(new MessageListeners(memberRepository, discordConfiguration, this))
                     .addEventListeners(new NewMemberListener(this, discordConfiguration))
                     .setAutoReconnect(true)
                     .setBulkDeleteSplittingEnabled(false)
