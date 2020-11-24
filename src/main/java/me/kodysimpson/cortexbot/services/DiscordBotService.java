@@ -47,7 +47,7 @@ public class DiscordBotService {
             CommandClientBuilder commandClient = new CommandClientBuilder()
                     .setPrefix("$")
 
-                    .setOwnerId("250856681724968960")
+                    .setOwnerId(discordConfiguration.getOwnerId())
                     .setHelpWord("help")
                     .setActivity(Activity.listening("$help"))
 

@@ -12,6 +12,9 @@ public class DiscordConfiguration {
     @Value("${discord.guild.id}")
     private Long guildId;
 
+    @Value("${discord.owner.id}")
+    private String ownerId;
+
     @Value("${discord.channel.suggestions}")
     private Long suggestionsChannelId;
 
@@ -83,5 +86,9 @@ public class DiscordConfiguration {
 
     public void setMuteRole(Long muteRole) {
         this.muteRole = muteRole;
+    }
+
+    public String getOwnerId() {
+        return ownerId;
     }
 }
