@@ -3,12 +3,9 @@ package me.kodysimpson.cortexbot.listeners;
 import me.kodysimpson.cortexbot.config.DiscordConfiguration;
 import me.kodysimpson.cortexbot.model.Member;
 import me.kodysimpson.cortexbot.repositories.MemberRepository;
-import me.kodysimpson.cortexbot.services.DiscordBotService;
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.entities.Emote;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
-import net.dv8tion.jda.internal.managers.EmoteManagerImpl;
 
 import javax.annotation.Nonnull;
 import java.util.Objects;
@@ -19,13 +16,11 @@ public class MessageListeners extends ListenerAdapter{
     private final Random random;
     private final MemberRepository memberRepository;
     private final DiscordConfiguration discordConfiguration;
-    private final DiscordBotService discordBotService;
 
-    public MessageListeners(MemberRepository memberRepository, DiscordConfiguration discordConfiguration, DiscordBotService discordBotService){
+    public MessageListeners(MemberRepository memberRepository, DiscordConfiguration discordConfiguration){
         this.random = new Random();
         this.memberRepository = memberRepository;
         this.discordConfiguration = discordConfiguration;
-        this.discordBotService = discordBotService;
     }
 
 
@@ -58,17 +53,15 @@ public class MessageListeners extends ListenerAdapter{
             }
 
 
-            System.out.println(discordBotService.getApi().getEmotes());
-
             if (event.getChannel().getIdLong() == (discordConfiguration.getSuggestionsChannelId())){
                 EmbedBuilder eb = new EmbedBuilder();
                 eb.setAuthor(event.getAuthor().getName(), null, event.getAuthor().getAvatarUrl())
                         .setDescription(event.getMessage().getContentRaw());
                 eb.setColor(event.getMember().getColorRaw());
                 event.getChannel().sendMessage(eb.build()).queue(m -> {
-                    m.addReaction("\uD83D\uDC4D\uD83C\uDFFD").queue();
-                    m.addReaction("\uD83E\uDD37\uD83C\uDFFE").queue();
-                    m.addReaction("\uD83D\uDC4E\uD83C\uDFFD").queue();
+                    m.addReaction(Objects.requireNonNull(event.getGuild().getEmoteById(discordConfiguration.getGreenTickId()))).queue();
+                    m.addReaction(Objects.requireNonNull(event.getGuild().getEmoteById(discordConfiguration.getNeutralTickId()))).queue();
+                    m.addReaction(Objects.requireNonNull(event.getGuild().getEmoteById(discordConfiguration.getRedTickId()))).queue();
                 });
                 event.getMessage().delete().queue();
             }
