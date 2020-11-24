@@ -3,16 +3,13 @@ package me.kodysimpson.cortexbot.commands;
 import com.jagrosh.jdautilities.command.Command;
 import com.jagrosh.jdautilities.command.CommandEvent;
 import me.kodysimpson.cortexbot.config.DiscordConfiguration;
-import me.kodysimpson.cortexbot.services.DiscordBotService;
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.entities.Emote;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageReaction;
 import net.dv8tion.jda.api.requests.restaction.pagination.MessagePaginationAction;
 
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.Objects;
 import java.util.TreeMap;
 
 public class SuggestionCommand extends Command {
@@ -38,9 +35,9 @@ public class SuggestionCommand extends Command {
             int points = 0;
             for (MessageReaction reaction : m.getReactions()) {
                 if (reaction.getReactionEmote().isEmote()) {
-                    if (reaction.getReactionEmote().getIdLong() == 780671500042633227L)
+                    if (reaction.getReactionEmote().getIdLong() == discordConfiguration.getGreenTickId())
                         points += reaction.getCount(); // upvote
-                    else if (reaction.getReactionEmote().getIdLong() == 780671500042633227L)
+                    else if (reaction.getReactionEmote().getIdLong() == discordConfiguration.getRedTickId())
                         points -= reaction.getCount(); // Downvote
 
                 }

@@ -30,11 +30,32 @@ public class DiscordConfiguration {
     @Value("${discord.role.mute}")
     private Long muteRole;
 
+    @Value("${discord.emoji.green_tick}")
+    private Long greenTickId;
+
+    @Value("${discord.emoji.red_tick}")
+    private Long redTickId;
+
+    @Value("${discord.emoji.neutral_tick}")
+    private Long neutralTickId;
+
     @Value("${discord.role.member}")
     private Long memberRoleId;
 
     public Long getMemberRoleId() {
         return memberRoleId;
+    }
+
+    public Long getGreenTickId() {
+        return greenTickId;
+    }
+
+    public Long getRedTickId() {
+        return redTickId;
+    }
+
+    public Long getNeutralTickId() {
+        return neutralTickId;
     }
 
     public Long getEveryoneRoleId() {
