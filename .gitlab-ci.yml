@@ -16,5 +16,7 @@ build:
 
 production:
   stage: deploy
+  script:
+    - docker ps
   only:
     - master
