@@ -1,8 +1,13 @@
 package me.kodysimpson.cortexbot.model;
 
 import lombok.Data;
+import me.kodysimpson.cortexbot.model.infractions.Infraction;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * The Member class represents each user in the discord server
@@ -32,6 +37,34 @@ public class Member {
      */
     private long messagesSent;
 
+    private List<Infraction> muteInfractions = new ArrayList<>();
+    private List<Infraction> banInfractions = new ArrayList<>();
+
+    public void addMute(Infraction infraction){
+        this.muteInfractions.add(infraction);
+    }
+
+    public void addBan(Infraction infraction){
+        this.banInfractions.add(infraction);
+    }
+
+    public void setPoints(long points) {
+        if (points <= 0){
+            this.points = 0;
+        }else{
+            this.points = points;
+        }
+    }
+
+    public boolean isCurrentlyMuted(){
+
+        for (Infraction infraction : getMuteInfractions()) {
+            if (infraction.getExpireDate().isAfter(LocalDateTime.now())) {
+                return true;
+            }
+        }
+        return false;
+    }
 
 }
 

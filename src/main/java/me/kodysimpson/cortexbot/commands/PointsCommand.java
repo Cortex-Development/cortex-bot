@@ -4,6 +4,7 @@ import com.jagrosh.jdautilities.command.Command;
 import com.jagrosh.jdautilities.command.CommandEvent;
 import me.kodysimpson.cortexbot.model.Member;
 import me.kodysimpson.cortexbot.repositories.MemberRepository;
+import me.kodysimpson.cortexbot.services.DiscordBotService;
 import net.dv8tion.jda.api.entities.User;
 
 import java.util.List;
@@ -11,10 +12,12 @@ import java.util.stream.IntStream;
 
 public class PointsCommand extends Command {
 
-    MemberRepository memberRepository;
+    private final MemberRepository memberRepository;
+    private final DiscordBotService discordBotService;
 
-    public PointsCommand(MemberRepository memberRepository){
+    public PointsCommand(MemberRepository memberRepository, DiscordBotService discordBotService){
         this.memberRepository = memberRepository;
+        this.discordBotService = discordBotService;
         this.name = "points";
         this.arguments = "<user id | username | tag>";
     }
@@ -38,19 +41,7 @@ public class PointsCommand extends Command {
         }else{
 
             //determine who was provided as an argument to this command
-            User user;
-            if (args.startsWith("<@!")){
-                user = event.getJDA().getUserById(args.substring(3, args.length() - 1));
-            }else if (IntStream.range(0, args.length()).boxed().map(args::charAt).allMatch(Character::isDigit)){
-                user = event.getJDA().getUserById(args);
-            }else{
-                List<User> users = event.getJDA().getUsersByName(args, true);
-                if (!users.isEmpty()){
-                    user = users.get(0);
-                }else{
-                    user = null;
-                }
-            }
+            User user = discordBotService.findUser(args);
 
             if (user == null){
                 event.reply("The user provided does not exist.");

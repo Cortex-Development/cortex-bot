@@ -12,6 +12,9 @@ public class DiscordConfiguration {
     @Value("${discord.guild.id}")
     private Long guildId;
 
+    @Value("${discord.owner.id}")
+    private String ownerId;
+
     @Value("${discord.channel.suggestions}")
     private Long suggestionsChannelId;
 
@@ -23,6 +26,9 @@ public class DiscordConfiguration {
 
     @Value("${discord.role.staff}")
     private Long staffRole;
+
+    @Value("${discord.role.mute}")
+    private Long muteRole;
 
     @Value("${discord.emoji.green_tick}")
     private Long greenTickId;
@@ -72,5 +78,17 @@ public class DiscordConfiguration {
 
     public Long getSuggestionsChannelId() {
         return suggestionsChannelId;
+    }
+
+    public Long getMuteRole() {
+        return muteRole;
+    }
+
+    public void setMuteRole(Long muteRole) {
+        this.muteRole = muteRole;
+    }
+
+    public String getOwnerId() {
+        return ownerId;
     }
 }

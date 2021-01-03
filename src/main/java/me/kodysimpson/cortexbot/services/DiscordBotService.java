@@ -3,9 +3,11 @@ package me.kodysimpson.cortexbot.services;
 import com.jagrosh.jdautilities.command.CommandClientBuilder;
 import lombok.RequiredArgsConstructor;
 import me.kodysimpson.cortexbot.commands.*;
+import me.kodysimpson.cortexbot.commands.staffcommands.GivePointsCommand;
+import me.kodysimpson.cortexbot.commands.staffcommands.MuteCommand;
 import me.kodysimpson.cortexbot.config.DiscordConfiguration;
-import me.kodysimpson.cortexbot.listeners.MessageListener;
-import me.kodysimpson.cortexbot.listeners.OtherListener;
+import me.kodysimpson.cortexbot.listeners.MessageListeners;
+import me.kodysimpson.cortexbot.listeners.NewMemberListener;
 import me.kodysimpson.cortexbot.model.Member;
 import me.kodysimpson.cortexbot.repositories.MemberRepository;
 import me.kodysimpson.cortexbot.repositories.UserRepository;
@@ -23,7 +25,10 @@ import javax.annotation.PostConstruct;
 import javax.security.auth.login.LoginException;
 import java.util.List;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 @RequiredArgsConstructor
 @Service
@@ -42,18 +47,20 @@ public class DiscordBotService {
             CommandClientBuilder commandClient = new CommandClientBuilder()
                     .setPrefix("$")
 
-                    .setOwnerId("250856681724968960")
+                    .setOwnerId(discordConfiguration.getOwnerId())
                     .setHelpWord("help")
                     .setActivity(Activity.listening("$help"))
 
                     //Add commands
-                    .addCommand(new LeaderboardCommand(memberRepository))
+                    .addCommand(new LeaderboardCommand(memberRepository, this))
                     .addCommand(new WebsiteCommand())
                     .addCommand(new SuggestionCommand(discordConfiguration))
                     .addCommand(new CodeBlockCommand())
                     .addCommand(new JavaTutCommand())
                     .addCommand(new BuildCommand(versionUtil))
-                    .addCommand(new PointsCommand(memberRepository))
+                    .addCommand(new PointsCommand(memberRepository, this))
+                    .addCommand(new GivePointsCommand(memberRepository, discordConfiguration, this))
+                    .addCommand(new MuteCommand(discordConfiguration, memberRepository, this))
                     .addCommand(new PomCommand(versionUtil));
 
 
@@ -62,12 +69,11 @@ public class DiscordBotService {
                     .setToken(discordConfiguration.getBotToken())
                     .disableCache(CacheFlag.ACTIVITY, CacheFlag.VOICE_STATE, CacheFlag.CLIENT_STATUS)
                     .addEventListeners(commandClient.build())
-                    .addEventListeners(new MessageListener(memberRepository, discordConfiguration))
-                    .addEventListeners(new OtherListener(this, discordConfiguration))
+                    .addEventListeners(new MessageListeners(memberRepository, discordConfiguration))
+                    .addEventListeners(new NewMemberListener(this, discordConfiguration))
                     .setAutoReconnect(true)
                     .setBulkDeleteSplittingEnabled(false)
                     .build();
-
 
         } catch (LoginException e) {
             e.printStackTrace();
@@ -87,7 +93,20 @@ public class DiscordBotService {
             Role role = member.getGuild().getRoleById(roleId);
 
             if (role != null) {
-                getGuild().addRoleToMember(member, role).queue();
+                getGuild().addRoleToMember(member, role).queueAfter(1, TimeUnit.MINUTES);
+            }
+        } catch (IllegalArgumentException | InsufficientPermissionException | HierarchyException e) {
+            System.out.println(member.getUser().getAsTag() + " did not get the role on join");
+            System.out.println(e);
+        }
+    }
+
+    public void addRoleToMember(net.dv8tion.jda.api.entities.Member member, long roleId, Consumer<Void> successResponse) {
+        try {
+            Role role = member.getGuild().getRoleById(roleId);
+
+            if (role != null) {
+                getGuild().addRoleToMember(member, role).queueAfter(1, TimeUnit.MINUTES, successResponse);
             }
         } catch (IllegalArgumentException | InsufficientPermissionException | HierarchyException e) {
             System.out.println(member.getUser().getAsTag() + " did not get the role on join");
@@ -124,19 +143,31 @@ public class DiscordBotService {
 
     }
 
-    public String getUsername(String userId){
+    public String getUsernameFromUserID(String userId){
 
         return getApi().retrieveUserById(userId, true).complete().getAsTag();
     }
 
-    public String getUsername(me.kodysimpson.cortexbot.model.Message message){
+    /**
+     * @param identifier Can be a user id, username, or tag
+     * @return null if no user found or the found User
+     */
+    public User findUser(String identifier){
 
-        if (message.isDiscordMessage()){
-            return getUsername(message.getDiscordUserID());
+        User user;
+        if (identifier.startsWith("<@!")){
+            user = getApi().getUserById(identifier.substring(3, identifier.length() - 1));
+        }else if (IntStream.range(0, identifier.length()).boxed().map(identifier::charAt).allMatch(Character::isDigit)){
+            user = getApi().getUserById(identifier);
         }else{
-            return userRepository.findById(message.getUserID()).get().getUsername();
+            List<User> users = getApi().getUsersByName(identifier, true);
+            if (!users.isEmpty()){
+                user = users.get(0);
+            }else{
+                user = null;
+            }
         }
-
+        return user;
     }
 
 }

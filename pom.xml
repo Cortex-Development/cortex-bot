@@ -15,7 +15,7 @@
     <description>Bot that integrates with the cortex website and discord</description>
 
     <properties>
-        <java.version>14</java.version>
+        <java.version>15</java.version>
     </properties>
 
     <repositories>
