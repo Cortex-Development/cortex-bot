@@ -44,4 +44,4 @@ Video here: Coming soon
 4. Clone the project onto your machine
 5. Go into the application-dev.properties file and input your test server info and db
 6. Code (MAKE SURE YOU ARE IN DEV PROFILE in application.properties)
-7. Make a pull request and look out for responses on it after
+7. Make a pull request(merge request) and look out for responses on it after
