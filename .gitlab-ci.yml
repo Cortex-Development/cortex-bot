@@ -43,7 +43,7 @@ deploy:
     - ssh -i $ID_RSA -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "docker login -u gitlab-ci-token -p $CI_BUILD_TOKEN $CI_REGISTRY"
     - ssh -i $ID_RSA -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "docker pull $TAG_COMMIT"
     - ssh -i $ID_RSA -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "docker container rm -f cortex-bot || true"
-    - ssh -i $ID_RSA -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "docker run -e DISCORD_BOT_TOKEN_PROD=$DISCORD_BOT_TOKEN_PROD -e MONGODB_URI_PROD=$MONGODB_URI_PROD --name cortex-bot $TAG_COMMIT"
+    - ssh -i $ID_RSA -o StrictHostKeyChecking=no $SERVER_USER@$SERVER_IP "docker run -e DISCORD_BOT_TOKEN_PROD=$DISCORD_BOT_TOKEN_PROD -e MONGODB_URI_PROD=$MONGODB_URI_PROD --name cortex-bot -d $TAG_COMMIT"
   environment:
     name: production
   only:
