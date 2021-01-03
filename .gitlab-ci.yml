@@ -1,4 +1,4 @@
-image: java:15
+image: java:14
 
 stages:
   - build
