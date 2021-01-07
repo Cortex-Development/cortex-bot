@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import me.kodysimpson.cortexbot.commands.*;
 import me.kodysimpson.cortexbot.commands.staffcommands.GivePointsCommand;
 import me.kodysimpson.cortexbot.commands.staffcommands.MuteCommand;
+import me.kodysimpson.cortexbot.commands.staffcommands.UnmuteCommand;
 import me.kodysimpson.cortexbot.config.DiscordConfiguration;
 import me.kodysimpson.cortexbot.listeners.MessageListeners;
 import me.kodysimpson.cortexbot.listeners.NewMemberListener;
@@ -12,8 +13,12 @@ import me.kodysimpson.cortexbot.model.Member;
 import me.kodysimpson.cortexbot.repositories.MemberRepository;
 import me.kodysimpson.cortexbot.repositories.UserRepository;
 import me.kodysimpson.cortexbot.utils.VersionUtil;
-import net.dv8tion.jda.api.*;
-import net.dv8tion.jda.api.entities.*;
+import net.dv8tion.jda.api.JDA;
+import net.dv8tion.jda.api.JDABuilder;
+import net.dv8tion.jda.api.entities.Activity;
+import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.Role;
+import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.exceptions.HierarchyException;
 import net.dv8tion.jda.api.exceptions.InsufficientPermissionException;
 import net.dv8tion.jda.api.requests.GatewayIntent;
@@ -23,8 +28,10 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 import javax.security.auth.login.LoginException;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
-import java.util.*;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
@@ -61,6 +68,7 @@ public class DiscordBotService {
                     .addCommand(new PointsCommand(memberRepository, this))
                     .addCommand(new GivePointsCommand(memberRepository, discordConfiguration, this))
                     .addCommand(new MuteCommand(discordConfiguration, memberRepository, this))
+                    .addCommand(new UnmuteCommand(discordConfiguration, memberRepository, this))
                     .addCommand(new PomCommand(versionUtil));
 
 

@@ -10,12 +10,8 @@ import me.kodysimpson.cortexbot.services.DiscordBotService;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.entities.User;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.time.temporal.TemporalAmount;
-import java.time.temporal.TemporalField;
-import java.util.Arrays;
 
 public class MuteCommand extends Command {
 
