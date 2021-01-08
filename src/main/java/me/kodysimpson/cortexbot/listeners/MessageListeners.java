@@ -49,7 +49,7 @@ public class MessageListeners extends ListenerAdapter{
                 }
 
                 member.setMessagesSent(member.getMessagesSent() + 1);
-                member.setName(event.getAuthor().getName());
+                member.setName(event.getAuthor().getAsTag());
 
                 if (random.nextInt(5) == 3)
                     member.setPoints(member.getPoints() + random.nextInt(7));
@@ -61,7 +61,7 @@ public class MessageListeners extends ListenerAdapter{
                 Member member = new Member();
 
                 member.setUserID(event.getAuthor().getId());
-                member.setName(event.getAuthor().getName());
+                member.setName(event.getAuthor().getAsTag());
 
                 member.setMessagesSent(1);
                 member.setPoints(1);
