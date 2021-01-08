@@ -1,4 +1,9 @@
-FROM openjdk:15.0.1-jdk-buster
+FROM maven:3.6.3-openjdk-15-slim AS build
+COPY src /home/app/src
+COPY pom.xml /home/app
+RUN mvn -f /home/app/pom.xml clean package
+
+FROM openjdk:15-jdk
 VOLUME /tmp
-COPY target/*.jar cortex-bot-0.0.1-SNAPSHOT.jar
-ENTRYPOINT ["java","-jar","/cortex-bot-0.0.1-SNAPSHOT.jar"]
+COPY --from=build /home/app/target/*.jar cortex-bot.jar
+ENTRYPOINT ["java","-jar","/cortex-bot.jar"]
