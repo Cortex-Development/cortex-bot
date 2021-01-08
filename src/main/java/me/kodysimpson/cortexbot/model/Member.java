@@ -28,6 +28,8 @@ public class Member {
      */
     private String userID;
 
+    private String name;
+
     /**
      * Amount of points from talking, winning challenges, and such
      */
