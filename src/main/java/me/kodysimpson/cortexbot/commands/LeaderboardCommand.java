@@ -6,7 +6,6 @@ import me.kodysimpson.cortexbot.model.Member;
 import me.kodysimpson.cortexbot.repositories.MemberRepository;
 import me.kodysimpson.cortexbot.services.DiscordBotService;
 import net.dv8tion.jda.api.MessageBuilder;
-import net.dv8tion.jda.api.entities.User;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -29,7 +28,7 @@ public class LeaderboardCommand extends Command {
     @Override
     protected void execute(CommandEvent commandEvent) {
 
-        ArrayList<Member> topTen = (ArrayList<Member>) memberRepository.findAll()
+        ArrayList<Member> topTen = (ArrayList<Member>re) memberRepository.findAll()
                 .stream()
                 .sorted(Comparator.comparing(Member::getPoints).reversed())
                 .limit(10)

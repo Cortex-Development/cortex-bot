@@ -128,23 +128,23 @@ public class DiscordBotService {
     @Scheduled(fixedRate = 3600000, initialDelay = 5000L)
     public void applyRegularRoles() {
 
-        ArrayList<String> topTen = (ArrayList<String>) memberRepository.findAll()
+        ArrayList<String> topTwenty = (ArrayList<String>) memberRepository.findAll()
                 .stream()
                 .sorted(Comparator.comparing(Member::getPoints).reversed())
-                .limit(10)
+                .limit(20)
                 .map(Member::getUserID)
                 .collect(Collectors.toList());
 
         //Remove the regular role from the current members if they are not top ten
         getGuild().getMembers()
                 .forEach(member -> {
-                    if (member.getRoles().contains(getApi().getRoleById(discordConfiguration.getRegularRoleId())) && !topTen.contains(member.getId())) {
+                    if (member.getRoles().contains(getApi().getRoleById(discordConfiguration.getRegularRoleId())) && !topTwenty.contains(member.getId())) {
                         getGuild().removeRoleFromMember(member, getApi().getRoleById(discordConfiguration.getRegularRoleId())).queue();
                     }
                 });
 
         //apply it to the top ten members
-        topTen.stream()
+        topTwenty.stream()
                 .map(id -> getGuild().getMemberById(id))
                 .filter(Objects::nonNull)
                 .forEach(member -> addRoleToMember(member, Long.valueOf(discordConfiguration.getRegularRoleId())));
