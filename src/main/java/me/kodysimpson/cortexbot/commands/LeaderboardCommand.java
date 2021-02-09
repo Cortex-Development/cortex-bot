@@ -28,7 +28,7 @@ public class LeaderboardCommand extends Command {
     @Override
     protected void execute(CommandEvent commandEvent) {
 
-        ArrayList<Member> topTen = (ArrayList<Member>re) memberRepository.findAll()
+        ArrayList<Member> topTen = (ArrayList<Member>) memberRepository.findAll()
                 .stream()
                 .sorted(Comparator.comparing(Member::getPoints).reversed())
                 .limit(10)
