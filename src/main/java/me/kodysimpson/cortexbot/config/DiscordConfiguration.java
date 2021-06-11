@@ -21,6 +21,9 @@ public class DiscordConfiguration {
     @Value("${discord.role.regular}")
     private Long regularRoleId;
 
+    @Value("${discord.role.veteran}")
+    private Long veteranRoleId;
+
     @Value("${discord.role.everyone}")
     private Long everyoneRoleId;
 
@@ -90,5 +93,9 @@ public class DiscordConfiguration {
 
     public String getOwnerId() {
         return ownerId;
+    }
+
+    public Long getVeteranRoleId() {
+        return veteranRoleId;
     }
 }

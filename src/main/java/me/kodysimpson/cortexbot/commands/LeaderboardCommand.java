@@ -31,13 +31,13 @@ public class LeaderboardCommand extends Command {
         ArrayList<Member> topTen = (ArrayList<Member>) memberRepository.findAll()
                 .stream()
                 .sorted(Comparator.comparing(Member::getPoints).reversed())
-                .limit(10)
+                .limit(15)
                 .collect(Collectors.toList());
 
         MessageBuilder message = new MessageBuilder();
 
         message.append("---------------------------------------------------------------------------------------------", MessageBuilder.Formatting.STRIKETHROUGH).append("\n");
-        message.append("Top Ten Leaderboard Rankings", MessageBuilder.Formatting.BOLD).append("\n\n");
+        message.append("Top 15 Leaderboard Rankings", MessageBuilder.Formatting.BOLD).append("\n\n");
 
         for (int i = 0; i < topTen.size(); i++){
             message.append("(" + (i + 1) + ") - ", MessageBuilder.Formatting.BOLD).append(discordBotService.getUsernameFromUserID(topTen.get(i).getUserID()) + " *-* " + topTen.get(i).getPoints() + " pts").append("\n");

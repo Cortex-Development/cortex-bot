@@ -4,8 +4,6 @@ import com.jagrosh.jdautilities.command.CommandClientBuilder;
 import lombok.RequiredArgsConstructor;
 import me.kodysimpson.cortexbot.commands.*;
 import me.kodysimpson.cortexbot.commands.staffcommands.GivePointsCommand;
-import me.kodysimpson.cortexbot.commands.staffcommands.MuteCommand;
-import me.kodysimpson.cortexbot.commands.staffcommands.UnmuteCommand;
 import me.kodysimpson.cortexbot.config.DiscordConfiguration;
 import me.kodysimpson.cortexbot.listeners.MessageListeners;
 import me.kodysimpson.cortexbot.listeners.NewMemberListener;
@@ -67,8 +65,6 @@ public class DiscordBotService {
                     .addCommand(new BuildCommand(versionUtil))
                     .addCommand(new PointsCommand(memberRepository, this))
                     .addCommand(new GivePointsCommand(memberRepository, discordConfiguration, this))
-                    .addCommand(new MuteCommand(discordConfiguration, memberRepository, this))
-                    .addCommand(new UnmuteCommand(discordConfiguration, memberRepository, this))
                     .addCommand(new PomCommand(versionUtil));
 
 
@@ -123,7 +119,7 @@ public class DiscordBotService {
     }
 
     /**
-     * Will give the Regular role to top ten on the leaderboard every 1 hour
+     * Will give the Regular role to top 20 on the leaderboard every 1 hour
      */
     @Scheduled(fixedRate = 3600000, initialDelay = 5000L)
     public void applyRegularRoles() {
@@ -143,11 +139,40 @@ public class DiscordBotService {
                     }
                 });
 
-        //apply it to the top ten members
+        //apply it to the top 20 members
         topTwenty.stream()
                 .map(id -> getGuild().getMemberById(id))
                 .filter(Objects::nonNull)
                 .forEach(member -> addRoleToMember(member, Long.valueOf(discordConfiguration.getRegularRoleId())));
+
+    }
+
+    /**
+     * Will give the Veteran Coder role to top 5 on the leaderboard every 1 hour
+     */
+    @Scheduled(fixedRate = 3600000, initialDelay = 5000L)
+    public void applyVeteranRoles() {
+
+        ArrayList<String> topFive = (ArrayList<String>) memberRepository.findAll()
+                .stream()
+                .sorted(Comparator.comparing(Member::getPoints).reversed())
+                .limit(5)
+                .map(Member::getUserID)
+                .collect(Collectors.toList());
+
+        //Remove the regular role from the current members if they are not top 5
+        getGuild().getMembers()
+                .forEach(member -> {
+                    if (member.getRoles().contains(getApi().getRoleById(discordConfiguration.getRegularRoleId())) && !topFive.contains(member.getId())) {
+                        getGuild().removeRoleFromMember(member, getApi().getRoleById(discordConfiguration.getVeteranRoleId())).queue();
+                    }
+                });
+
+        //apply it to the top 20 members
+        topFive.stream()
+                .map(id -> getGuild().getMemberById(id))
+                .filter(Objects::nonNull)
+                .forEach(member -> addRoleToMember(member, Long.valueOf(discordConfiguration.getVeteranRoleId())));
 
     }
 
