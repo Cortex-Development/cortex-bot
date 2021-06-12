@@ -6,16 +6,18 @@ import me.kodysimpson.cortexbot.config.DiscordConfiguration;
 import me.kodysimpson.cortexbot.model.Member;
 import me.kodysimpson.cortexbot.repositories.MemberRepository;
 import me.kodysimpson.cortexbot.services.DiscordBotService;
+import me.kodysimpson.cortexbot.services.LoggingService;
 import net.dv8tion.jda.api.entities.User;
-
-import java.util.List;
-import java.util.stream.IntStream;
+import org.springframework.beans.factory.annotation.Autowired;
 
 public class GivePointsCommand extends Command {
 
     private final MemberRepository memberRepository;
     private final DiscordConfiguration discordConfiguration;
     private final DiscordBotService discordBotService;
+
+    @Autowired
+    private LoggingService loggingService;
 
     public GivePointsCommand(MemberRepository memberRepository,
                              DiscordConfiguration discordConfiguration,
@@ -64,6 +66,9 @@ public class GivePointsCommand extends Command {
                                 memberRepository.save(member);
 
                                 event.reply(points + " points have been given to " + user.getName() + ".");
+
+                                //log the points given
+                                loggingService.logPointsGiven(user.getName(), points, event.getMember().getEffectiveName());
 
                                 user.openPrivateChannel().flatMap(channel -> {
                                     return channel.sendMessage("You have been given " + points + " points. " +

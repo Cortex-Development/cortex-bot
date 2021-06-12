@@ -45,6 +45,13 @@ public class DiscordConfiguration {
     @Value("${discord.role.member}")
     private Long memberRoleId;
 
+    @Value("${discord.loggingchannel}")
+    private Long loggingChannel;
+
+    public Long getLoggingChannel() {
+        return loggingChannel;
+    }
+
     public Long getMemberRoleId() {
         return memberRoleId;
     }
