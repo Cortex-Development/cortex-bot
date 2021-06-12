@@ -9,7 +9,9 @@ import me.kodysimpson.cortexbot.services.DiscordBotService;
 import me.kodysimpson.cortexbot.services.LoggingService;
 import net.dv8tion.jda.api.entities.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+@Component
 public class GivePointsCommand extends Command {
 
     private final MemberRepository memberRepository;
