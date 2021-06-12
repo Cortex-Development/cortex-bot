@@ -153,6 +153,9 @@ public class DiscordBotService {
     @Scheduled(fixedRate = 3600000, initialDelay = 5000L)
     public void applyVeteranRoles() {
 
+        //Veteran Exclusions
+        List<String> veteranExclusions = List.of("143062289631805440", "142827015009992705", "251747460026859520", "190085967309307904", "339945333494775808");
+
         ArrayList<String> topFive = (ArrayList<String>) memberRepository.findAll()
                 .stream()
                 .sorted(Comparator.comparing(Member::getPoints).reversed())
@@ -163,12 +166,12 @@ public class DiscordBotService {
         //Remove the regular role from the current members if they are not top 5
         getGuild().getMembers()
                 .forEach(member -> {
-                    if (member.getRoles().contains(getApi().getRoleById(discordConfiguration.getRegularRoleId())) && !topFive.contains(member.getId())) {
+                    if (member.getRoles().contains(getApi().getRoleById(discordConfiguration.getRegularRoleId())) && !topFive.contains(member.getId()) && !veteranExclusions.contains(member.getId())) {
                         getGuild().removeRoleFromMember(member, getApi().getRoleById(discordConfiguration.getVeteranRoleId())).queue();
                     }
                 });
 
-        //apply it to the top 20 members
+        //apply it to the top 5 members
         topFive.stream()
                 .map(id -> getGuild().getMemberById(id))
                 .filter(Objects::nonNull)
