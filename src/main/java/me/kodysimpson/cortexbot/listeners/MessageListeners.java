@@ -4,7 +4,6 @@ import me.kodysimpson.cortexbot.config.DiscordConfiguration;
 import me.kodysimpson.cortexbot.model.Member;
 import me.kodysimpson.cortexbot.repositories.MemberRepository;
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
@@ -32,21 +31,6 @@ public class MessageListeners extends ListenerAdapter{
             if (memberRepository.existsByUserID(event.getAuthor().getId())) {
 
                 Member member = memberRepository.findByUserIDIs(event.getAuthor().getId());
-
-                //unmute the
-                if (!member.isCurrentlyMuted()){
-                    Role mutedRole = event.getGuild().getRoleById(discordConfiguration.getMuteRole());
-
-                    net.dv8tion.jda.api.entities.Member discordMember = event.getGuild().getMemberById(member.getUserID());
-
-                    if (discordMember != null){
-                        if (discordMember.getRoles().contains(mutedRole)){
-                            event.getGuild().removeRoleFromMember(member.getUserID(), mutedRole).queue();
-                        }
-                    }
-
-
-                }
 
                 member.setMessagesSent(member.getMessagesSent() + 1);
                 member.setName(event.getAuthor().getAsTag());
