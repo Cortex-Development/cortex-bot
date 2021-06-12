@@ -22,7 +22,7 @@ public class LoggingService {
     }
 
     public void logPointsGiven(String username, String points, String givenBy){
-        this.log(points + " have been given to " + username + " by " + givenBy + ".");
+        this.log(points + " point(s) have been given to " + username + " by " + givenBy + ".");
     }
 
 }

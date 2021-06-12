@@ -14,19 +14,12 @@ import org.springframework.stereotype.Component;
 @Component
 public class GivePointsCommand extends Command {
 
-    private final MemberRepository memberRepository;
-    private final DiscordConfiguration discordConfiguration;
-    private final DiscordBotService discordBotService;
-
-    @Autowired
+    private MemberRepository memberRepository;
+    private DiscordConfiguration discordConfiguration;
+    private DiscordBotService discordBotService;
     private LoggingService loggingService;
 
-    public GivePointsCommand(MemberRepository memberRepository,
-                             DiscordConfiguration discordConfiguration,
-                             DiscordBotService discordBotService){
-        this.memberRepository = memberRepository;
-        this.discordConfiguration = discordConfiguration;
-        this.discordBotService = discordBotService;
+    public GivePointsCommand(){
         this.name = "give-points";
         this.arguments = "<user id | name | tag> <# of points>";
     }
@@ -94,5 +87,25 @@ public class GivePointsCommand extends Command {
             event.reply("You must be staff to execute this command.");
         }
 
+    }
+
+    @Autowired
+    public void setLoggingService(LoggingService loggingService) {
+        this.loggingService = loggingService;
+    }
+
+    @Autowired
+    public void setMemberRepository(MemberRepository memberRepository) {
+        this.memberRepository = memberRepository;
+    }
+
+    @Autowired
+    public void setDiscordConfiguration(DiscordConfiguration discordConfiguration) {
+        this.discordConfiguration = discordConfiguration;
+    }
+
+    @Autowired
+    public void setDiscordBotService(DiscordBotService discordBotService) {
+        this.discordBotService = discordBotService;
     }
 }

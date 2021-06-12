@@ -7,9 +7,6 @@ import me.kodysimpson.cortexbot.repositories.MemberRepository;
 import me.kodysimpson.cortexbot.services.DiscordBotService;
 import net.dv8tion.jda.api.entities.User;
 
-import java.util.List;
-import java.util.stream.IntStream;
-
 public class PointsCommand extends Command {
 
     private final MemberRepository memberRepository;

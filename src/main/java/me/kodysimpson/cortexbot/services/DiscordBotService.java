@@ -21,6 +21,7 @@ import net.dv8tion.jda.api.exceptions.HierarchyException;
 import net.dv8tion.jda.api.exceptions.InsufficientPermissionException;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.cache.CacheFlag;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -43,6 +44,9 @@ public class DiscordBotService {
     private final UserRepository userRepository;
     private final DiscordConfiguration discordConfiguration;
 
+    @Autowired
+    GivePointsCommand givePointsCommand;
+
     private JDA api;
 
     @PostConstruct
@@ -64,7 +68,7 @@ public class DiscordBotService {
                     .addCommand(new JavaTutCommand())
                     .addCommand(new BuildCommand(versionUtil))
                     .addCommand(new PointsCommand(memberRepository, this))
-                    .addCommand(new GivePointsCommand(memberRepository, discordConfiguration, this))
+                    .addCommand(givePointsCommand)
                     .addCommand(new PomCommand(versionUtil));
 
 
