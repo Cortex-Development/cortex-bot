@@ -50,6 +50,12 @@ public class GivePointsCommand extends Command {
                         event.reply("The user provided does not exist.");
                     }else{
 
+                        //see if they are trying to give points to themself
+                        if (user.getId().equals(event.getMember().getId()) && !event.isOwner()){
+                            event.reply("You can't give points to yourself dummy.");
+                            return;
+                        }
+
                         Member member = memberRepository.findByUserIDIs(user.getId());
 
                         if (member != null){
