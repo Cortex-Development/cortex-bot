@@ -3,6 +3,9 @@ package me.kodysimpson.cortexbot.services;
 import com.jagrosh.jdautilities.command.CommandClientBuilder;
 import lombok.RequiredArgsConstructor;
 import me.kodysimpson.cortexbot.commands.*;
+import me.kodysimpson.cortexbot.commands.ceo.CEOBidCommand;
+import me.kodysimpson.cortexbot.commands.ceo.CEOBidListCommand;
+import me.kodysimpson.cortexbot.commands.ceo.CEOCommand;
 import me.kodysimpson.cortexbot.commands.staffcommands.GivePointsCommand;
 import me.kodysimpson.cortexbot.config.DiscordConfiguration;
 import me.kodysimpson.cortexbot.listeners.MessageListeners;
@@ -47,7 +50,16 @@ public class DiscordBotService {
     @Autowired
     GivePointsCommand givePointsCommand;
 
-    private JDA api;
+    @Autowired
+    CEOCommand ceoCommand;
+
+    @Autowired
+    CEOBidCommand ceoBidCommand;
+
+    @Autowired
+    CEOBidListCommand ceoBidListCommand;
+
+    private static JDA api;
 
     @PostConstruct
     public void init() {
@@ -69,7 +81,10 @@ public class DiscordBotService {
                     .addCommand(new BuildCommand(versionUtil))
                     .addCommand(new PointsCommand(memberRepository, this))
                     .addCommand(givePointsCommand)
-                    .addCommand(new PomCommand(versionUtil));
+                    .addCommand(new PomCommand(versionUtil))
+                    .addCommand(ceoCommand)
+                    .addCommand(ceoBidCommand)
+                    .addCommand(ceoBidListCommand);
 
 
             api = JDABuilder.create(List.of(GatewayIntent.GUILD_EMOJIS, GatewayIntent.GUILD_MEMBERS,
@@ -88,7 +103,7 @@ public class DiscordBotService {
         }
     }
 
-    public JDA getApi() {
+    public static JDA getApi() {
         return api;
     }
 
@@ -183,7 +198,7 @@ public class DiscordBotService {
 
     }
 
-    public String getUsernameFromUserID(String userId){
+    public static String getUsernameFromUserID(String userId){
 
         return getApi().retrieveUserById(userId, true).complete().getAsTag();
     }

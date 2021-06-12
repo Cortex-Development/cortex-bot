@@ -34,6 +34,8 @@ public class Member {
      */
     private long messagesSent;
 
+    private boolean isCEO;
+
     public void setPoints(long points) {
         if (points <= 0){
             this.points = 0;
