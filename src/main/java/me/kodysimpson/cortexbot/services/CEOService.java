@@ -33,7 +33,7 @@ public class CEOService {
         memberRepository.save(member);
 
         String updatedCEO = this.getCurrentCEO();
-        if (currentCEO.equalsIgnoreCase(updatedCEO)){
+        if (!currentCEO.equalsIgnoreCase(updatedCEO)){
             //take it from the previous ceo
             net.dv8tion.jda.api.entities.Member oldCEO = DiscordBotService.getApi().getGuildById("503656531665879063").getMemberByTag(currentCEO);
             net.dv8tion.jda.api.entities.Member newCEO = DiscordBotService.getApi().getGuildById("503656531665879063").getMemberByTag(updatedCEO);
