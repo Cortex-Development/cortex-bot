@@ -49,7 +49,7 @@ public class CEOBidCommand extends Command {
 
                 event.reply("Bid created. Thank you.");
 
-                event.getJDA().getTextChannelById("503656532144291862").sendMessage("A new bid of " + points + " point(s) for CEO was placed by " + event.getMember().getEffectiveName()).queue();
+                event.getJDA().getTextChannelById("562684703073632286").sendMessage("A new bid of " + points + " point(s) for CEO was placed by " + event.getMember().getEffectiveName()).queue();
 
             }else{
                 event.reply("You can't afford that! You only have " + member.getPoints() + " point(s).");
