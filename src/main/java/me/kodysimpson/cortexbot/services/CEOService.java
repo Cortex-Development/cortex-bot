@@ -6,8 +6,7 @@ import me.kodysimpson.cortexbot.repositories.CEOBidRepository;
 import me.kodysimpson.cortexbot.repositories.MemberRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class CEOService {
@@ -61,6 +60,17 @@ public class CEOService {
                         count.put(bid.getUserId(), bid.getPoints());
                     }
                 });
+
+        Comparator<Map.Entry<String, Integer>> valueComparator = new Comparator<Map.Entry<String, Integer>>() {
+            @Override
+            public int compare(Map.Entry<String, Integer> o1, Map.Entry<String, Integer> o2) {
+                return o1.getValue().compareTo(o2.getValue());
+            }
+        };
+
+        List<Map.Entry<String, Integer>> listOfEntries = new ArrayList<Map.Entry<String, Integer>>(count.entrySet());
+        Collections.sort(listOfEntries, valueComparator);
+
         return count;
     }
 
@@ -87,6 +97,7 @@ public class CEOService {
             Integer value = entry.getValue();
             if (value > points) {
                 ceo = key;
+                points = value;
             }
         }
 
