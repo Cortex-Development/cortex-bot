@@ -25,10 +25,17 @@ public class CEOService {
 
         String currentCEO = this.getCurrentCEO();
 
-        CEOBid bid = new CEOBid();
-        bid.setPoints(points);
-        bid.setUserId(member.getUserID());
-        ceoBidRepository.insert(bid);
+        CEOBid bid = null;
+        if (ceoBidRepository.existsCEOBidByUserId(member.getUserID())){
+            bid = ceoBidRepository.findCEOBidByUserId(member.getUserID());
+            bid.setPoints(bid.getPoints() + points);
+            ceoBidRepository.save(bid);
+        }else{
+            bid = new CEOBid();
+            bid.setPoints(points);
+            bid.setUserId(member.getUserID());
+            ceoBidRepository.insert(bid);
+        }
 
         member.setPoints(member.getPoints() - points);
         memberRepository.save(member);
