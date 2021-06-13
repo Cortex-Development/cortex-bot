@@ -11,4 +11,8 @@ public interface CEOBidRepository extends MongoRepository<CEOBid, String> {
 
     List<CEOBid> findAllByUserIdEquals(String userId);
 
+    boolean existsCEOBidByUserId(String userId);
+
+    CEOBid findCEOBidByUserId(String userId);
+
 }

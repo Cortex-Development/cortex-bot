@@ -14,6 +14,7 @@ public class CEOCommand extends Command {
 
     public CEOCommand(){
         this.name = "ceo";
+        this.help = "see who the current CEO is";
     }
 
     @Override

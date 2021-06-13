@@ -6,7 +6,9 @@ import me.kodysimpson.cortexbot.repositories.CEOBidRepository;
 import me.kodysimpson.cortexbot.repositories.MemberRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class CEOService {
@@ -49,52 +51,26 @@ public class CEOService {
 
     }
 
-    public HashMap<String, Integer> getCurrentBids(){
-        HashMap<String, Integer> count = new HashMap<>();
+    public List<CEOBid> getCurrentBids(){
 
-        ceoBidRepository.findAll()
-                .forEach(bid -> {
-                    if (count.containsKey(bid.getUserId())){
-                        count.replace(bid.getUserId(), count.get(bid.getUserId()) + bid.getPoints());
-                    }else{
-                        count.put(bid.getUserId(), bid.getPoints());
-                    }
-                });
+        return ceoBidRepository.findAll()
+                .stream()
+                .sorted(Comparator.comparingInt(CEOBid::getPoints)).collect(Collectors.toList());
 
-        Comparator<Map.Entry<String, Integer>> valueComparator = new Comparator<Map.Entry<String, Integer>>() {
-            @Override
-            public int compare(Map.Entry<String, Integer> o1, Map.Entry<String, Integer> o2) {
-                return o1.getValue().compareTo(o2.getValue());
-            }
-        };
-
-        List<Map.Entry<String, Integer>> listOfEntries = new ArrayList<Map.Entry<String, Integer>>(count.entrySet());
-        Collections.sort(listOfEntries, valueComparator);
-
-        return count;
     }
 
     public String getCurrentCEO(){
 
-        HashMap<String, Integer> count = new HashMap<>();
-
-        ceoBidRepository.findAll()
-                .forEach(bid -> {
-                    if (count.containsKey(bid.getUserId())){
-                        count.replace(bid.getUserId(), count.get(bid.getUserId()) + bid.getPoints());
-                    }else{
-                        count.put(bid.getUserId(), bid.getPoints());
-                    }
-                });
+        List<CEOBid> bids = ceoBidRepository.findAll();
 
         //find the largest
         //default CEO: Kody Simpson
-        String ceo = "Kody Simpson";
+        String ceo = "250856681724968960";
         int points = 0;
 
-        for (Map.Entry<String, Integer> entry : count.entrySet()) {
-            String key = entry.getKey();
-            Integer value = entry.getValue();
+        for (CEOBid bid : bids) {
+            String key = bid.getUserId();
+            int value = bid.getPoints();
             if (value > points) {
                 ceo = key;
                 points = value;

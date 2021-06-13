@@ -7,6 +7,7 @@ public class MyBidsCommand extends Command {
 
     public MyBidsCommand(){
         this.name = "my-bids";
+        this.help = "view all of your bids";
     }
 
     @Override

@@ -2,14 +2,14 @@ package me.kodysimpson.cortexbot.commands.ceo;
 
 import com.jagrosh.jdautilities.command.Command;
 import com.jagrosh.jdautilities.command.CommandEvent;
+import me.kodysimpson.cortexbot.model.CEOBid;
 import me.kodysimpson.cortexbot.services.CEOService;
 import me.kodysimpson.cortexbot.services.DiscordBotService;
 import net.dv8tion.jda.api.MessageBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 
 @Component
 public class CEOBidListCommand extends Command {
@@ -20,6 +20,7 @@ public class CEOBidListCommand extends Command {
 
     public CEOBidListCommand(){
         this.name = "ceo-bids";
+        this.help = "view the top bids for CEO";
     }
 
     @Autowired
@@ -37,18 +38,18 @@ public class CEOBidListCommand extends Command {
 
         MessageBuilder message = new MessageBuilder();
 
-        HashMap<String, Integer> bids = ceoService.getCurrentBids();
+        List<CEOBid> bids = ceoService.getCurrentBids();
 
         message.append("---------------------------------------------------------------------------------------------", MessageBuilder.Formatting.STRIKETHROUGH).append("\n");
         message.append("Top 10 CEO Bids Currently", MessageBuilder.Formatting.BOLD).append("\n\n");
 
         int sentinel = 0;
-        for (Map.Entry<String, Integer> entry : bids.entrySet()) {
+        for (CEOBid bid : bids) {
             if (sentinel == 20){
                 break;
             }
-            String key = entry.getKey();
-            Integer value = entry.getValue();
+            String key = bid.getUserId();
+            Integer value = bid.getPoints();
             message.append("(" + (sentinel + 1) + ") - ", MessageBuilder.Formatting.BOLD).append(discordBotService.getUsernameFromUserID(key) + " *-* " + value + " pts").append("\n");
             sentinel++;
         }

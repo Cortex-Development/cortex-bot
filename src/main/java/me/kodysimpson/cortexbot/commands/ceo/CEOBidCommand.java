@@ -20,6 +20,7 @@ public class CEOBidCommand extends Command {
         this.ceoService = ceoService;
         this.name = "ceo-bid";
         this.arguments = "<points>";
+        this.help = "spend your points to bid your way to CEO";
     }
 
     @Autowired
