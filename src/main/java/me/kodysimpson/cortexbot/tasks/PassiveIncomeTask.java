@@ -19,6 +19,7 @@ public class PassiveIncomeTask {
         memberRepository.findAll().stream()
                 .forEach(member -> {
                     member.setPoints(member.getPoints() + 1);
+                    memberRepository.save(member);
                 });
 
     }
