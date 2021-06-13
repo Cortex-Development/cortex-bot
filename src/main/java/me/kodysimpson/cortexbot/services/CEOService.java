@@ -55,7 +55,8 @@ public class CEOService {
 
         return ceoBidRepository.findAll()
                 .stream()
-                .sorted(Comparator.comparingInt(CEOBid::getPoints)).collect(Collectors.toList());
+                .sorted(Comparator.comparingInt(CEOBid::getPoints).reversed())
+                .collect(Collectors.toList());
 
     }
 
