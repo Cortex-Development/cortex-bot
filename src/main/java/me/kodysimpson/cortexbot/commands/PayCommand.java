@@ -73,7 +73,7 @@ public class PayCommand extends Command {
 
                                     payee.setPoints(payee.getPoints() - Integer.parseInt(points));
 
-                                    event.reply(points + " point(s) have been given to " + user.getName() + ". You now have a total of " + recipient.getPoints() + " point(s).");
+                                    event.reply(points + " point(s) have been given to " + user.getName() + ". You now have a total of " + payee.getPoints() + " point(s).");
 
                                     //log the points payed
                                     loggingService.logPointsPayed(user.getName(), points, event.getMember().getEffectiveName());
