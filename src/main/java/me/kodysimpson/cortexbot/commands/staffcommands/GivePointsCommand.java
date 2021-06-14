@@ -110,4 +110,8 @@ public class GivePointsCommand extends Command {
     public void setDiscordConfiguration(DiscordConfiguration discordConfiguration) {
         this.discordConfiguration = discordConfiguration;
     }
+    @Autowired
+    public void setMemberUserService(MemberUserService memberUserService) {
+        this.memberUserService = memberUserService;
+    }
 }
