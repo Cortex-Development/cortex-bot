@@ -5,8 +5,8 @@ import com.jagrosh.jdautilities.command.CommandEvent;
 import me.kodysimpson.cortexbot.config.DiscordConfiguration;
 import me.kodysimpson.cortexbot.model.Member;
 import me.kodysimpson.cortexbot.repositories.MemberRepository;
-import me.kodysimpson.cortexbot.services.DiscordBotService;
 import me.kodysimpson.cortexbot.services.LoggingService;
+import me.kodysimpson.cortexbot.services.MemberUserService;
 import net.dv8tion.jda.api.entities.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -16,12 +16,13 @@ public class GivePointsCommand extends Command {
 
     private MemberRepository memberRepository;
     private DiscordConfiguration discordConfiguration;
-    private DiscordBotService discordBotService;
     private LoggingService loggingService;
+    private MemberUserService memberUserService;
 
     public GivePointsCommand(){
         this.name = "give-points";
         this.arguments = "<user id | name | tag> <# of points>";
+        this.help = "give points to a member";
     }
 
     @Override
@@ -44,7 +45,7 @@ public class GivePointsCommand extends Command {
                     String providedUserIdentifier = arguments[0];
 
                     //determine who was provided as an argument to this command
-                    User user = discordBotService.findUser(providedUserIdentifier);
+                    User user = memberUserService.findUser(providedUserIdentifier);
 
                     if (user == null){
                         event.reply("The user provided does not exist.");
@@ -108,10 +109,5 @@ public class GivePointsCommand extends Command {
     @Autowired
     public void setDiscordConfiguration(DiscordConfiguration discordConfiguration) {
         this.discordConfiguration = discordConfiguration;
-    }
-
-    @Autowired
-    public void setDiscordBotService(DiscordBotService discordBotService) {
-        this.discordBotService = discordBotService;
     }
 }

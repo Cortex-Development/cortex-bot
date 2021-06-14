@@ -19,7 +19,6 @@ import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Role;
-import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.exceptions.HierarchyException;
 import net.dv8tion.jda.api.exceptions.InsufficientPermissionException;
 import net.dv8tion.jda.api.requests.GatewayIntent;
@@ -37,7 +36,6 @@ import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 @RequiredArgsConstructor
 @Service
@@ -59,6 +57,12 @@ public class DiscordBotService {
     @Autowired
     CEOBidListCommand ceoBidListCommand;
 
+    @Autowired
+    PointsCommand pointsCommand;
+
+    @Autowired
+    PayCommand payCommand;
+
     private static JDA api;
 
     @PostConstruct
@@ -79,12 +83,13 @@ public class DiscordBotService {
                     .addCommand(new CodeBlockCommand())
                     .addCommand(new JavaTutCommand())
                     .addCommand(new BuildCommand(versionUtil))
-                    .addCommand(new PointsCommand(memberRepository, this))
+                    .addCommand(pointsCommand)
                     .addCommand(givePointsCommand)
                     .addCommand(new PomCommand(versionUtil))
                     .addCommand(ceoCommand)
                     .addCommand(ceoBidCommand)
-                    .addCommand(ceoBidListCommand);
+                    .addCommand(ceoBidListCommand)
+                    .addCommand(payCommand);
 
 
             api = JDABuilder.create(List.of(GatewayIntent.GUILD_EMOJIS, GatewayIntent.GUILD_MEMBERS,
@@ -201,28 +206,6 @@ public class DiscordBotService {
     public static String getUsernameFromUserID(String userId){
 
         return getApi().retrieveUserById(userId, true).complete().getAsTag();
-    }
-
-    /**
-     * @param identifier Can be a user id, username, or tag
-     * @return null if no user found or the found User
-     */
-    public User findUser(String identifier){
-
-        User user;
-        if (identifier.startsWith("<@!")){
-            user = getApi().getUserById(identifier.substring(3, identifier.length() - 1));
-        }else if (IntStream.range(0, identifier.length()).boxed().map(identifier::charAt).allMatch(Character::isDigit)){
-            user = getApi().getUserById(identifier);
-        }else{
-            List<User> users = getApi().getUsersByName(identifier, true);
-            if (!users.isEmpty()){
-                user = users.get(0);
-            }else{
-                user = null;
-            }
-        }
-        return user;
     }
 
 }

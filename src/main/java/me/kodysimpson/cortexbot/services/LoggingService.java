@@ -13,11 +13,8 @@ public class LoggingService {
     @Autowired
     DiscordConfiguration discordConfiguration;
 
-    @Autowired
-    DiscordBotService discordBotService;
-
     public void log(String message){
-        TextChannel channel = discordBotService.getGuild().getTextChannelById(discordConfiguration.getLoggingChannel());
+        TextChannel channel = DiscordBotService.getApi().getGuildById("503656531665879063").getTextChannelById(discordConfiguration.getLoggingChannel());
         channel.sendMessage(message + " [" + new Date() + "]").queue();
     }
 
@@ -25,4 +22,7 @@ public class LoggingService {
         this.log(points + " point(s) have been given to " + username + " by " + givenBy + ".");
     }
 
+    public void logPointsPayed(String username, String points, String givenBy) {
+        this.log(points + " point(s) have been payed to " + username + " by " + givenBy + ".");
+    }
 }
