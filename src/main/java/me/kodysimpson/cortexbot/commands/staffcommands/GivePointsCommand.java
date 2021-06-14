@@ -67,7 +67,7 @@ public class GivePointsCommand extends Command {
                                 member.setPoints(member.getPoints() + Integer.parseInt(points));
                                 memberRepository.save(member);
 
-                                event.reply(points + " points have been given to " + user.getName() + ".");
+                                event.reply(points + " point(s) have been given to " + user.getName() + ".");
 
                                 //log the points given
                                 loggingService.logPointsGiven(user.getName(), points, event.getMember().getEffectiveName());
