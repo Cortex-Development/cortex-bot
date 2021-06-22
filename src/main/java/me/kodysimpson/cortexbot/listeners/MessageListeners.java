@@ -10,6 +10,7 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import javax.annotation.Nonnull;
 import java.util.Objects;
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
 
 public class MessageListeners extends ListenerAdapter{
 
@@ -23,11 +24,17 @@ public class MessageListeners extends ListenerAdapter{
         this.discordConfiguration = discordConfiguration;
     }
 
-
     @Override
     public void onGuildMessageReceived(@Nonnull GuildMessageReceivedEvent event) {
 
         if (!event.getAuthor().isBot()) {
+
+            if (!event.getMessage().getMentionedMembers().isEmpty() && event.getMessage().getMentionedMembers().get(0).getId().equalsIgnoreCase("250856681724968960")){
+                System.out.println(event.getMessage().getMentionedMembers());
+                event.getGuild().getTextChannelById(event.getChannel().getId()).deleteMessageById(event.getMessageId()).completeAfter(10, TimeUnit.SECONDS);
+                return;
+            }
+
             if (memberRepository.existsByUserID(event.getAuthor().getId())) {
 
                 Member member = memberRepository.findByUserIDIs(event.getAuthor().getId());

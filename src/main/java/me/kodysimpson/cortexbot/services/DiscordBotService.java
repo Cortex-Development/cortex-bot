@@ -3,6 +3,9 @@ package me.kodysimpson.cortexbot.services;
 import com.jagrosh.jdautilities.command.CommandClientBuilder;
 import lombok.RequiredArgsConstructor;
 import me.kodysimpson.cortexbot.commands.*;
+import me.kodysimpson.cortexbot.commands.bounty.CreateBountyCommand;
+import me.kodysimpson.cortexbot.commands.bounty.DeleteBountyCommand;
+import me.kodysimpson.cortexbot.commands.bounty.DoneCommand;
 import me.kodysimpson.cortexbot.commands.ceo.CEOBidCommand;
 import me.kodysimpson.cortexbot.commands.ceo.CEOBidListCommand;
 import me.kodysimpson.cortexbot.commands.ceo.CEOCommand;
@@ -10,6 +13,7 @@ import me.kodysimpson.cortexbot.commands.staffcommands.GivePointsCommand;
 import me.kodysimpson.cortexbot.config.DiscordConfiguration;
 import me.kodysimpson.cortexbot.listeners.MessageListeners;
 import me.kodysimpson.cortexbot.listeners.NewMemberListener;
+import me.kodysimpson.cortexbot.listeners.ReactionListener;
 import me.kodysimpson.cortexbot.model.Member;
 import me.kodysimpson.cortexbot.repositories.MemberRepository;
 import me.kodysimpson.cortexbot.repositories.UserRepository;
@@ -63,6 +67,18 @@ public class DiscordBotService {
     @Autowired
     PayCommand payCommand;
 
+    @Autowired
+    CreateBountyCommand createBountyCommand;
+
+    @Autowired
+    DeleteBountyCommand deleteBountyCommand;
+
+    @Autowired
+    ReactionListener reactionListener;
+
+    @Autowired
+    DoneCommand doneCommand;
+
     private static JDA api;
 
     @PostConstruct
@@ -89,7 +105,10 @@ public class DiscordBotService {
                     .addCommand(ceoCommand)
                     .addCommand(ceoBidCommand)
                     .addCommand(ceoBidListCommand)
-                    .addCommand(payCommand);
+                    .addCommand(payCommand)
+                    .addCommand(createBountyCommand)
+                    .addCommand(deleteBountyCommand)
+                    .addCommand(doneCommand);
 
 
             api = JDABuilder.create(List.of(GatewayIntent.GUILD_EMOJIS, GatewayIntent.GUILD_MEMBERS,
@@ -99,6 +118,7 @@ public class DiscordBotService {
                     .addEventListeners(commandClient.build())
                     .addEventListeners(new MessageListeners(memberRepository, discordConfiguration))
                     .addEventListeners(new NewMemberListener(this, discordConfiguration))
+                    .addEventListeners(reactionListener)
                     .setAutoReconnect(true)
                     .setBulkDeleteSplittingEnabled(false)
                     .build();
