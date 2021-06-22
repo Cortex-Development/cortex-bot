@@ -30,6 +30,7 @@ public class ReactionListener extends ListenerAdapter {
 
             if (bounty.getUserId().equalsIgnoreCase(event.getUserId())){
                 bounty.setFinished(true);
+                bountyRepository.save(bounty);
 
                 //send it for staff approval and grading
                 event.getTextChannel().getManager().setParent(event.getGuild().getCategoryById("786974851818192916")).complete();
