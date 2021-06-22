@@ -20,18 +20,18 @@ public class PassiveIncomeTask {
     @Autowired
     BountyRepository bountyRepository;
 
-//    @Scheduled(fixedRate = 3600000)
-//    public void payMembers(){
-//
-//        System.out.println("Running Passive Income Task");
-//
-//        memberRepository.findAll().stream()
-//                .forEach(member -> {
-//                    member.setPoints(member.getPoints() + 1);
-//                    memberRepository.save(member);
-//                });
-//
-//    }
+    @Scheduled(fixedRate = 3600000)
+    public void payMembers(){
+
+        System.out.println("Running Passive Income Task");
+
+        memberRepository.findAll().stream()
+                .forEach(member -> {
+                    member.setPoints(member.getPoints() + 1);
+                    memberRepository.save(member);
+                });
+
+    }
 
     @Scheduled(fixedRate = 120000, initialDelay = 120000)
     public void updateBountiesList(){
