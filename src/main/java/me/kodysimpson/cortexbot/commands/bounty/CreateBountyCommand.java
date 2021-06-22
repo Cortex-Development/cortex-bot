@@ -46,7 +46,7 @@ public class CreateBountyCommand extends Command {
             messageBuilder.append("---------------------------------------------------------------------------------------------", MessageBuilder.Formatting.STRIKETHROUGH).append("\n");
             messageBuilder.append(event.getMember().getEffectiveName() + "'s Help Bounty", MessageBuilder.Formatting.BOLD).append("\n\n");
             messageBuilder.append("*For " + event.getMember().getEffectiveName() + "*: Describe the issue you need solving in as much detail as possible. Post the code snippets in good formatting so it can be read easily.").append("\n");
-            messageBuilder.append("Once the issue has been solved, close the channel by clicking the green checkmark under this message or run **$delete-bounty**.").append("\n");
+            messageBuilder.append("Once the issue has been solved, close the channel by clicking the green checkmark under this message.").append("\n");
             messageBuilder.append("---------------------------------------------------------------------------------------------", MessageBuilder.Formatting.STRIKETHROUGH);
 
             Message message = channel.sendMessage(messageBuilder.build()).complete();
