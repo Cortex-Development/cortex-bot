@@ -62,16 +62,22 @@ public class PayCommand extends Command {
 
                         if (recipient != null){
 
-                            String points = arguments[1];
-
                             try{
-                                if (payee.getPoints() >= Integer.parseInt(points)){
-                                    recipient.setPoints(recipient.getPoints() + Integer.parseInt(points));
+
+                                int points = Integer.parseInt(arguments[1]);
+
+                                if (points <= 0){
+                                    event.reply("You need to provide a positive number of points.");
+                                    return;
+                                }
+
+                                if (payee.getPoints() >= points){
+                                    recipient.setPoints(recipient.getPoints() + points);
                                     memberRepository.save(recipient);
 
                                     //take the points away from the payee
 
-                                    payee.setPoints(payee.getPoints() - Integer.parseInt(points));
+                                    payee.setPoints(payee.getPoints() - points);
 
                                     event.reply(points + " point(s) have been given to " + user.getName() + ". You now have a total of " + payee.getPoints() + " point(s).");
 
