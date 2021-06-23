@@ -4,6 +4,8 @@ import me.kodysimpson.cortexbot.model.Bounty;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface BountyRepository extends MongoRepository<Bounty, String> {
 
@@ -16,5 +18,7 @@ public interface BountyRepository extends MongoRepository<Bounty, String> {
     boolean existsBountyByChannelIdEquals(String channelId);
 
     Bounty findBountyByChannelIdEquals(String channelId);
+
+    List<Bounty> findAllByFinishedEquals(boolean finished);
 
 }

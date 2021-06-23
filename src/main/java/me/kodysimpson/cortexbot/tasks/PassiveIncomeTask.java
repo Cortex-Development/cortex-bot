@@ -38,7 +38,7 @@ public class PassiveIncomeTask {
 
         System.out.println("Bounties lb");
 
-        List<Bounty> bounties = bountyRepository.findAll();
+        List<Bounty> bounties = bountyRepository.findAllByFinishedEquals(false);
 
         MessageBuilder message = new MessageBuilder();
 
