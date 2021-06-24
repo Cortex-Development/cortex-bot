@@ -34,9 +34,8 @@ public class DoneCommand extends Command {
 
                 Bounty bounty = bountyRepository.findBountyByChannelIdEquals(event.getChannel().getId());
 
-
                 MessageBuilder builder = new MessageBuilder();
-                builder.append("**-------------------------------**\n").append("This is a message history of the bounty help channel created by " + bounty.getUserId() + " on 122323234 \n\n");
+                builder.append("**-------------------------------**\n").append("This is a message history of the bounty help channel created by ").append(bounty.getUserId()).append(" on 122323234").append("\n\n");
                 event.getGuild().getTextChannelById("856772595294142475").sendMessage(builder.build()).queue();
 
                 event.getChannel().getIterableHistory().cache(false).forEach(message -> {
@@ -49,6 +48,8 @@ public class DoneCommand extends Command {
                     }
 
                 });
+                event.getGuild().getTextChannelById("856772595294142475").sendMessage("\nEnd of chat history\n").queue();
+                event.getGuild().getTextChannelById("856772595294142475").sendMessage("**-------------------------------**\n").queue();
 
                 loggingService.log("Bounty help channel finished by " + event.getMember().getEffectiveName() + ". Bounty: " + bounty);
 
