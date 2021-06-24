@@ -11,6 +11,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+import static me.kodysimpson.cortexbot.services.DiscordBotService.getGuild;
+
 @Service
 public class PassiveIncomeTask {
 
@@ -19,6 +21,11 @@ public class PassiveIncomeTask {
 
     @Autowired
     BountyRepository bountyRepository;
+
+    @Scheduled(initialDelay = 60000)
+    public void announceStart(){
+        getGuild().getTextChannelById("786974733123846214").sendMessage("Cortex bot redeployed.").queue();
+    }
 
     @Scheduled(fixedRate = 3600000)
     public void payMembers(){
@@ -66,7 +73,7 @@ public class PassiveIncomeTask {
 
 //        String last = DiscordBotService.getGuild().getTextChannelById("856780175449784347").getLatestMessageId();
 //        DiscordBotService.getGuild().getTextChannelById("856780175449784347").deleteMessageById(last).queue();
-        DiscordBotService.getGuild().getTextChannelById("856780175449784347").editMessageById("856784347231158272", message.build()).queue();
+        getGuild().getTextChannelById("856780175449784347").editMessageById("856784347231158272", message.build()).queue();
 
     }
 
