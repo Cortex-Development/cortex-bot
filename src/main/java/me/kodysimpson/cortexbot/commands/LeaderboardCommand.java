@@ -28,7 +28,7 @@ public class LeaderboardCommand extends Command {
     @Override
     protected void execute(CommandEvent commandEvent) {
 
-        ArrayList<Member> topTen = (ArrayList<Member>) memberRepository.findAll()
+        ArrayList<Member> top = (ArrayList<Member>) memberRepository.findAll()
                 .stream()
                 .sorted(Comparator.comparing(Member::getPoints).reversed())
                 .limit(15)
@@ -39,8 +39,8 @@ public class LeaderboardCommand extends Command {
         message.append("---------------------------------------------------------------------------------------------", MessageBuilder.Formatting.STRIKETHROUGH).append("\n");
         message.append("Top 15 Leaderboard Rankings", MessageBuilder.Formatting.BOLD).append("\n\n");
 
-        for (int i = 0; i < topTen.size(); i++){
-            message.append("(" + (i + 1) + ") - ", MessageBuilder.Formatting.BOLD).append(DiscordBotService.getUsernameFromUserID(topTen.get(i).getUserID()) + " *-* " + topTen.get(i).getPoints() + " pts").append("\n");
+        for (int i = 0; i < top.size(); i++){
+            message.append("(" + (i + 1) + ") - ", MessageBuilder.Formatting.BOLD).append(DiscordBotService.getUsernameFromUserID(top.get(i).getUserID()) + " *-* " + top.get(i).getPoints() + " pts").append("\n");
         }
 
         message.append("\nYou can view the full leaderboard here: https://cortexdev.us/leaderboard").append("\n");

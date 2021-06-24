@@ -28,14 +28,14 @@ public class MessageListeners extends ListenerAdapter{
     public void onGuildMessageReceived(@Nonnull GuildMessageReceivedEvent event) {
 
         if (event.getChannel().getId().equalsIgnoreCase("855669438170267698")){
-            event.getGuild().getTextChannelById(event.getChannel().getId()).deleteMessageById(event.getMessageId()).completeAfter(10, TimeUnit.SECONDS);
+            event.getGuild().getTextChannelById(event.getChannel().getId()).deleteMessageById(event.getMessageId()).completeAfter(5, TimeUnit.SECONDS);
         }
 
 
         if (!event.getAuthor().isBot()) {
 
             if (event.getChannel().getId().equalsIgnoreCase("856772595294142475")){
-                event.getGuild().getTextChannelById(event.getChannel().getId()).deleteMessageById(event.getMessageId()).completeAfter(10, TimeUnit.SECONDS);
+                event.getGuild().getTextChannelById(event.getChannel().getId()).deleteMessageById(event.getMessageId()).completeAfter(5, TimeUnit.SECONDS);
             }
 
             if (!event.getMessage().getMentionedMembers().isEmpty() && event.getMessage().getMentionedMembers().get(0).getId().equalsIgnoreCase("250856681724968960")){

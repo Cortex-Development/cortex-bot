@@ -13,8 +13,6 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.function.Consumer;
-
 @Component
 public class DoneCommand extends Command {
 
@@ -38,22 +36,25 @@ public class DoneCommand extends Command {
             if(bountyRepository.existsBountyByChannelIdEquals(event.getChannel().getId())){
 
                 Bounty bounty = bountyRepository.findBountyByChannelIdEquals(event.getChannel().getId());
-                bounty.setFinished(true);
-                bountyRepository.save(bounty);
+//                bounty.setFinished(true);
+//                bountyRepository.save(bounty);
 
                 MessageBuilder builder = new MessageBuilder();
 
-//                event.getChannel().getIterableHistory().cache(false).forEachAsync(new Procedure<Message>() {
-//                    @Override
-//                    public boolean execute(@NotNull Message message) {
-//                        builder.append(message.getAuthor().getAsTag() + " : ").append(message).append("\n");
-//                        return true;
-//                    }
-//                });
-
-                event.getChannel().getIterableHistory().cache(false).forEach(message -> {
-                    builder.append(message.getAuthor().getAsTag() + " : ").append(message).append("\n");
+                System.out.println("trying thing: " + bounty);
+                event.getChannel().getIterableHistory().cache(false).forEachAsync(new Procedure<Message>() {
+                    @Override
+                    public boolean execute(@NotNull Message message) {
+                        builder.append(message.getAuthor().getAsTag() + " : ").append(message).append("\n");
+                        return true;
+                    }
                 });
+
+
+
+//                event.getChannel().getIterableHistory().cache(false).forEach(message -> {
+//                    builder.append(message.getAuthor().getAsTag() + " : ").append(message).append("\n");
+//                });
 
                 event.getGuild().getTextChannelById("856772595294142475").sendMessage(builder.build()).queue();
 
