@@ -36,7 +36,7 @@ public class DoneCommand extends Command {
 
 
                 MessageBuilder builder = new MessageBuilder();
-                builder.append("**-------------------------------**").append("This is a message history of the bounty help channel created by " + bounty.getUserId() + " on 122323234 \n\n");
+                builder.append("**-------------------------------**\n").append("This is a message history of the bounty help channel created by " + bounty.getUserId() + " on 122323234 \n\n");
                 event.getGuild().getTextChannelById("856772595294142475").sendMessage(builder.build()).queue();
 
                 event.getChannel().getIterableHistory().cache(false).forEach(message -> {
