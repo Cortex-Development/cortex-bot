@@ -14,7 +14,7 @@ public class Bounty {
     private String userId;
     private String channelId;
 
-    private boolean isFinished;
+    private boolean finished;
 
     private int pointsEarned;
     private String staffId;
