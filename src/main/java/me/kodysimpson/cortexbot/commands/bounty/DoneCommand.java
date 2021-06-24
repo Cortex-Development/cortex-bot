@@ -61,10 +61,11 @@ public class DoneCommand extends Command {
 
                 event.getChannel().getIterableHistory().cache(false).forEach(message -> {
                     System.out.println(message);
-                    builder.append(message.getAuthor().getAsTag()).append(" : ").append(message).append("\n");
+                    event.getGuild().getTextChannelById("856772595294142475").sendMessage(message).queue();
+                    //builder.append(message.getAuthor().getAsTag()).append(" : ").append(message).append("\n");
                 });
 
-                System.out.println(builder.build());
+                //System.out.println(builder.build());
                 event.getGuild().getTextChannelById("856772595294142475").sendMessage(builder.build()).queue();
 
 
