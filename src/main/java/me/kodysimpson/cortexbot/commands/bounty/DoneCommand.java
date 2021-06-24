@@ -33,41 +33,22 @@ public class DoneCommand extends Command {
             if(bountyRepository.existsBountyByChannelIdEquals(event.getChannel().getId())){
 
                 Bounty bounty = bountyRepository.findBountyByChannelIdEquals(event.getChannel().getId());
-//                bounty.setFinished(true);
-//                bountyRepository.save(bounty);
+
 
                 MessageBuilder builder = new MessageBuilder();
-
-                System.out.println("trying thing: " + bounty);
-//                event.getChannel().getIterableHistory().cache(false).forEachAsync(new Procedure<Message>() {
-//                    @Override
-//                    public boolean execute(@NotNull Message message) {
-//                        System.out.println(message);
-//                        builder.append(message.getAuthor().getAsTag()).append(" : ").append(message).append("\n");
-//                        return true;
-//                    }
-//                }).whenComplete(new BiConsumer<Object, Throwable>() {
-//                    @Override
-//                    public void accept(Object o, Throwable throwable) {
-//                        System.out.println("cheese");
-//                        System.out.println(builder.build());
-//                        event.getGuild().getTextChannelById("856772595294142475").sendMessage(builder.build()).queue();
-//
-//                        //event.getGuild().getTextChannelById(bounty.getChannelId()).delete().complete();
-//
-//                        loggingService.log("Bounty help channel finished by " + event.getMember().getEffectiveName() + ". Bounty: " + bounty);
-//                    }
-//                });
+                builder.append("**-------------------------------**\n\n").append("This is a message history of the bounty help channel created by " + bounty.getUserId() + " on 122323234\n\n");
+                event.getGuild().getTextChannelById("856772595294142475").sendMessage(builder.build()).queue();
 
                 event.getChannel().getIterableHistory().cache(false).forEach(message -> {
-                    System.out.println(message);
-                    event.getGuild().getTextChannelById("856772595294142475").sendMessage(message).queue();
-                    //builder.append(message.getAuthor().getAsTag()).append(" : ").append(message).append("\n");
+                    MessageBuilder builder2 = new MessageBuilder();
+                    builder2.append("**" + message.getAuthor().getAsTag() + "**:\n").append(message);
+                    event.getGuild().getTextChannelById("856772595294142475").sendMessage(builder2.build()).queue();
                 });
 
                 //System.out.println(builder.build());
                 //event.getGuild().getTextChannelById("856772595294142475").sendMessage(builder.build()).queue();
 
+                loggingService.log("Bounty help channel finished by " + event.getMember().getEffectiveName() + ". Bounty: " + bounty);
 
             }else{
 
