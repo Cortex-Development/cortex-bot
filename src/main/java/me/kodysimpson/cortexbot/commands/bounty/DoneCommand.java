@@ -66,7 +66,7 @@ public class DoneCommand extends Command {
                 });
 
                 //System.out.println(builder.build());
-                event.getGuild().getTextChannelById("856772595294142475").sendMessage(builder.build()).queue();
+                //event.getGuild().getTextChannelById("856772595294142475").sendMessage(builder.build()).queue();
 
 
             }else{
