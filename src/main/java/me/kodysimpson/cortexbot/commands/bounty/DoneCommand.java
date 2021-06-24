@@ -36,24 +36,19 @@ public class DoneCommand extends Command {
 
 
                 MessageBuilder builder = new MessageBuilder();
-                builder.append("**-------------------------------**\n\n").append("This is a message history of the bounty help channel created by " + bounty.getUserId() + " on 122323234\n\n");
+                builder.append("**-------------------------------**").append("This is a message history of the bounty help channel created by " + bounty.getUserId() + " on 122323234 \n\n");
                 event.getGuild().getTextChannelById("856772595294142475").sendMessage(builder.build()).queue();
 
                 event.getChannel().getIterableHistory().cache(false).forEach(message -> {
-                    MessageBuilder builder2 = new MessageBuilder();
-                    builder2.append("**" + message.getAuthor().getAsTag() + "**:\n").append(message);
-                    event.getGuild().getTextChannelById("856772595294142475").sendMessage(builder2.build()).queue();
+                    event.getGuild().getTextChannelById("856772595294142475").sendMessage("**" + message.getAuthor().getAsTag() + "**:\n").queue();
+                    event.getGuild().getTextChannelById("856772595294142475").sendMessage(message).queue();
+                    event.getGuild().getTextChannelById("856772595294142475").sendMessage("\n\n").queue();
                 });
-
-                //System.out.println(builder.build());
-                //event.getGuild().getTextChannelById("856772595294142475").sendMessage(builder.build()).queue();
 
                 loggingService.log("Bounty help channel finished by " + event.getMember().getEffectiveName() + ". Bounty: " + bounty);
 
             }else{
-
                 event.reply("This isn't a bounty channel.");
-
             }
         }else{
             event.reply("You cannot run this command.");
