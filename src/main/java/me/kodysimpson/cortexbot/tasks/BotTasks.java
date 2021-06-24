@@ -14,7 +14,7 @@ import java.util.List;
 import static me.kodysimpson.cortexbot.services.DiscordBotService.getGuild;
 
 @Service
-public class PassiveIncomeTask {
+public class BotTasks {
 
     @Autowired
     private MemberRepository memberRepository;
@@ -22,7 +22,7 @@ public class PassiveIncomeTask {
     @Autowired
     BountyRepository bountyRepository;
 
-    @Scheduled(initialDelay = 60000)
+    @Scheduled(fixedRate = 864000000, initialDelay = 60000)
     public void announceStart(){
         getGuild().getTextChannelById("786974733123846214").sendMessage("Cortex bot redeployed.").queue();
     }

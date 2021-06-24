@@ -6,22 +6,22 @@ import me.kodysimpson.cortexbot.model.Member;
 import me.kodysimpson.cortexbot.repositories.MemberRepository;
 import me.kodysimpson.cortexbot.services.DiscordBotService;
 import net.dv8tion.jda.api.MessageBuilder;
+import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.stream.Collectors;
 
+@Component
 public class LeaderboardCommand extends Command {
 
     private final MemberRepository memberRepository;
-    private final DiscordBotService discordBotService;
 
-    public LeaderboardCommand(MemberRepository memberRepository, DiscordBotService discordBotService){
+    public LeaderboardCommand(MemberRepository memberRepository){
         this.name = "leaderboard";
         this.help = "Get the top ten leaderboard rankings";
         this.guildOnly = false;
         this.memberRepository = memberRepository;
-        this.discordBotService = discordBotService;
         this.aliases = new String[]{"lb"};
     }
 
@@ -40,7 +40,7 @@ public class LeaderboardCommand extends Command {
         message.append("Top 15 Leaderboard Rankings", MessageBuilder.Formatting.BOLD).append("\n\n");
 
         for (int i = 0; i < topTen.size(); i++){
-            message.append("(" + (i + 1) + ") - ", MessageBuilder.Formatting.BOLD).append(discordBotService.getUsernameFromUserID(topTen.get(i).getUserID()) + " *-* " + topTen.get(i).getPoints() + " pts").append("\n");
+            message.append("(" + (i + 1) + ") - ", MessageBuilder.Formatting.BOLD).append(DiscordBotService.getUsernameFromUserID(topTen.get(i).getUserID()) + " *-* " + topTen.get(i).getPoints() + " pts").append("\n");
         }
 
         message.append("\nYou can view the full leaderboard here: https://cortexdev.us/leaderboard").append("\n");

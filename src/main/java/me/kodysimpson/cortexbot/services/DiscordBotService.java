@@ -17,7 +17,6 @@ import me.kodysimpson.cortexbot.listeners.ReactionListener;
 import me.kodysimpson.cortexbot.model.Member;
 import me.kodysimpson.cortexbot.repositories.MemberRepository;
 import me.kodysimpson.cortexbot.repositories.UserRepository;
-import me.kodysimpson.cortexbot.utils.VersionUtil;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Activity;
@@ -79,12 +78,26 @@ public class DiscordBotService {
     @Autowired
     DoneCommand doneCommand;
 
+    @Autowired
+    SuggestionCommand suggestionCommand;
+
+    @Autowired
+    WebsiteCommand websiteCommand;
+
+    @Autowired
+    JavaTutCommand javaTutCommand;
+
+    @Autowired
+    CodeBlockCommand codeBlockCommand;
+
+    @Autowired
+    LeaderboardCommand leaderboardCommand;
+
     private static JDA api;
 
     @PostConstruct
     public void init() {
         try {
-            VersionUtil versionUtil = new VersionUtil();
             CommandClientBuilder commandClient = new CommandClientBuilder()
                     .setPrefix("$")
 
@@ -93,15 +106,13 @@ public class DiscordBotService {
                     .setActivity(Activity.listening("$help"))
 
                     //Add commands
-                    .addCommand(new LeaderboardCommand(memberRepository, this))
-                    .addCommand(new WebsiteCommand())
-                    .addCommand(new SuggestionCommand(discordConfiguration))
-                    .addCommand(new CodeBlockCommand())
-                    .addCommand(new JavaTutCommand())
-                    .addCommand(new BuildCommand(versionUtil))
+                    .addCommand(leaderboardCommand)
+                    .addCommand(websiteCommand)
+                    .addCommand(suggestionCommand)
+                    .addCommand(codeBlockCommand)
+                    .addCommand(javaTutCommand)
                     .addCommand(pointsCommand)
                     .addCommand(givePointsCommand)
-                    .addCommand(new PomCommand(versionUtil))
                     .addCommand(ceoCommand)
                     .addCommand(ceoBidCommand)
                     .addCommand(ceoBidListCommand)

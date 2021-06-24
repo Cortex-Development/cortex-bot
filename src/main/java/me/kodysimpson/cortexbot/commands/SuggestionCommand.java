@@ -7,11 +7,13 @@ import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageReaction;
 import net.dv8tion.jda.api.requests.restaction.pagination.MessagePaginationAction;
+import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.TreeMap;
 
+@Component
 public class SuggestionCommand extends Command {
 
     private Message calcmessage;
