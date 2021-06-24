@@ -55,7 +55,7 @@ public class DoneCommand extends Command {
                     public void accept(Object o, Throwable throwable) {
                         event.getGuild().getTextChannelById("856772595294142475").sendMessage(builder.build()).queue();
 
-                        event.getGuild().getTextChannelById(bounty.getChannelId()).delete().complete();
+                        //event.getGuild().getTextChannelById(bounty.getChannelId()).delete().complete();
 
                         loggingService.log("Bounty help channel finished by " + event.getMember().getEffectiveName() + ". Bounty: " + bounty);
                     }
