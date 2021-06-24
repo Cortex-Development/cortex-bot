@@ -123,6 +123,8 @@ public class DiscordBotService {
                     .setBulkDeleteSplittingEnabled(false)
                     .build();
 
+            getGuild().getTextChannelById("786974733123846214").sendMessage("Cortex bot redeployed.").queue();
+
         } catch (LoginException e) {
             e.printStackTrace();
         }
