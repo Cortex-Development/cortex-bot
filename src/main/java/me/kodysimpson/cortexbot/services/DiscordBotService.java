@@ -15,8 +15,8 @@ import me.kodysimpson.cortexbot.listeners.MessageListeners;
 import me.kodysimpson.cortexbot.listeners.NewMemberListener;
 import me.kodysimpson.cortexbot.listeners.ReactionListener;
 import me.kodysimpson.cortexbot.model.Member;
+import me.kodysimpson.cortexbot.repositories.BountyRepository;
 import me.kodysimpson.cortexbot.repositories.MemberRepository;
-import me.kodysimpson.cortexbot.repositories.UserRepository;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Activity;
@@ -45,8 +45,8 @@ import java.util.stream.Collectors;
 public class DiscordBotService {
 
     private final MemberRepository memberRepository;
-    private final UserRepository userRepository;
     private final DiscordConfiguration discordConfiguration;
+    private final BountyRepository bountyRepository;
 
     @Autowired
     GivePointsCommand givePointsCommand;
@@ -127,7 +127,7 @@ public class DiscordBotService {
                     .setToken(discordConfiguration.getBotToken())
                     .disableCache(CacheFlag.ACTIVITY, CacheFlag.VOICE_STATE, CacheFlag.CLIENT_STATUS)
                     .addEventListeners(commandClient.build())
-                    .addEventListeners(new MessageListeners(memberRepository, discordConfiguration))
+                    .addEventListeners(new MessageListeners(memberRepository, discordConfiguration, bountyRepository))
                     .addEventListeners(new NewMemberListener(this, discordConfiguration))
                     .addEventListeners(reactionListener)
                     .setAutoReconnect(true)
