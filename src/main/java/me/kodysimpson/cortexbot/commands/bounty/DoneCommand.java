@@ -47,12 +47,15 @@ public class DoneCommand extends Command {
                 event.getChannel().getIterableHistory().cache(false).forEachAsync(new Procedure<Message>() {
                     @Override
                     public boolean execute(@NotNull Message message) {
+                        System.out.println(message);
                         builder.append(message.getAuthor().getAsTag() + " : ").append(message).append("\n");
                         return true;
                     }
                 }).whenComplete(new BiConsumer<Object, Throwable>() {
                     @Override
                     public void accept(Object o, Throwable throwable) {
+                        System.out.println("cheese");
+                        System.out.println(builder.build());
                         event.getGuild().getTextChannelById("856772595294142475").sendMessage(builder.build()).queue();
 
                         //event.getGuild().getTextChannelById(bounty.getChannelId()).delete().complete();
