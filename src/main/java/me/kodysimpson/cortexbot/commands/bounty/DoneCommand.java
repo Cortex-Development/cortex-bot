@@ -13,6 +13,8 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.function.BiConsumer;
+
 @Component
 public class DoneCommand extends Command {
 
@@ -48,19 +50,22 @@ public class DoneCommand extends Command {
                         builder.append(message.getAuthor().getAsTag() + " : ").append(message).append("\n");
                         return true;
                     }
+                }).whenComplete(new BiConsumer<Object, Throwable>() {
+                    @Override
+                    public void accept(Object o, Throwable throwable) {
+                        event.getGuild().getTextChannelById("856772595294142475").sendMessage(builder.build()).queue();
+
+                        event.getGuild().getTextChannelById(bounty.getChannelId()).delete().complete();
+
+                        loggingService.log("Bounty help channel finished by " + event.getMember().getEffectiveName() + ". Bounty: " + bounty);
+                    }
                 });
-
-
 
 //                event.getChannel().getIterableHistory().cache(false).forEach(message -> {
 //                    builder.append(message.getAuthor().getAsTag() + " : ").append(message).append("\n");
 //                });
 
-                event.getGuild().getTextChannelById("856772595294142475").sendMessage(builder.build()).queue();
 
-                event.getGuild().getTextChannelById(bounty.getChannelId()).delete().complete();
-
-                loggingService.log("Bounty help channel finished by " + event.getMember().getEffectiveName() + ". Bounty: " + bounty);
             }else{
 
                 event.reply("This isn't a bounty channel.");
