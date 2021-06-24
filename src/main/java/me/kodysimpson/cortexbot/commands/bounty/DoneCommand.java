@@ -40,9 +40,14 @@ public class DoneCommand extends Command {
                 event.getGuild().getTextChannelById("856772595294142475").sendMessage(builder.build()).queue();
 
                 event.getChannel().getIterableHistory().cache(false).forEach(message -> {
-                    event.getGuild().getTextChannelById("856772595294142475").sendMessage("**" + message.getAuthor().getAsTag() + "**:\n").queue();
-                    event.getGuild().getTextChannelById("856772595294142475").sendMessage(message).queue();
-                    event.getGuild().getTextChannelById("856772595294142475").sendMessage("\n\n").queue();
+                    try{
+                        event.getGuild().getTextChannelById("856772595294142475").sendMessage("**" + message.getAuthor().getAsTag() + "**:\n").queue();
+                        event.getGuild().getTextChannelById("856772595294142475").sendMessage(message).queue();
+                        event.getGuild().getTextChannelById("856772595294142475").sendMessage("\n\n").queue();
+                    }catch (IllegalStateException e){
+                        System.out.println("hmmph: " + message);
+                    }
+
                 });
 
                 loggingService.log("Bounty help channel finished by " + event.getMember().getEffectiveName() + ". Bounty: " + bounty);
