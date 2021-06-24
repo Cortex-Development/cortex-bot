@@ -7,13 +7,8 @@ import me.kodysimpson.cortexbot.model.Bounty;
 import me.kodysimpson.cortexbot.repositories.BountyRepository;
 import me.kodysimpson.cortexbot.services.LoggingService;
 import net.dv8tion.jda.api.MessageBuilder;
-import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.utils.Procedure;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import java.util.function.BiConsumer;
 
 @Component
 public class DoneCommand extends Command {
@@ -44,29 +39,33 @@ public class DoneCommand extends Command {
                 MessageBuilder builder = new MessageBuilder();
 
                 System.out.println("trying thing: " + bounty);
-                event.getChannel().getIterableHistory().cache(false).forEachAsync(new Procedure<Message>() {
-                    @Override
-                    public boolean execute(@NotNull Message message) {
-                        System.out.println(message);
-                        builder.append(message.getAuthor().getAsTag() + " : ").append(message).append("\n");
-                        return true;
-                    }
-                }).whenComplete(new BiConsumer<Object, Throwable>() {
-                    @Override
-                    public void accept(Object o, Throwable throwable) {
-                        System.out.println("cheese");
-                        System.out.println(builder.build());
-                        event.getGuild().getTextChannelById("856772595294142475").sendMessage(builder.build()).queue();
+//                event.getChannel().getIterableHistory().cache(false).forEachAsync(new Procedure<Message>() {
+//                    @Override
+//                    public boolean execute(@NotNull Message message) {
+//                        System.out.println(message);
+//                        builder.append(message.getAuthor().getAsTag()).append(" : ").append(message).append("\n");
+//                        return true;
+//                    }
+//                }).whenComplete(new BiConsumer<Object, Throwable>() {
+//                    @Override
+//                    public void accept(Object o, Throwable throwable) {
+//                        System.out.println("cheese");
+//                        System.out.println(builder.build());
+//                        event.getGuild().getTextChannelById("856772595294142475").sendMessage(builder.build()).queue();
+//
+//                        //event.getGuild().getTextChannelById(bounty.getChannelId()).delete().complete();
+//
+//                        loggingService.log("Bounty help channel finished by " + event.getMember().getEffectiveName() + ". Bounty: " + bounty);
+//                    }
+//                });
 
-                        //event.getGuild().getTextChannelById(bounty.getChannelId()).delete().complete();
-
-                        loggingService.log("Bounty help channel finished by " + event.getMember().getEffectiveName() + ". Bounty: " + bounty);
-                    }
+                event.getChannel().getIterableHistory().cache(false).forEach(message -> {
+                    System.out.println(message);
+                    builder.append(message.getAuthor().getAsTag()).append(" : ").append(message).append("\n");
                 });
 
-//                event.getChannel().getIterableHistory().cache(false).forEach(message -> {
-//                    builder.append(message.getAuthor().getAsTag() + " : ").append(message).append("\n");
-//                });
+                System.out.println(builder.build());
+                event.getGuild().getTextChannelById("856772595294142475").sendMessage(builder.build()).queue();
 
 
             }else{
