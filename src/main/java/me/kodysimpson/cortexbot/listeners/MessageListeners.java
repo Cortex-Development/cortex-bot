@@ -1,13 +1,17 @@
 package me.kodysimpson.cortexbot.listeners;
 
 import me.kodysimpson.cortexbot.config.DiscordConfiguration;
+import me.kodysimpson.cortexbot.model.Bounty;
 import me.kodysimpson.cortexbot.model.Member;
+import me.kodysimpson.cortexbot.repositories.BountyRepository;
 import me.kodysimpson.cortexbot.repositories.MemberRepository;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 
 import javax.annotation.Nonnull;
+import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
@@ -17,11 +21,13 @@ public class MessageListeners extends ListenerAdapter{
     private final Random random;
     private final MemberRepository memberRepository;
     private final DiscordConfiguration discordConfiguration;
+    private final BountyRepository bountyRepository;
 
-    public MessageListeners(MemberRepository memberRepository, DiscordConfiguration discordConfiguration){
+    public MessageListeners(MemberRepository memberRepository, DiscordConfiguration discordConfiguration, BountyRepository bountyRepository){
         this.random = new Random();
         this.memberRepository = memberRepository;
         this.discordConfiguration = discordConfiguration;
+        this.bountyRepository = bountyRepository;
     }
 
     @Override
@@ -31,8 +37,17 @@ public class MessageListeners extends ListenerAdapter{
             event.getGuild().getTextChannelById(event.getChannel().getId()).deleteMessageById(event.getMessageId()).completeAfter(5, TimeUnit.SECONDS);
         }
 
-
         if (!event.getAuthor().isBot()) {
+
+            //see if the message was sent in an active bounty channel
+            List<Bounty> bounties = bountyRepository.findAllByFinishedEquals(false);
+            for (Bounty bounty : bounties){
+                if (bounty.getChannelId().equalsIgnoreCase(event.getChannel().getId())){
+                    bounty.setLastMessage(new Date());
+                    bountyRepository.save(bounty);
+                    break;
+                }
+            }
 
             if (event.getChannel().getId().equalsIgnoreCase("856772595294142475")){
                 event.getGuild().getTextChannelById(event.getChannel().getId()).deleteMessageById(event.getMessageId()).completeAfter(5, TimeUnit.SECONDS);

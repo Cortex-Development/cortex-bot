@@ -10,6 +10,7 @@ import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.TextChannel;
 import org.springframework.stereotype.Component;
 
+import java.util.Date;
 import java.util.Objects;
 
 @Component
@@ -39,6 +40,7 @@ public class CreateBountyCommand extends Command {
             Bounty bounty = new Bounty();
             bounty.setUserId(event.getMember().getId());
             bounty.setChannelId(channel.getId());
+            bounty.setLastMessage(new Date());
             bountyRepository.insert(bounty);
 
             MessageBuilder messageBuilder = new MessageBuilder();

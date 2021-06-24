@@ -51,8 +51,10 @@ public class DoneCommand extends Command {
                 event.getGuild().getTextChannelById("856772595294142475").sendMessage("\nEnd of chat history\n").queue();
                 event.getGuild().getTextChannelById("856772595294142475").sendMessage("**-------------------------------**\n").queue();
 
-                loggingService.log("Bounty help channel finished by " + event.getMember().getEffectiveName() + ". Bounty: " + bounty);
+                //delete the channel
+                event.getTextChannel().delete().queue();
 
+                loggingService.log("Bounty help channel finished by " + event.getMember().getEffectiveName() + ". Bounty: " + bounty);
             }else{
                 event.reply("This isn't a bounty channel.");
             }
