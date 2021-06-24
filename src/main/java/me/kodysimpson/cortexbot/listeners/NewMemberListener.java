@@ -5,23 +5,25 @@ import me.kodysimpson.cortexbot.services.DiscordBotService;
 import net.dv8tion.jda.api.MessageBuilder;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import javax.annotation.Nonnull;
 import java.util.function.Consumer;
 
+@Component
 public class NewMemberListener extends ListenerAdapter {
 
-    private final DiscordBotService discordBotService;
     private final DiscordConfiguration discordConfiguration;
 
-    public NewMemberListener(DiscordBotService discordBotService, DiscordConfiguration discordConfiguration) {
-        this.discordBotService = discordBotService;
+    @Autowired
+    public NewMemberListener(DiscordConfiguration discordConfiguration) {
         this.discordConfiguration = discordConfiguration;
     }
 
     @Override
     public void onGuildMemberJoin(@Nonnull GuildMemberJoinEvent event) {
-        discordBotService.addRoleToMember(event.getMember(), discordConfiguration.getMemberRoleId(), new Consumer<Void>() {
+        DiscordBotService.addRoleToMember(event.getMember(), discordConfiguration.getMemberRoleId(), new Consumer<Void>() {
             @Override
             public void accept(Void unused) {
                 event.getMember().getUser().openPrivateChannel().queue(privateChannel -> {

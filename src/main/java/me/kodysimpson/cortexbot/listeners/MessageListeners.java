@@ -8,6 +8,8 @@ import me.kodysimpson.cortexbot.repositories.MemberRepository;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import javax.annotation.Nonnull;
 import java.util.Date;
@@ -16,6 +18,7 @@ import java.util.Objects;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
+@Component
 public class MessageListeners extends ListenerAdapter{
 
     private final Random random;
@@ -23,6 +26,7 @@ public class MessageListeners extends ListenerAdapter{
     private final DiscordConfiguration discordConfiguration;
     private final BountyRepository bountyRepository;
 
+    @Autowired
     public MessageListeners(MemberRepository memberRepository, DiscordConfiguration discordConfiguration, BountyRepository bountyRepository){
         this.random = new Random();
         this.memberRepository = memberRepository;

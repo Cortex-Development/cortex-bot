@@ -26,7 +26,6 @@ import net.dv8tion.jda.api.exceptions.HierarchyException;
 import net.dv8tion.jda.api.exceptions.InsufficientPermissionException;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.cache.CacheFlag;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -47,51 +46,23 @@ public class DiscordBotService {
     private final MemberRepository memberRepository;
     private final DiscordConfiguration discordConfiguration;
     private final BountyRepository bountyRepository;
-
-    @Autowired
-    GivePointsCommand givePointsCommand;
-
-    @Autowired
-    CEOCommand ceoCommand;
-
-    @Autowired
-    CEOBidCommand ceoBidCommand;
-
-    @Autowired
-    CEOBidListCommand ceoBidListCommand;
-
-    @Autowired
-    PointsCommand pointsCommand;
-
-    @Autowired
-    PayCommand payCommand;
-
-    @Autowired
-    CreateBountyCommand createBountyCommand;
-
-    @Autowired
-    DeleteBountyCommand deleteBountyCommand;
-
-    @Autowired
-    ReactionListener reactionListener;
-
-    @Autowired
-    DoneCommand doneCommand;
-
-    @Autowired
-    SuggestionCommand suggestionCommand;
-
-    @Autowired
-    WebsiteCommand websiteCommand;
-
-    @Autowired
-    JavaTutCommand javaTutCommand;
-
-    @Autowired
-    CodeBlockCommand codeBlockCommand;
-
-    @Autowired
-    LeaderboardCommand leaderboardCommand;
+    private final GivePointsCommand givePointsCommand;
+    private final CEOCommand ceoCommand;
+    private final CEOBidCommand ceoBidCommand;
+    private final CEOBidListCommand ceoBidListCommand;
+    private final PointsCommand pointsCommand;
+    private final PayCommand payCommand;
+    private final CreateBountyCommand createBountyCommand;
+    private final DeleteBountyCommand deleteBountyCommand;
+    private final ReactionListener reactionListener;
+    private final MessageListeners messageListeners;
+    private final NewMemberListener newMemberListener;
+    private final DoneCommand doneCommand;
+    private final SuggestionCommand suggestionCommand;
+    private final WebsiteCommand websiteCommand;
+    private final JavaTutCommand javaTutCommand;
+    private final CodeBlockCommand codeBlockCommand;
+    private final LeaderboardCommand leaderboardCommand;
 
     private static JDA api;
 
@@ -127,8 +98,8 @@ public class DiscordBotService {
                     .setToken(discordConfiguration.getBotToken())
                     .disableCache(CacheFlag.ACTIVITY, CacheFlag.VOICE_STATE, CacheFlag.CLIENT_STATUS)
                     .addEventListeners(commandClient.build())
-                    .addEventListeners(new MessageListeners(memberRepository, discordConfiguration, bountyRepository))
-                    .addEventListeners(new NewMemberListener(this, discordConfiguration))
+                    .addEventListeners(messageListeners)
+                    .addEventListeners(newMemberListener)
                     .addEventListeners(reactionListener)
                     .setAutoReconnect(true)
                     .setBulkDeleteSplittingEnabled(false)
@@ -160,7 +131,7 @@ public class DiscordBotService {
         }
     }
 
-    public void addRoleToMember(net.dv8tion.jda.api.entities.Member member, long roleId, Consumer<Void> successResponse) {
+    public static void addRoleToMember(net.dv8tion.jda.api.entities.Member member, long roleId, Consumer<Void> successResponse) {
         try {
             Role role = member.getGuild().getRoleById(roleId);
 

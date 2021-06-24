@@ -8,6 +8,7 @@ import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Nonnull;
@@ -15,8 +16,9 @@ import javax.annotation.Nonnull;
 @Component
 public class ReactionListener extends ListenerAdapter {
 
-    BountyRepository bountyRepository;
+    private final BountyRepository bountyRepository;
 
+    @Autowired
     public ReactionListener(BountyRepository bountyRepository){
         this.bountyRepository = bountyRepository;
     }
