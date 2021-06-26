@@ -55,7 +55,7 @@ public class BotTasks {
 
                     User user = DiscordBotService.getApi().getUserById(member.getUserID());
                     user.openPrivateChannel().flatMap(channel -> {
-                        return channel.sendMessage("Do 25 sit ups.");
+                        return channel.sendMessage("Do 20 sit ups and plank for 30 seconds.");
                     }).queue();
 
 
