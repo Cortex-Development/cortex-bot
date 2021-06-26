@@ -45,7 +45,7 @@ public class BotTasks {
 
     }
 
-    @Scheduled(initialDelay = 120000, fixedRate = 7200000)
+    @Scheduled(initialDelay = 120000, fixedRate = 10800000)
     public void fitnessProgram(){
 
         System.out.println("Running Legendary Cortex Fitness Program");
