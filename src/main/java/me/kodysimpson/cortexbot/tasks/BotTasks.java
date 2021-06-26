@@ -2,9 +2,11 @@ package me.kodysimpson.cortexbot.tasks;
 
 import me.kodysimpson.cortexbot.model.Bounty;
 import me.kodysimpson.cortexbot.repositories.BountyRepository;
+import me.kodysimpson.cortexbot.repositories.FitnessRepository;
 import me.kodysimpson.cortexbot.repositories.MemberRepository;
 import me.kodysimpson.cortexbot.services.DiscordBotService;
 import net.dv8tion.jda.api.MessageBuilder;
+import net.dv8tion.jda.api.entities.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -22,6 +24,9 @@ public class BotTasks {
     @Autowired
     BountyRepository bountyRepository;
 
+    @Autowired
+    FitnessRepository fitnessRepository;
+
     @Scheduled(fixedRate = 864000000, initialDelay = 60000)
     public void announceStart(){
         getGuild().getTextChannelById("786974733123846214").sendMessage("Cortex bot redeployed.").queue();
@@ -36,6 +41,24 @@ public class BotTasks {
                 .forEach(member -> {
                     member.setPoints(member.getPoints() + 1);
                     memberRepository.save(member);
+                });
+
+    }
+
+    @Scheduled(initialDelay = 120000, fixedRate = 7200000)
+    public void fitnessProgram(){
+
+        System.out.println("Running Legendary Cortex Fitness Program");
+
+        fitnessRepository.findAll()
+                .forEach(member -> {
+
+                    User user = DiscordBotService.getApi().getUserById(member.getUserID());
+                    user.openPrivateChannel().flatMap(channel -> {
+                        return channel.sendMessage("Do 25 sit ups.");
+                    }).queue();
+
+
                 });
 
     }

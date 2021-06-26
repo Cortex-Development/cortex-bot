@@ -28,8 +28,10 @@ public class FitnessCommand extends Command {
 
         //see if they are enrolled
         if (fitnessRepository.existsMemberByUserID(member.getUserID())){
+            fitnessRepository.delete(member);
             event.reply("You have left the legendary **Cortex Fitness Program**. Good. We don't want weaklings.");
         }else{
+            fitnessRepository.insert(member);
             event.reply("You are now enrolled in the legendary **Cortex Fitness Program**. Instructions will be given shortly. Follow this exactly and you will be ripped in no-time.");
         }
 

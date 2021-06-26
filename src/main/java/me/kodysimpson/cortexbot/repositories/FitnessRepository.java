@@ -9,5 +9,4 @@ public interface FitnessRepository extends MongoRepository<Member, String> {
 
     boolean existsMemberByUserID(String userID);
 
-
 }
