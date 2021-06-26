@@ -77,6 +77,7 @@ public class PayCommand extends Command {
 
                                     //take the points away from the payee
                                     payee.setPoints(payee.getPoints() - points);
+                                    memberRepository.save(payee);
 
                                     event.reply(points + " point(s) have been given to " + user.getName() + ". You now have a total of " + payee.getPoints() + " point(s).");
 
