@@ -33,13 +33,13 @@ public class TakePointsCommand extends Command {
         if (event.getMember().isOwner() || event.getMember().getRoles().contains(event.getJDA().getRoleById(discordConfiguration.getStaffRole()))){
 
             if (args.isEmpty()){
-                event.reply("Provide a person to take points from. Ex: $give-points 250856681724968960 100");
+                event.reply("Provide a person to take points from. Ex: $take-points 250856681724968960 100");
             }else{
 
                 String[] arguments = args.split(" ");
 
                 if (arguments.length == 1){
-                    event.reply("An amount of points must be provided. Ex: $give-points 250856681724968960 100");
+                    event.reply("An amount of points must be provided. Ex: $take-points 250856681724968960 100");
                 }else{
 
                     String providedUserIdentifier = arguments[0];
