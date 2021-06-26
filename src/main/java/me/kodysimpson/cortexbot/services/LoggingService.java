@@ -26,6 +26,10 @@ public class LoggingService {
         this.log(points + " point(s) have been taken from " + username + " by " + givenBy + ".");
     }
 
+    public void logPointsSet(String username, int points, String givenBy){
+        this.log(points + " point(s) have been set for " + username + " by " + givenBy + ".");
+    }
+
     public void logPointsPayed(String username, int points, String givenBy) {
         this.log(points + " point(s) have been payed to " + username + " by " + givenBy + ".");
     }
