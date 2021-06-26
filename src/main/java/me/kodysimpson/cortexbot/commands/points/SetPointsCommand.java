@@ -83,8 +83,7 @@ public class SetPointsCommand extends Command {
                                 loggingService.logPointsSet(user.getName(), points, event.getMember().getEffectiveName());
 
                                 user.openPrivateChannel().flatMap(channel -> {
-                                    return channel.sendMessage("You now have " + points + " points. " +
-                                            "You now have a total of " + member.getPoints() + " community points.");
+                                    return channel.sendMessage("You now have a total of " + member.getPoints() + " community points.");
                                 }).queue();
                             }catch (NumberFormatException ex){
                                 event.reply("Unable to process request, invalid points value provided.");
