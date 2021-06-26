@@ -18,8 +18,12 @@ public class LoggingService {
         channel.sendMessage(message + " [" + new Date() + "]").queue();
     }
 
-    public void logPointsGiven(String username, String points, String givenBy){
+    public void logPointsGiven(String username, int points, String givenBy){
         this.log(points + " point(s) have been given to " + username + " by " + givenBy + ".");
+    }
+
+    public void logPointsTaken(String username, int points, String givenBy){
+        this.log(points + " point(s) have been taken from " + username + " by " + givenBy + ".");
     }
 
     public void logPointsPayed(String username, int points, String givenBy) {
