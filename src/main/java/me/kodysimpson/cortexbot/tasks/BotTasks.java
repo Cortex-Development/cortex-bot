@@ -54,9 +54,9 @@ public class BotTasks {
                 .forEach(member -> {
 
                     User user = DiscordBotService.getApi().getUserById(member.getUserID());
-                    user.openPrivateChannel().flatMap(channel -> {
-                        return channel.sendMessage("Do 20 sit ups and plank for 30 seconds.");
-                    }).queue();
+//                    user.openPrivateChannel().flatMap(channel -> {
+//                        return channel.sendMessage("Do 20 sit ups and plank for 30 seconds.");
+//                    }).queue();
 
 
                 });
