@@ -9,7 +9,6 @@ import me.kodysimpson.cortexbot.commands.bounty.DoneCommand;
 import me.kodysimpson.cortexbot.commands.ceo.CEOBidCommand;
 import me.kodysimpson.cortexbot.commands.ceo.CEOBidListCommand;
 import me.kodysimpson.cortexbot.commands.ceo.CEOCommand;
-import me.kodysimpson.cortexbot.commands.fitness.FitnessCommand;
 import me.kodysimpson.cortexbot.commands.points.GivePointsCommand;
 import me.kodysimpson.cortexbot.commands.points.SetPointsCommand;
 import me.kodysimpson.cortexbot.commands.points.TakePointsCommand;
@@ -68,7 +67,6 @@ public class DiscordBotService {
     private final LeaderboardCommand leaderboardCommand;
     private final TakePointsCommand takePointsCommand;
     private final SetPointsCommand setPointsCommand;
-    private final FitnessCommand fitnessCommand;
 
     private static JDA api;
 
@@ -98,8 +96,7 @@ public class DiscordBotService {
                     .addCommand(deleteBountyCommand)
                     .addCommand(doneCommand)
                     .addCommand(takePointsCommand)
-                    .addCommand(setPointsCommand)
-                    .addCommand(fitnessCommand);
+                    .addCommand(setPointsCommand);
 
 
             api = JDABuilder.create(List.of(GatewayIntent.GUILD_EMOJIS, GatewayIntent.GUILD_MEMBERS,
