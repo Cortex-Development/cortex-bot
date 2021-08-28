@@ -16,8 +16,9 @@ public class MemberUserService {
     public User findUser(String identifier){
 
         User user;
-        if (identifier.startsWith("<@!")){
-            user = DiscordBotService.getApi().getUserById(identifier.substring(3, identifier.length() - 1));
+        if (identifier.startsWith("<@")){
+            identifier = identifier.replace("<@", "").replace("!","").replace(">", "");
+            user = DiscordBotService.getApi().getUserById(identifier);
         }else if (IntStream.range(0, identifier.length()).boxed().map(identifier::charAt).allMatch(Character::isDigit)){
             user = DiscordBotService.getApi().getUserById(identifier);
         }else{
