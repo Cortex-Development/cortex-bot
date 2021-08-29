@@ -63,7 +63,7 @@ public class GivePointsCommand extends Command {
 
                             try{
 
-                                int points = Integer.parseInt(arguments[1]);
+                                int points = Integer.parseInt(arguments[1].trim());
                                 if (points <= 0){
                                     event.reply("You need to provide a positive number of points.");
                                     return;
