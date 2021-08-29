@@ -36,7 +36,7 @@ public class TakePointsCommand extends Command {
                 event.reply("Provide a person to take points from. Ex: $take-points 250856681724968960 100");
             }else{
 
-                String[] arguments = args.split(" ");
+                String[] arguments = args.split("\\s+");
 
                 if (arguments.length == 1){
                     event.reply("An amount of points must be provided. Ex: $take-points 250856681724968960 100");
@@ -63,7 +63,7 @@ public class TakePointsCommand extends Command {
 
                             try{
 
-                                int points = Integer.parseInt(arguments[1].trim());
+                                int points = Integer.parseInt(arguments[1]);
                                 if (points <= 0){
                                     event.reply("You need to provide a positive number of points.");
                                     return;
