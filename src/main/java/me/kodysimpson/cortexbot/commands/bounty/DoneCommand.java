@@ -31,7 +31,7 @@ public class DoneCommand extends Command {
         if (event.getMember().isOwner() || event.getMember().getRoles().contains(event.getJDA().getRoleById(discordConfiguration.getStaffRole()))){
             if(bountyRepository.existsBountyByChannelIdEquals(event.getChannel().getId())){
 
-                Bounty bounty = bountyRepository.findBountyByChannelIdEquals(event.getChannel().getId());
+                Bounty bounty = bountyRepository.deleteBountyByChannelIdEquals(event.getChannel().getId());
 
 //                MessageBuilder builder = new MessageBuilder();
 //                builder.append("**-------------------------------**\n").append("This is a message history of the bounty help channel created by ").append(bounty.getUserId()).append(" on 122323234").append("\n\n");
