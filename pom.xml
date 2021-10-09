@@ -29,6 +29,16 @@
             <name>bintray</name>
             <url>http://jcenter.bintray.com</url>
         </repository>
+        <repository>
+            <id>dv8tion</id>
+            <name>m2-dv8tion</name>
+            <url>https://m2.dv8tion.net/releases</url>
+        </repository>
+        <repository>
+            <id>chew</id>
+            <name>m2-chew</name>
+            <url>https://m2.chew.pro/releases</url>
+        </repository>
     </repositories>
 
     <dependencies>
@@ -58,7 +68,7 @@
         <dependency>
             <groupId>net.dv8tion</groupId>
             <artifactId>JDA</artifactId>
-            <version>4.2.0_181</version>
+            <version>4.3.0_334</version>
         </dependency>
 
         <dependency>
@@ -67,9 +77,9 @@
         </dependency>
 
         <dependency>
-            <groupId>com.jagrosh</groupId>
-            <artifactId>jda-utilities</artifactId>
-            <version>3.0.4</version>
+            <groupId>pw.chew</groupId>
+            <artifactId>jda-chewtils</artifactId>
+            <version>1.22.0</version>
             <scope>compile</scope>
             <type>pom</type>
         </dependency>

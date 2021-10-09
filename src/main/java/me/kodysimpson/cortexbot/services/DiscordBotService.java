@@ -75,11 +75,9 @@ public class DiscordBotService {
         try {
             CommandClientBuilder commandClient = new CommandClientBuilder()
                     .setPrefix("$")
-
                     .setOwnerId(discordConfiguration.getOwnerId())
                     .setHelpWord("help")
                     .setActivity(Activity.listening("$help"))
-
                     //Add commands
                     .addCommand(leaderboardCommand)
                     .addCommand(websiteCommand)
