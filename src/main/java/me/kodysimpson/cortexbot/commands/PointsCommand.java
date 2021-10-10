@@ -2,13 +2,20 @@ package me.kodysimpson.cortexbot.commands;
 
 import com.jagrosh.jdautilities.command.Command;
 import com.jagrosh.jdautilities.command.CommandEvent;
+import com.jagrosh.jdautilities.command.SlashCommand;
 import me.kodysimpson.cortexbot.services.MemberUserService;
 import me.kodysimpson.cortexbot.services.PointsService;
 import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
+import net.dv8tion.jda.api.interactions.commands.OptionType;
+import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Component
-public class PointsCommand extends Command {
+public class PointsCommand extends SlashCommand {
 
     private final PointsService pointsService;
     private final MemberUserService memberUserService;
@@ -17,46 +24,44 @@ public class PointsCommand extends Command {
         this.pointsService = pointsService;
         this.memberUserService = memberUserService;
         this.name = "points";
-        this.arguments = "<user id | username | tag>";
+        this.help = "See how many points you or someone else has";
+
+        List<OptionData> options = new ArrayList<>();
+        options.add(new OptionData(OptionType.USER, "user", "The person involved"));
+        this.options = options;
     }
 
     @Override
-    protected void execute(CommandEvent event) {
+    protected void execute(SlashCommandEvent event) {
 
-        String args = event.getArgs();
+        event.deferReply().queue();
 
-        if (args.isEmpty()){
+        if (event.getOptions().isEmpty()){
 
             //Since no arguments were provided, show the user their own points amount
-            long points = pointsService.getPoints(event.getAuthor().getId());
+            long points = pointsService.getPoints(event.getUser().getId());
 
             if (points != -1){
-                event.reply("You have " + points + " point(s).");
+                event.getHook().sendMessage("You have " + points + " point(s).").setEphemeral(true).queue();
             }else{
-                event.reply("You don't exist!");
+                event.getHook().sendMessage("You don't exist!").queue();
             }
 
         }else{
 
             //determine who was provided as an argument to this command
-            User user = memberUserService.findUser(args);
+            User user = event.getOption("user").getAsUser();
 
-            if (user == null){
-                event.reply("The user provided does not exist.");
+            long points = pointsService.getPoints(user.getId());
+
+            if (points != -1){
+                event.getHook().sendMessage(user.getName() + " has " + points + " point(s).").queue();
             }else{
-
-                long points = pointsService.getPoints(user.getId());
-
-                if (points != -1){
-                    event.reply(user.getName() + " has " + points + " point(s).");
-                }else{
-                    event.reply("The user provided does not exist.");
-                }
-
+                event.getHook().sendMessage("The user provided does not exist.").queue();
             }
 
         }
 
-
     }
+
 }

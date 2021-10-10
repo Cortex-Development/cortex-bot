@@ -84,7 +84,7 @@ public class DiscordBotService {
                     .addCommand(suggestionCommand)
                     .addCommand(codeBlockCommand)
                     .addCommand(javaTutCommand)
-                    .addCommand(pointsCommand)
+                    .addSlashCommand(pointsCommand)
                     .addCommand(givePointsCommand)
                     .addCommand(ceoCommand)
                     .addCommand(ceoBidCommand)
