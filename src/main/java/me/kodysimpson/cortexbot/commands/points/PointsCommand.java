@@ -1,4 +1,4 @@
-package me.kodysimpson.cortexbot.commands;
+package me.kodysimpson.cortexbot.commands.points;
 
 import com.jagrosh.jdautilities.command.Command;
 import com.jagrosh.jdautilities.command.CommandEvent;

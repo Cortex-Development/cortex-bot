@@ -9,9 +9,7 @@ import me.kodysimpson.cortexbot.commands.bounty.DoneCommand;
 import me.kodysimpson.cortexbot.commands.ceo.CEOBidCommand;
 import me.kodysimpson.cortexbot.commands.ceo.CEOBidListCommand;
 import me.kodysimpson.cortexbot.commands.ceo.CEOCommand;
-import me.kodysimpson.cortexbot.commands.points.GivePointsCommand;
-import me.kodysimpson.cortexbot.commands.points.SetPointsCommand;
-import me.kodysimpson.cortexbot.commands.points.TakePointsCommand;
+import me.kodysimpson.cortexbot.commands.points.*;
 import me.kodysimpson.cortexbot.config.DiscordConfiguration;
 import me.kodysimpson.cortexbot.listeners.MessageListeners;
 import me.kodysimpson.cortexbot.listeners.NewMemberListener;
@@ -77,24 +75,25 @@ public class DiscordBotService {
                     .setPrefix("$")
                     .setOwnerId(discordConfiguration.getOwnerId())
                     .setHelpWord("help")
-                    .setActivity(Activity.listening("$help"))
+                    .setActivity(Activity.listening("Juice WRLD"))
                     //Add commands
-                    .addCommand(leaderboardCommand)
-                    .addCommand(websiteCommand)
-                    .addCommand(suggestionCommand)
-                    .addCommand(codeBlockCommand)
-                    .addCommand(javaTutCommand)
+                    .addSlashCommand(leaderboardCommand)
+                    .addSlashCommand(websiteCommand)
+                    .addSlashCommand(suggestionCommand)
+                    .addSlashCommand(codeBlockCommand)
+                    .addSlashCommand(javaTutCommand)
                     .addSlashCommand(pointsCommand)
-                    .addCommand(givePointsCommand)
-                    .addCommand(ceoCommand)
-                    .addCommand(ceoBidCommand)
-                    .addCommand(ceoBidListCommand)
-                    .addCommand(payCommand)
-                    .addCommand(createBountyCommand)
-                    .addCommand(deleteBountyCommand)
-                    .addCommand(doneCommand)
-                    .addCommand(takePointsCommand)
-                    .addCommand(setPointsCommand);
+                    .addSlashCommand(givePointsCommand)
+                    .addSlashCommand(payCommand)
+                    .addSlashCommand(createBountyCommand)
+                    .addSlashCommand(deleteBountyCommand)
+                    .addSlashCommand(doneCommand)
+                    .addSlashCommand(takePointsCommand)
+                    .addSlashCommand(setPointsCommand)
+                    //.addSlashCommand(ceoCommand)
+                    //.addSlashCommand(ceoBidCommand)
+                    //.addSlashCommand(ceoBidListCommand)
+                    ;
 
 
             api = JDABuilder.create(List.of(GatewayIntent.GUILD_EMOJIS, GatewayIntent.GUILD_MEMBERS,

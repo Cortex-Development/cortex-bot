@@ -2,17 +2,25 @@ package me.kodysimpson.cortexbot.commands.points;
 
 import com.jagrosh.jdautilities.command.Command;
 import com.jagrosh.jdautilities.command.CommandEvent;
+import com.jagrosh.jdautilities.command.SlashCommand;
 import me.kodysimpson.cortexbot.config.DiscordConfiguration;
 import me.kodysimpson.cortexbot.model.Member;
 import me.kodysimpson.cortexbot.repositories.MemberRepository;
 import me.kodysimpson.cortexbot.services.LoggingService;
 import me.kodysimpson.cortexbot.services.MemberUserService;
 import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
+import net.dv8tion.jda.api.interactions.commands.OptionMapping;
+import net.dv8tion.jda.api.interactions.commands.OptionType;
+import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Component
-public class SetPointsCommand extends Command {
+public class SetPointsCommand extends SlashCommand {
 
     private final MemberRepository memberRepository;
     private final DiscordConfiguration discordConfiguration;
@@ -26,73 +34,70 @@ public class SetPointsCommand extends Command {
         this.loggingService = loggingService;
         this.memberUserService = memberUserService;
         this.name = "set-points";
-        this.arguments = "<user id | name | tag> <# of points>";
         this.help = "set points for a member";
+
+        List<OptionData> options = new ArrayList<>();
+        options.add(new OptionData(OptionType.USER, "user", "The person involved", true));
+        options.add(new OptionData(OptionType.INTEGER, "amount", "amount of points to give", true));
+        options.add(new OptionData(OptionType.STRING, "reason", "reason", false));
+        this.options = options;
     }
 
     @Override
-    protected void execute(CommandEvent event) {
+    protected void execute(SlashCommandEvent event) {
 
-        String args = event.getArgs();
+        event.deferReply().queue();
 
         if (event.getMember().isOwner() || event.getMember().getRoles().contains(event.getJDA().getRoleById(discordConfiguration.getStaffRole()))){
 
-            if (args.isEmpty()){
-                event.reply("Provide a person. Ex: $set-points 250856681724968960 100");
+            List<OptionMapping> options = event.getOptions();
+
+            if (options.isEmpty()){
+                event.getHook().sendMessage("Provide a person. Ex: $set-points 250856681724968960 100");
             }else{
 
-                String[] arguments = args.split("\\s+");
-
-                if (arguments.length == 1){
-                    event.reply("An amount of points must be provided. Ex: $set-points 250856681724968960 100");
+                if (options.size() == 1){
+                    event.getHook().sendMessage("An amount of points must be provided. Ex: $set-points 250856681724968960 100");
                 }else{
 
-                    String providedUserIdentifier = arguments[0];
-
                     //determine who was provided as an argument to this command
-                    User user = memberUserService.findUser(providedUserIdentifier);
+                    User user = event.getOption("user").getAsUser();
 
-                    if (user == null){
-                        event.reply("The user provided does not exist.");
-                    }else{
+                    //see if they are trying to give points to themself
+                    if (user.getId().equals(event.getMember().getId()) && !event.getMember().isOwner()){
+                        event.getHook().sendMessage("You can't set your own points dummy.").queue();
+                        return;
+                    }
 
-                        //see if they are trying to give points to themself
-                        if (user.getId().equals(event.getMember().getId()) && !event.isOwner()){
-                            event.reply("You can't set your own points dummy.");
-                            return;
-                        }
+                    Member member = memberRepository.findByUserIDIs(user.getId());
 
-                        Member member = memberRepository.findByUserIDIs(user.getId());
+                    if (member != null){
 
-                        if (member != null){
+                        try{
 
-                            try{
-
-                                int points = Integer.parseInt(arguments[1]);
-                                if (points <= 0){
-                                    event.reply("You need to provide a positive number of points.");
-                                    return;
-                                }
-
-                                member.setPoints(points);
-                                memberRepository.save(member);
-
-                                event.reply(points + " point(s) have been set for " + user.getName() + ".");
-
-                                //log the points given
-                                loggingService.logPointsSet(user.getName(), points, event.getMember().getEffectiveName());
-
-                                user.openPrivateChannel().flatMap(channel -> {
-                                    return channel.sendMessage("You now have a total of " + member.getPoints() + " community points.");
-                                }).queue();
-                            }catch (NumberFormatException ex){
-                                event.reply("Unable to process request, invalid points value provided.");
+                            int points = (int) event.getOption("amount").getAsDouble();
+                            if (points <= 0){
+                                event.getHook().sendMessage("You need to provide a positive number of points.").queue();
+                                return;
                             }
 
-                        }else{
-                            event.reply("The user provided does not exist in our database.");
+                            member.setPoints(points);
+                            memberRepository.save(member);
+
+                            event.getHook().sendMessage(points + " point(s) have been set for " + user.getName() + ".").queue();
+
+                            //log the points given
+                            loggingService.logPointsSet(user.getName(), points, event.getMember().getEffectiveName());
+
+                            user.openPrivateChannel().flatMap(channel -> {
+                                return channel.sendMessage("You now have a total of " + member.getPoints() + " community points.");
+                            }).queue();
+                        }catch (NumberFormatException ex){
+                            event.getHook().sendMessage("Unable to process request, invalid points value provided.").queue();
                         }
 
+                    }else{
+                        event.getHook().sendMessage("The user provided does not exist in our database.").queue();
                     }
 
                 }
@@ -100,8 +105,9 @@ public class SetPointsCommand extends Command {
             }
 
         }else{
-            event.reply("You must be staff to execute this command.");
+            event.getHook().sendMessage("You must be staff to execute this command.").queue();
         }
 
     }
+
 }

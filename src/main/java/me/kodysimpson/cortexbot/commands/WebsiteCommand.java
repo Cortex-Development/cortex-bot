@@ -2,10 +2,12 @@ package me.kodysimpson.cortexbot.commands;
 
 import com.jagrosh.jdautilities.command.Command;
 import com.jagrosh.jdautilities.command.CommandEvent;
+import com.jagrosh.jdautilities.command.SlashCommand;
+import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import org.springframework.stereotype.Component;
 
 @Component
-public class WebsiteCommand extends Command {
+public class WebsiteCommand extends SlashCommand {
 
     public WebsiteCommand() {
         this.name = "website";
@@ -13,7 +15,8 @@ public class WebsiteCommand extends Command {
     }
 
     @Override
-    protected void execute(CommandEvent commandEvent) {
-        commandEvent.getChannel().sendMessage("https://cortexdev.us **WIP**").queue();
+    protected void execute(SlashCommandEvent slashCommandEvent) {
+        slashCommandEvent.reply("COMING BACK SOON").queue();
     }
+
 }

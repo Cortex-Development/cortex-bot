@@ -2,15 +2,17 @@ package me.kodysimpson.cortexbot.commands.bounty;
 
 import com.jagrosh.jdautilities.command.Command;
 import com.jagrosh.jdautilities.command.CommandEvent;
+import com.jagrosh.jdautilities.command.SlashCommand;
 import me.kodysimpson.cortexbot.config.DiscordConfiguration;
 import me.kodysimpson.cortexbot.model.Bounty;
 import me.kodysimpson.cortexbot.repositories.BountyRepository;
 import me.kodysimpson.cortexbot.services.LoggingService;
+import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class DoneCommand extends Command {
+public class DoneCommand extends SlashCommand {
 
     public BountyRepository bountyRepository;
     private DiscordConfiguration discordConfiguration;
@@ -26,7 +28,7 @@ public class DoneCommand extends Command {
     }
 
     @Override
-    protected void execute(CommandEvent event) {
+    protected void execute(SlashCommandEvent event) {
 
         if (event.getMember().isOwner() || event.getMember().getRoles().contains(event.getJDA().getRoleById(discordConfiguration.getStaffRole()))){
             if(bountyRepository.existsBountyByChannelIdEquals(event.getChannel().getId())){
@@ -55,11 +57,12 @@ public class DoneCommand extends Command {
 
                 loggingService.log("Bounty help channel finished by " + event.getMember().getEffectiveName() + ". Bounty: " + bounty);
             }else{
-                event.reply("This isn't a bounty channel.");
+                event.reply("This isn't a bounty channel.").queue();
             }
         }else{
-            event.reply("You cannot run this command.");
+            event.reply("You cannot run this command.").queue();
         }
+
     }
 
 }

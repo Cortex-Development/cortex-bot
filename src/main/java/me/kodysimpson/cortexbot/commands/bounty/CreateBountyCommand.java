@@ -2,19 +2,21 @@ package me.kodysimpson.cortexbot.commands.bounty;
 
 import com.jagrosh.jdautilities.command.Command;
 import com.jagrosh.jdautilities.command.CommandEvent;
+import com.jagrosh.jdautilities.command.SlashCommand;
 import me.kodysimpson.cortexbot.config.DiscordConfiguration;
 import me.kodysimpson.cortexbot.model.Bounty;
 import me.kodysimpson.cortexbot.repositories.BountyRepository;
 import net.dv8tion.jda.api.MessageBuilder;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.TextChannel;
+import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
 import java.util.Objects;
 
 @Component
-public class CreateBountyCommand extends Command {
+public class CreateBountyCommand extends SlashCommand {
 
     private final BountyRepository bountyRepository;
     private final DiscordConfiguration discordConfiguration;
@@ -27,10 +29,10 @@ public class CreateBountyCommand extends Command {
     }
 
     @Override
-    protected void execute(CommandEvent event) {
+    protected void execute(SlashCommandEvent event) {
 
         if(bountyRepository.existsBountyByUserIdEquals(event.getMember().getId())){
-            event.reply("You already have a bounty open.");
+            event.reply("You already have a bounty open.").queue();
         }else{
 
             //create a new channel for this bounty
@@ -55,7 +57,7 @@ public class CreateBountyCommand extends Command {
 
             message.addReaction(Objects.requireNonNull(event.getGuild().getEmoteById(discordConfiguration.getGreenTickId()))).queue();
 
-            event.reply("A help bounty has been created for you in #" + "Help Bounty by " + event.getMember().getEffectiveName());
+            event.reply("A help bounty has been created for you in #" + "Help Bounty by " + event.getMember().getEffectiveName()).queue();
 
         }
 

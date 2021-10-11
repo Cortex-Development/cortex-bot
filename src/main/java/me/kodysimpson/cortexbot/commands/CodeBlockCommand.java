@@ -1,12 +1,12 @@
 package me.kodysimpson.cortexbot.commands;
 
-import com.jagrosh.jdautilities.command.Command;
-import com.jagrosh.jdautilities.command.CommandEvent;
+import com.jagrosh.jdautilities.command.SlashCommand;
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import org.springframework.stereotype.Component;
 
 @Component
-public class CodeBlockCommand extends Command {
+public class CodeBlockCommand extends SlashCommand {
 
     public CodeBlockCommand(){
         this.name = "code";
@@ -15,11 +15,11 @@ public class CodeBlockCommand extends Command {
         this.help = "Get information on how to properly post your code";
     }
 
-
     @Override
-    protected void execute(CommandEvent commandEvent) {
-        commandEvent.reply(new EmbedBuilder()
-                .setColor(commandEvent.getGuild().getSelfMember().getColorRaw())
+    protected void execute(SlashCommandEvent event) {
+
+        event.replyEmbeds(new EmbedBuilder()
+                .setColor(event.getGuild().getSelfMember().getColorRaw())
                 .setTitle("Code Blocks")
                 .setDescription("Put your code in code blocks!")
                 .addField("Example", "\\`\\`\\`java\n" +
@@ -33,7 +33,7 @@ public class CodeBlockCommand extends Command {
                         "}\n" +
                         "```", false)
                 .addField("\u200b",
-                        "Use [CortexDev](https://cortexdev.us/code) for larger segments of code!", false)
-                .build());
+                        "Use [Pastebin](https://pastebin.com/) or [Gist](https://gist.github.com/) for larger segments of code!", false)
+                .build()).queue();
     }
 }

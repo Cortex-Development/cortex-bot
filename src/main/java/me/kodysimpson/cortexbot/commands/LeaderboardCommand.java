@@ -2,10 +2,12 @@ package me.kodysimpson.cortexbot.commands;
 
 import com.jagrosh.jdautilities.command.Command;
 import com.jagrosh.jdautilities.command.CommandEvent;
+import com.jagrosh.jdautilities.command.SlashCommand;
 import me.kodysimpson.cortexbot.model.Member;
 import me.kodysimpson.cortexbot.repositories.MemberRepository;
 import me.kodysimpson.cortexbot.services.DiscordBotService;
 import net.dv8tion.jda.api.MessageBuilder;
+import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -13,7 +15,7 @@ import java.util.Comparator;
 import java.util.stream.Collectors;
 
 @Component
-public class LeaderboardCommand extends Command {
+public class LeaderboardCommand extends SlashCommand {
 
     private final MemberRepository memberRepository;
 
@@ -22,11 +24,12 @@ public class LeaderboardCommand extends Command {
         this.help = "Get the top ten leaderboard rankings";
         this.guildOnly = false;
         this.memberRepository = memberRepository;
-        this.aliases = new String[]{"lb"};
     }
 
     @Override
-    protected void execute(CommandEvent commandEvent) {
+    protected void execute(SlashCommandEvent event) {
+
+        event.deferReply().queue();
 
         ArrayList<Member> top = (ArrayList<Member>) memberRepository.findAll()
                 .stream()
@@ -43,9 +46,11 @@ public class LeaderboardCommand extends Command {
             message.append("(" + (i + 1) + ") - ", MessageBuilder.Formatting.BOLD).append(DiscordBotService.getUsernameFromUserID(top.get(i).getUserID()) + " *-* " + top.get(i).getPoints() + " pts").append("\n");
         }
 
-        message.append("\nYou can view the full leaderboard here: https://cortexdev.us/leaderboard").append("\n");
+        message.append("\nYou can view the full leaderboard here: COMING SOON").append("\n");
         message.append("---------------------------------------------------------------------------------------------", MessageBuilder.Formatting.STRIKETHROUGH);
 
-        commandEvent.getChannel().sendMessage(message.build()).queue();
+        event.getHook().sendMessage(message.build()).queue();
+
     }
+
 }

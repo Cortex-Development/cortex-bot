@@ -2,10 +2,12 @@ package me.kodysimpson.cortexbot.commands;
 
 import com.jagrosh.jdautilities.command.Command;
 import com.jagrosh.jdautilities.command.CommandEvent;
+import com.jagrosh.jdautilities.command.SlashCommand;
 import me.kodysimpson.cortexbot.config.DiscordConfiguration;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageReaction;
+import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.requests.restaction.pagination.MessagePaginationAction;
 import org.springframework.stereotype.Component;
 
@@ -14,7 +16,7 @@ import java.util.Iterator;
 import java.util.TreeMap;
 
 @Component
-public class SuggestionCommand extends Command {
+public class SuggestionCommand extends SlashCommand {
 
     private Message calcmessage;
 
@@ -28,10 +30,10 @@ public class SuggestionCommand extends Command {
     }
 
     @Override
-    protected void execute(CommandEvent commandEvent) {
+    protected void execute(SlashCommandEvent event) {
         TreeMap<Integer, ArrayList<Message>> map = new TreeMap<>();
-        commandEvent.getChannel().sendMessage(":hourglass: Calculating").queue(m -> calcmessage = m);
-        MessagePaginationAction mpa = commandEvent.getGuild().getTextChannelById(discordConfiguration.getSuggestionsChannelId()).getIterableHistory();
+        event.getChannel().sendMessage(":hourglass: Calculating").queue(m -> calcmessage = m);
+        MessagePaginationAction mpa = event.getGuild().getTextChannelById(discordConfiguration.getSuggestionsChannelId()).getIterableHistory();
         // Loop over all messages and put the message in the treemap with the points as key (points == upvotes - downvotes)
         for (Message m : mpa) {
             int points = 0;
@@ -50,7 +52,7 @@ public class SuggestionCommand extends Command {
         }
         EmbedBuilder eb = new EmbedBuilder();
         eb.setTitle("Top 10 suggestions")
-                .setColor(commandEvent.getGuild().getSelfMember().getColorRaw());
+                .setColor(event.getGuild().getSelfMember().getColorRaw());
         StringBuilder sb = new StringBuilder();
         Iterator<Integer> it = map.descendingKeySet().iterator();
         int i = 0;
@@ -78,7 +80,8 @@ public class SuggestionCommand extends Command {
             }
         }
         eb.setDescription(sb.toString().trim());
-        commandEvent.reply(eb.build());
+        event.replyEmbeds(eb.build()).queue();
         calcmessage.delete().queue(); // Delete the "calculating" message
     }
+
 }
