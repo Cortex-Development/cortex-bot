@@ -33,7 +33,7 @@ public class ThankCommand extends SlashCommand {
         List<OptionData> options = new ArrayList<>();
         options.add(new OptionData(OptionType.USER, "user", "The person you are thanking", true));
         options.add(new OptionData(OptionType.INTEGER, "amount", "Amount of points to tip", false));
-        options.add(new OptionData(OptionType.INTEGER, "reason", "Why are you thanking them", false));
+        options.add(new OptionData(OptionType.STRING, "reason", "Why are you thanking them", false));
         this.options = options;
     }
 
