@@ -16,11 +16,14 @@ import static me.kodysimpson.cortexbot.services.DiscordBotService.getGuild;
 @Service
 public class BotTasks {
 
-    @Autowired
-    private MemberRepository memberRepository;
+    private final MemberRepository memberRepository;
+    private final BountyRepository bountyRepository;
 
     @Autowired
-    BountyRepository bountyRepository;
+    public BotTasks(MemberRepository memberRepository, BountyRepository bountyRepository) {
+        this.memberRepository = memberRepository;
+        this.bountyRepository = bountyRepository;
+    }
 
     @Scheduled(fixedRate = 864000000, initialDelay = 60000)
     public void announceStart(){

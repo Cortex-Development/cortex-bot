@@ -16,16 +16,14 @@ public class Challenge {
 
     private String challengeName;
     private String description;
-    private double points;
-    private short difficulty;
-
+    private String link;
+    private long points;
     private String startedBy; //userid of who made the challenge on discord
-
-    private Date startDate;
-    private Date endDate;
+    private long startDate;
+    private long endDate;
 
     public boolean isActive(){
-        return new Date().getTime() < endDate.getTime();
+        return new Date().getTime() < endDate;
     }
 
 }
