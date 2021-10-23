@@ -20,13 +20,11 @@ public class PayCommand extends SlashCommand {
 
     private final MemberRepository memberRepository;
     private final LoggingService loggingService;
-    private final MemberUserService memberUserService;
 
     @Autowired
-    public PayCommand(MemberRepository memberRepository, LoggingService loggingService, MemberUserService memberUserService) {
+    public PayCommand(MemberRepository memberRepository, LoggingService loggingService) {
         this.memberRepository = memberRepository;
         this.loggingService = loggingService;
-        this.memberUserService = memberUserService;
         this.name = "pay";
         this.help = "give your points to someone else";
 

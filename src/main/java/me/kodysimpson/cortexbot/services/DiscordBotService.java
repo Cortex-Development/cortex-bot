@@ -11,6 +11,7 @@ import me.kodysimpson.cortexbot.commands.ceo.CEOBidListCommand;
 import me.kodysimpson.cortexbot.commands.ceo.CEOCommand;
 import me.kodysimpson.cortexbot.commands.points.*;
 import me.kodysimpson.cortexbot.config.DiscordConfiguration;
+import me.kodysimpson.cortexbot.listeners.BlacklistLinkListener;
 import me.kodysimpson.cortexbot.listeners.MessageListeners;
 import me.kodysimpson.cortexbot.listeners.NewMemberListener;
 import me.kodysimpson.cortexbot.listeners.ReactionListener;
@@ -65,6 +66,8 @@ public class DiscordBotService {
     private final LeaderboardCommand leaderboardCommand;
     private final TakePointsCommand takePointsCommand;
     private final SetPointsCommand setPointsCommand;
+    private final BlacklistLinkListener blacklistLinkListener;
+    private final ThankCommand thankCommand;
 
     private static JDA api;
 
@@ -90,6 +93,7 @@ public class DiscordBotService {
                     .addSlashCommand(doneCommand)
                     .addSlashCommand(takePointsCommand)
                     .addSlashCommand(setPointsCommand)
+                    .addSlashCommand(thankCommand)
                     //.addSlashCommand(ceoCommand)
                     //.addSlashCommand(ceoBidCommand)
                     //.addSlashCommand(ceoBidListCommand)
@@ -104,6 +108,7 @@ public class DiscordBotService {
                     .addEventListeners(messageListeners)
                     .addEventListeners(newMemberListener)
                     .addEventListeners(reactionListener)
+                    .addEventListeners(blacklistLinkListener)
                     .setAutoReconnect(true)
                     .setBulkDeleteSplittingEnabled(false)
                     .build();
