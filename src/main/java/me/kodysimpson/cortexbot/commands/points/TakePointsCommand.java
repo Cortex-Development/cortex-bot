@@ -5,7 +5,6 @@ import me.kodysimpson.cortexbot.config.DiscordConfiguration;
 import me.kodysimpson.cortexbot.model.Member;
 import me.kodysimpson.cortexbot.repositories.MemberRepository;
 import me.kodysimpson.cortexbot.services.LoggingService;
-import me.kodysimpson.cortexbot.services.MemberUserService;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
@@ -22,7 +21,6 @@ public class TakePointsCommand extends SlashCommand {
     private MemberRepository memberRepository;
     private DiscordConfiguration discordConfiguration;
     private LoggingService loggingService;
-    private MemberUserService memberUserService;
 
     public TakePointsCommand() {
         this.name = "take-points";
@@ -111,11 +109,6 @@ public class TakePointsCommand extends SlashCommand {
     @Autowired
     public void setDiscordConfiguration(DiscordConfiguration discordConfiguration) {
         this.discordConfiguration = discordConfiguration;
-    }
-
-    @Autowired
-    public void setMemberUserService(MemberUserService memberUserService) {
-        this.memberUserService = memberUserService;
     }
 
 }

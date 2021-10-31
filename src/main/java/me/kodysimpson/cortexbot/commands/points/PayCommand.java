@@ -4,7 +4,6 @@ import com.jagrosh.jdautilities.command.SlashCommand;
 import me.kodysimpson.cortexbot.model.Member;
 import me.kodysimpson.cortexbot.repositories.MemberRepository;
 import me.kodysimpson.cortexbot.services.LoggingService;
-import me.kodysimpson.cortexbot.services.MemberUserService;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.interactions.commands.OptionType;

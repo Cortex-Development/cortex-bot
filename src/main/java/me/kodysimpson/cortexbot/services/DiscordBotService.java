@@ -9,12 +9,10 @@ import me.kodysimpson.cortexbot.commands.bounty.DoneCommand;
 import me.kodysimpson.cortexbot.commands.ceo.CEOBidCommand;
 import me.kodysimpson.cortexbot.commands.ceo.CEOBidListCommand;
 import me.kodysimpson.cortexbot.commands.ceo.CEOCommand;
+import me.kodysimpson.cortexbot.commands.etc.VeteranCommand;
 import me.kodysimpson.cortexbot.commands.points.*;
 import me.kodysimpson.cortexbot.config.DiscordConfiguration;
-import me.kodysimpson.cortexbot.listeners.BlacklistLinkListener;
-import me.kodysimpson.cortexbot.listeners.MessageListeners;
-import me.kodysimpson.cortexbot.listeners.NewMemberListener;
-import me.kodysimpson.cortexbot.listeners.ReactionListener;
+import me.kodysimpson.cortexbot.listeners.*;
 import me.kodysimpson.cortexbot.model.Member;
 import me.kodysimpson.cortexbot.repositories.BountyRepository;
 import me.kodysimpson.cortexbot.repositories.MemberRepository;
@@ -46,7 +44,7 @@ public class DiscordBotService {
 
     private final MemberRepository memberRepository;
     private final DiscordConfiguration discordConfiguration;
-    private final BountyRepository bountyRepository;
+    private final VeteranCommand veteranCommand;
     private final GivePointsCommand givePointsCommand;
     private final CEOCommand ceoCommand;
     private final CEOBidCommand ceoBidCommand;
@@ -55,7 +53,6 @@ public class DiscordBotService {
     private final PayCommand payCommand;
     private final CreateBountyCommand createBountyCommand;
     private final DeleteBountyCommand deleteBountyCommand;
-    private final ReactionListener reactionListener;
     private final MessageListeners messageListeners;
     private final NewMemberListener newMemberListener;
     private final DoneCommand doneCommand;
@@ -68,6 +65,7 @@ public class DiscordBotService {
     private final SetPointsCommand setPointsCommand;
     private final BlacklistLinkListener blacklistLinkListener;
     private final ThankCommand thankCommand;
+    private final ButtonClickListener buttonClickListener;
 
     private static JDA api;
 
@@ -75,7 +73,7 @@ public class DiscordBotService {
     public void init() {
         try {
             CommandClientBuilder commandClient = new CommandClientBuilder()
-                    .setPrefix("$")
+                    .setPrefix("/")
                     .setOwnerId(discordConfiguration.getOwnerId())
                     .setHelpWord("help")
                     .setActivity(Activity.listening("Juice WRLD"))
@@ -94,6 +92,7 @@ public class DiscordBotService {
                     .addSlashCommand(takePointsCommand)
                     .addSlashCommand(setPointsCommand)
                     .addSlashCommand(thankCommand)
+                    .addSlashCommand(veteranCommand)
                     //.addSlashCommand(ceoCommand)
                     //.addSlashCommand(ceoBidCommand)
                     //.addSlashCommand(ceoBidListCommand)
@@ -107,8 +106,8 @@ public class DiscordBotService {
                     .addEventListeners(commandClient.build())
                     .addEventListeners(messageListeners)
                     .addEventListeners(newMemberListener)
-                    .addEventListeners(reactionListener)
                     .addEventListeners(blacklistLinkListener)
+                    .addEventListeners(buttonClickListener)
                     .setAutoReconnect(true)
                     .setBulkDeleteSplittingEnabled(false)
                     .build();
@@ -188,7 +187,7 @@ public class DiscordBotService {
     public void applyVeteranRoles() {
 
         //Veteran Exclusions
-        List<String> veteranExclusions = List.of("143062289631805440", "142827015009992705", "251747460026859520", "190085967309307904", "339945333494775808");
+        List<String> veteranExclusions = memberRepository.findMembersByVeteranEquals(true).stream().map(Member::getUserID).collect(Collectors.toList());
 
         ArrayList<String> topFive = (ArrayList<String>) memberRepository.findAll()
                 .stream()

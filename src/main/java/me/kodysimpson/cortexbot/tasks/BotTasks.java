@@ -5,6 +5,8 @@ import me.kodysimpson.cortexbot.repositories.BountyRepository;
 import me.kodysimpson.cortexbot.repositories.MemberRepository;
 import me.kodysimpson.cortexbot.services.DiscordBotService;
 import net.dv8tion.jda.api.MessageBuilder;
+import net.dv8tion.jda.api.interactions.components.ActionRow;
+import net.dv8tion.jda.api.interactions.components.Button;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -27,7 +29,7 @@ public class BotTasks {
 
     @Scheduled(fixedRate = 864000000, initialDelay = 60000)
     public void announceStart(){
-        getGuild().getTextChannelById("786974733123846214").sendMessage("Cortex bot redeployed. Version: 1.1").queue();
+        getGuild().getTextChannelById("786974733123846214").sendMessage("Cortex bot redeployed. Version: 1.3").queue();
     }
 
     @Scheduled(fixedRate = 3600000)
@@ -46,25 +48,28 @@ public class BotTasks {
     @Scheduled(fixedRate = 120000, initialDelay = 120000)
     public void updateBountiesList(){
 
-        System.out.println("Bounties lb");
+        System.out.println("Bounties Leaderboard");
 
         List<Bounty> bounties = bountyRepository.findAllByFinishedEquals(false);
 
-        MessageBuilder message = new MessageBuilder();
+        MessageBuilder message = new MessageBuilder("""
+                **~~---------------------------------------------------------------------------------------------~~**
+                **Help Bounties**
+                Help bounties are channels you can create just for your specific thing that you need help with. After the issue is solved, you can thank those who helped you and close it.\s
+                                
+                After creating the channel, describe what you need help with in as much detail as possible. Do not use the bounty channels as casual chatrooms. Speak about the issue at hand.
+
+                """);
 
         if (!bounties.isEmpty()){
-            message.append("---------------------------------------------------------------------------------------------", MessageBuilder.Formatting.STRIKETHROUGH).append("\n");
             message.append("Active Bounties:", MessageBuilder.Formatting.BOLD).append("\n\n");
 
             for (int i = 0; i < bounties.size(); i++){
                 message.append("[ #" + (i + 1) + " ] - ", MessageBuilder.Formatting.BOLD).append(DiscordBotService.getUsernameFromUserID(bounties.get(i).getUserId()) + " *-* " + "<#" + bounties.get(i).getChannelId() + ">").append("\n");
             }
 
-            message.append("\n");
-            message.append("---------------------------------------------------------------------------------------------", MessageBuilder.Formatting.STRIKETHROUGH);
             message.append("\n\n*updated every 2 mins*");
         }else{
-            message.append("---------------------------------------------------------------------------------------------", MessageBuilder.Formatting.STRIKETHROUGH).append("\n");
             message.append("Active Bounties:", MessageBuilder.Formatting.BOLD).append("\n\n");
 
             message.append("No active bounties currently!");
@@ -73,6 +78,10 @@ public class BotTasks {
             message.append("---------------------------------------------------------------------------------------------", MessageBuilder.Formatting.STRIKETHROUGH);
             message.append("\n\n*updated every 2 mins*");
         }
+        message.setActionRows(ActionRow.of(
+                Button.primary("new-bounty", "New Bounty"),
+                Button.danger("delete-bounty", "Delete Bounty")
+        ));
 
 //        String last = DiscordBotService.getGuild().getTextChannelById("856780175449784347").getLatestMessageId();
 //        DiscordBotService.getGuild().getTextChannelById("856780175449784347").deleteMessageById(last).queue();

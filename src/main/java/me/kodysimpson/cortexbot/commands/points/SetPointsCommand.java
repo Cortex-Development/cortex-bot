@@ -1,13 +1,10 @@
 package me.kodysimpson.cortexbot.commands.points;
 
-import com.jagrosh.jdautilities.command.Command;
-import com.jagrosh.jdautilities.command.CommandEvent;
 import com.jagrosh.jdautilities.command.SlashCommand;
 import me.kodysimpson.cortexbot.config.DiscordConfiguration;
 import me.kodysimpson.cortexbot.model.Member;
 import me.kodysimpson.cortexbot.repositories.MemberRepository;
 import me.kodysimpson.cortexbot.services.LoggingService;
-import me.kodysimpson.cortexbot.services.MemberUserService;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
@@ -25,14 +22,12 @@ public class SetPointsCommand extends SlashCommand {
     private final MemberRepository memberRepository;
     private final DiscordConfiguration discordConfiguration;
     private final LoggingService loggingService;
-    private final MemberUserService memberUserService;
 
     @Autowired
-    public SetPointsCommand(MemberRepository memberRepository, DiscordConfiguration discordConfiguration, LoggingService loggingService, MemberUserService memberUserService){
+    public SetPointsCommand(MemberRepository memberRepository, DiscordConfiguration discordConfiguration, LoggingService loggingService){
         this.memberRepository = memberRepository;
         this.discordConfiguration = discordConfiguration;
         this.loggingService = loggingService;
-        this.memberUserService = memberUserService;
         this.name = "set-points";
         this.help = "set points for a member";
 

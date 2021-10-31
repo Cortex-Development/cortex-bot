@@ -1,13 +1,10 @@
 package me.kodysimpson.cortexbot.commands.points;
 
-import com.jagrosh.jdautilities.command.Command;
-import com.jagrosh.jdautilities.command.CommandEvent;
 import com.jagrosh.jdautilities.command.SlashCommand;
 import me.kodysimpson.cortexbot.config.DiscordConfiguration;
 import me.kodysimpson.cortexbot.model.Member;
 import me.kodysimpson.cortexbot.repositories.MemberRepository;
 import me.kodysimpson.cortexbot.services.LoggingService;
-import me.kodysimpson.cortexbot.services.MemberUserService;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
@@ -116,8 +113,5 @@ public class GivePointsCommand extends SlashCommand {
     @Autowired
     public void setDiscordConfiguration(DiscordConfiguration discordConfiguration) {
         this.discordConfiguration = discordConfiguration;
-    }
-    @Autowired
-    public void setMemberUserService(MemberUserService memberUserService) {
     }
 }

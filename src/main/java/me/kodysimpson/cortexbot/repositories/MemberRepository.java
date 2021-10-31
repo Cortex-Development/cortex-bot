@@ -16,5 +16,7 @@ public interface MemberRepository extends MongoRepository<Member, String> {
 
     Member findByUserIDIs(String userID);
 
+    List<Member> findMembersByVeteranEquals(boolean isVeteran);
+
 }
 

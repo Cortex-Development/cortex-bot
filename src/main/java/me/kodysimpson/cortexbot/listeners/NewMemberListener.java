@@ -33,7 +33,7 @@ public class NewMemberListener extends ListenerAdapter {
                                 My name is Kody and I would like to welcome you to our community.
                                 This community is centered around people who are enthusiastic about coding or
                                 want to learn new things. It was created as a community for my 
-                                Youtube channel(https://youtube.com/c/KodySimpson), but has grown significantly in other aspects. 
+                                Youtube channel(https://youtube.com/KodySimpson), but has grown significantly in other aspects. 
                                 Here you can find new friends(if you don't have any), ask for help/advice with something 
                                 you are stuck on, and just talk computer science. Please check out the #server-info channel 
                                 for a full catalog of information to help you understand what this is all about. 
@@ -44,7 +44,7 @@ public class NewMemberListener extends ListenerAdapter {
                                 talking, contributing to our open source projects, etc. :)
                                 
                                 If you have any suggestions on how you think the community can be improved, plop a 
-                                message in the *#suggestions* channel. Run **$help** to see the bot commands. 
+                                message in the *#suggestions* channel. Run **/** to see the bot commands. 
                                 
                                 *<3*
                                 """);

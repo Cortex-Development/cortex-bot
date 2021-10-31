@@ -1,9 +1,6 @@
 package me.kodysimpson.cortexbot.commands.points;
 
-import com.jagrosh.jdautilities.command.Command;
-import com.jagrosh.jdautilities.command.CommandEvent;
 import com.jagrosh.jdautilities.command.SlashCommand;
-import me.kodysimpson.cortexbot.services.MemberUserService;
 import me.kodysimpson.cortexbot.services.PointsService;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
@@ -18,11 +15,9 @@ import java.util.List;
 public class PointsCommand extends SlashCommand {
 
     private final PointsService pointsService;
-    private final MemberUserService memberUserService;
 
-    public PointsCommand(PointsService pointsService, MemberUserService memberUserService){
+    public PointsCommand(PointsService pointsService){
         this.pointsService = pointsService;
-        this.memberUserService = memberUserService;
         this.name = "points";
         this.help = "See how many points you or someone else has";
 
