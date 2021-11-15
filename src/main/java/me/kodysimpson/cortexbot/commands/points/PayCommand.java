@@ -61,8 +61,10 @@ public class PayCommand extends SlashCommand {
             }
 
             if (payee.getPoints() >= points) {
+                System.out.println("recipient points: " + recipient.getPoints());
                 recipient.setPoints(recipient.getPoints() + points);
                 memberRepository.save(recipient);
+                System.out.println("recipient points: " + recipient.getPoints());
 
                 //take the points away from the payee
                 payee.setPoints(payee.getPoints() - points);
