@@ -29,7 +29,7 @@ public class BotTasks {
 
     @Scheduled(fixedRate = 864000000, initialDelay = 60000)
     public void announceStart(){
-        getGuild().getTextChannelById("786974733123846214").sendMessage("Cortex bot redeployed. Version: 1.3").queue();
+        getGuild().getTextChannelById("786974733123846214").sendMessage("Cortex bot redeployed. Version: 1.3.1").queue();
     }
 
     @Scheduled(fixedRate = 3600000)
