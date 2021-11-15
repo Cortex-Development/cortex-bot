@@ -45,11 +45,11 @@ public class GivePointsCommand extends SlashCommand {
             List<OptionMapping> options = event.getOptions();
 
             if (options.isEmpty()){
-                event.getHook().sendMessage("Provide a person to give points to. Ex: $give-points 250856681724968960 100").queue();
+                event.getHook().sendMessage("Provide a person to give points to. Ex: /give-points 250856681724968960 100").queue();
             }else{
 
                 if (options.size() == 1){
-                    event.getHook().sendMessage("An amount of points must be provided. Ex: $give-points 250856681724968960 100").queue();
+                    event.getHook().sendMessage("An amount of points must be provided. Ex: /give-points 250856681724968960 100").queue();
                 }else{
 
                     //determine who was provided as an argument to this command
@@ -76,13 +76,28 @@ public class GivePointsCommand extends SlashCommand {
 
                             event.getHook().sendMessage(points + " point(s) have been given to " + user.getName() + ".").queue();
 
-                            //log the points given
-                            loggingService.logPointsGiven(user.getName(), points, event.getMember().getEffectiveName());
+                            if (event.getOption("reason") == null){
+                                //log the points given
+                                loggingService.logPointsGiven(user.getName(), points, event.getMember().getEffectiveName(), null);
 
-                            user.openPrivateChannel().flatMap(channel -> {
-                                return channel.sendMessage("You have been given " + points + " points. " +
-                                        "You now have a total of " + member.getPoints() + " community points.");
-                            }).queue();
+                                user.openPrivateChannel().flatMap(channel -> {
+                                    return channel.sendMessage("You have been given " + points + " points. " +
+                                            "You now have a total of " + member.getPoints() + " community points in Cortex Development.");
+                                }).queue();
+                            }else{
+
+                                String reason = event.getOption("reason").getAsString();
+
+                                //log the points given
+                                loggingService.logPointsGiven(user.getName(), points, event.getMember().getEffectiveName(), reason);
+
+                                user.openPrivateChannel().flatMap(channel -> {
+                                    return channel.sendMessage("You have been given " + points + " points for \"" + reason + "\". " +
+                                            "You now have a total of " + member.getPoints() + " community points in Cortex Development.");
+                                }).queue();
+                            }
+
+
 
 
                     }else{

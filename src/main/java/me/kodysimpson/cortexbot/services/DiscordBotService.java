@@ -63,7 +63,6 @@ public class DiscordBotService {
     private final LeaderboardCommand leaderboardCommand;
     private final TakePointsCommand takePointsCommand;
     private final SetPointsCommand setPointsCommand;
-    private final BlacklistLinkListener blacklistLinkListener;
     private final ThankCommand thankCommand;
     private final ButtonClickListener buttonClickListener;
 
@@ -106,7 +105,6 @@ public class DiscordBotService {
                     .addEventListeners(commandClient.build())
                     .addEventListeners(messageListeners)
                     .addEventListeners(newMemberListener)
-                    .addEventListeners(blacklistLinkListener)
                     .addEventListeners(buttonClickListener)
                     .setAutoReconnect(true)
                     .setBulkDeleteSplittingEnabled(false)

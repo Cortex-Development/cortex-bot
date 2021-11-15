@@ -63,7 +63,7 @@ public class ThankCommand extends SlashCommand {
 
         //see if they are trying to give points to themself
         if (user.getId().equals(event.getMember().getId()) && !event.getMember().isOwner()) {
-            event.reply("You can't thank yourself dummy.").queue();
+            event.getHook().sendMessage("You can't thank yourself dummy.").queue();
             return;
         }
 
@@ -78,7 +78,7 @@ public class ThankCommand extends SlashCommand {
                 points = (int) event.getOption("amount").getAsDouble();
 
                 if (points <= 0) {
-                    event.getHook().sendMessage("You need to provide a positive number of points.").queue();
+                    event.getHook().sendMessage("You need to provide a positive number of points.").setEphemeral(true).queue();
                     return;
                 }
 
@@ -93,7 +93,7 @@ public class ThankCommand extends SlashCommand {
 
                 //did they give any points?
                 if (points == 0){
-                    event.getHook().sendMessage("You have thanked " + user.getName() + ".").queue();
+                    event.getHook().sendMessage("You have thanked " + user.getName() + ".").setEphemeral(true).queue();
 
                     String finalReason = reason;
                     user.openPrivateChannel().flatMap(channel -> {
@@ -101,8 +101,11 @@ public class ThankCommand extends SlashCommand {
                     }).queue();
                 }else{
 
+                    //give the points to the recipient
+                    System.out.println("recipient points: " + recipient.getPoints());
                     recipient.setPoints(recipient.getPoints() + points);
                     memberRepository.save(recipient);
+                    System.out.println("recipient points: " + recipient.getPoints());
 
                     //take the points away from the payee
                     payee.setPoints(payee.getPoints() - points);
@@ -111,7 +114,7 @@ public class ThankCommand extends SlashCommand {
                     //log the points paid
                     loggingService.logPointsPayed(user.getName(), points, event.getMember().getEffectiveName());
 
-                    event.getHook().sendMessage(points + " point(s) have been given to " + user.getName() + " and they have been thanked. You now have a total of " + payee.getPoints() + " point(s).").queue();
+                    event.getHook().sendMessage(points + " point(s) have been given to " + user.getName() + " and they have been thanked. You now have a total of " + payee.getPoints() + " point(s).").setEphemeral(true).queue();
 
                     int finalPoints = points;
                     String finalReason = reason;
@@ -122,11 +125,11 @@ public class ThankCommand extends SlashCommand {
 
                 }
             } else {
-                event.getHook().sendMessage("You do not have " + points + " point(s).").queue();
+                event.getHook().sendMessage("You do not have " + points + " point(s).").setEphemeral(true).queue();
             }
 
         } else {
-            event.getHook().sendMessage("The user provided does not exist in our database.").queue();
+            event.getHook().sendMessage("The user provided does not exist in our database.").setEphemeral(true).queue();
         }
 
     }
