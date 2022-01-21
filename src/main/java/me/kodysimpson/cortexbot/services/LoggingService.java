@@ -24,7 +24,7 @@ public class LoggingService {
     }
 
     public void logPointsGiven(String username, int points, String givenBy, @Nullable String reason){
-        this.log(points + " point(s) have been given to " + username + " by " + givenBy + (reason == null ? "." : "for \"" + reason + "\"."));
+        this.log(points + " point(s) have been given to " + username + " by " + givenBy + (reason == null ? "." : " for \"" + reason + "\"."));
     }
 
     public void logPointsTaken(String username, int points, String givenBy){
