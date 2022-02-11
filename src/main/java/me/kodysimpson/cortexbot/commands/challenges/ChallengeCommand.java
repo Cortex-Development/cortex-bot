@@ -4,7 +4,6 @@ import com.jagrosh.jdautilities.command.SlashCommand;
 import me.kodysimpson.cortexbot.model.Challenge;
 import me.kodysimpson.cortexbot.repositories.ChallengeRepository;
 import net.dv8tion.jda.api.Permission;
-import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
@@ -30,7 +29,7 @@ public class ChallengeCommand extends SlashCommand {
 
     @Override
     protected void execute(SlashCommandEvent slashCommandEvent) {
-        //yo momma
+        //yo momma built like a whale
     }
 
     private class Create extends SlashCommand{
@@ -38,13 +37,12 @@ public class ChallengeCommand extends SlashCommand {
         public Create() {
             this.name = "create";
             this.help = "Create a new challenge";
-            this.userPermissions = new Permission[]{Permission.ADMINISTRATOR};
+//            this.userPermissions = new Permission[]{Permission.ADMINISTRATOR};
 
             List<OptionData> options = new ArrayList<>();
             options.add(new OptionData(OptionType.STRING, "name", "The name of the challenge").setRequired(true));
             options.add(new OptionData(OptionType.STRING, "description", "The description of the challenge announcement").setRequired(true));
             options.add(new OptionData(OptionType.STRING, "link", "Link to the challenge specification document.").setRequired(true));
-            options.add(new OptionData(OptionType.NUMBER, "points", "The amount of points to be rewarded on completion of this challenge").setRequired(true));
             options.add(new OptionData(OptionType.NUMBER, "end", "When the challenge ends, in milliseconds since Epoch Time").setRequired(true));
 
             this.options = options;
@@ -57,14 +55,12 @@ public class ChallengeCommand extends SlashCommand {
             String name = event.getOption("name").getAsString();
             String description = event.getOption("name").getAsString();
             String link = event.getOption("link").getAsString();
-            long points = event.getOption("points").getAsLong();
             long endDate = event.getOption("end").getAsLong();
 
             Challenge challenge = new Challenge();
-            challenge.setChallengeName(name);
+            challenge.setName(name);
             challenge.setDescription(description);
             challenge.setLink(link);
-            challenge.setPoints(points);
             challenge.setStartDate(new Date().getTime());
             challenge.setEndDate(endDate);
 

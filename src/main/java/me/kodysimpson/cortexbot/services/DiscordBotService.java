@@ -9,6 +9,7 @@ import me.kodysimpson.cortexbot.commands.bounty.DoneCommand;
 import me.kodysimpson.cortexbot.commands.ceo.CEOBidCommand;
 import me.kodysimpson.cortexbot.commands.ceo.CEOBidListCommand;
 import me.kodysimpson.cortexbot.commands.ceo.CEOCommand;
+import me.kodysimpson.cortexbot.commands.challenges.ChallengeCommand;
 import me.kodysimpson.cortexbot.commands.etc.VeteranCommand;
 import me.kodysimpson.cortexbot.commands.points.*;
 import me.kodysimpson.cortexbot.config.DiscordConfiguration;
@@ -65,6 +66,7 @@ public class DiscordBotService {
     private final SetPointsCommand setPointsCommand;
     private final ThankCommand thankCommand;
     private final ButtonClickListener buttonClickListener;
+    private final ChallengeCommand challengeCommand;
 
     private static JDA api;
 
@@ -92,6 +94,7 @@ public class DiscordBotService {
                     .addSlashCommand(setPointsCommand)
                     .addSlashCommand(thankCommand)
                     .addSlashCommand(veteranCommand)
+                    .addSlashCommand(challengeCommand)
                     //.addSlashCommand(ceoCommand)
                     //.addSlashCommand(ceoBidCommand)
                     //.addSlashCommand(ceoBidListCommand)
