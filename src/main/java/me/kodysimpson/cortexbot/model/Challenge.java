@@ -18,7 +18,8 @@ public class Challenge {
     private String link;
     private String startedBy; //userid of who made the challenge on discord
     private long startDate;
-    private long endDate;
+
+    private long endDate; //epoch time of when the challenge ends
 
     public boolean isActive(){
         return new Date().getTime() < endDate;
