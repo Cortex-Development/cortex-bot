@@ -11,6 +11,7 @@ import me.kodysimpson.cortexbot.commands.ceo.CEOBidListCommand;
 import me.kodysimpson.cortexbot.commands.ceo.CEOCommand;
 import me.kodysimpson.cortexbot.commands.challenges.ChallengeCommand;
 import me.kodysimpson.cortexbot.commands.etc.VeteranCommand;
+import me.kodysimpson.cortexbot.commands.jokes.JokeCommand;
 import me.kodysimpson.cortexbot.commands.points.*;
 import me.kodysimpson.cortexbot.config.DiscordConfiguration;
 import me.kodysimpson.cortexbot.listeners.*;
@@ -26,6 +27,7 @@ import net.dv8tion.jda.api.exceptions.HierarchyException;
 import net.dv8tion.jda.api.exceptions.InsufficientPermissionException;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.cache.CacheFlag;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -41,6 +43,7 @@ import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
+@Lazy(false)
 public class DiscordBotService {
 
     private final MemberRepository memberRepository;
@@ -67,6 +70,7 @@ public class DiscordBotService {
     private final ThankCommand thankCommand;
     private final ButtonClickListener buttonClickListener;
     private final ChallengeCommand challengeCommand;
+    private final JokeCommand jokeCommand;
 
     private static JDA api;
 
@@ -95,6 +99,7 @@ public class DiscordBotService {
                     .addSlashCommand(thankCommand)
                     .addSlashCommand(veteranCommand)
                     .addSlashCommand(challengeCommand)
+                    .addSlashCommand(jokeCommand).forceGuildOnly("503656531665879063")
                     //.addSlashCommand(ceoCommand)
                     //.addSlashCommand(ceoBidCommand)
                     //.addSlashCommand(ceoBidListCommand)
@@ -111,9 +116,13 @@ public class DiscordBotService {
                     .addEventListeners(buttonClickListener)
                     .setAutoReconnect(true)
                     .setBulkDeleteSplittingEnabled(false)
-                    .build();
+                    .build().awaitReady();
+
+//            getGuild().
 
         } catch (LoginException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
             e.printStackTrace();
         }
     }
