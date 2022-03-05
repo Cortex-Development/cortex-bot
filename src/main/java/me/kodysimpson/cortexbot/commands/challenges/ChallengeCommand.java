@@ -100,7 +100,7 @@ public class ChallengeCommand extends SlashCommand {
 
             MessageBuilder messageBuilder = new MessageBuilder();
             messageBuilder.setContent(announcement);
-            messageBuilder.setActionRows(ActionRow.of(Button.success("submit-challenge", "Submit Solution")));
+            messageBuilder.setActionRows(ActionRow.of(Button.success("submit-challenge", "Submit Solution"), Button.primary("get-challenge-role", "Get Alerted for Future Challenges")));
 
             Message message = messageBuilder.build();
             event.getGuild().getTextChannelById("803777799353270293").sendMessage(message).queue();

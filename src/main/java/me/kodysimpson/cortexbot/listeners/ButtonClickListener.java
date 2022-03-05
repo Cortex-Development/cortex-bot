@@ -2,6 +2,7 @@ package me.kodysimpson.cortexbot.listeners;
 
 import me.kodysimpson.cortexbot.services.BountyService;
 import me.kodysimpson.cortexbot.services.ChallengeService;
+import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.events.interaction.ButtonClickEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +37,17 @@ public class ButtonClickListener extends ListenerAdapter {
             challengeService.createSubmissionChannel(event.getInteraction());
         }else if(event.getButton().getId().equalsIgnoreCase("challenge-close-submission")){
             challengeService.closeSubmissionChannel(event.getInteraction());
+        }else if(event.getButton().getId().equalsIgnoreCase("get-challenge-role")){
+
+            //get the challengeping role
+            Role role = event.getInteraction().getGuild().getRoleById("770425465063604244");
+
+            //add the role to the user
+            event.getInteraction().getMember().getRoles().add(role);
+
+            //reply
+            event.reply("You have been given the @ChallengePing role!").queue();
+
         }
 
     }
