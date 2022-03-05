@@ -81,7 +81,7 @@ public class DiscordBotService {
                     .setPrefix("/")
                     .setOwnerId(discordConfiguration.getOwnerId())
                     .setHelpWord("help")
-                    .setActivity(Activity.listening("Juice WRLD"))
+                    .setActivity(Activity.listening("Glory to Ukraine"))
                     //Add commands
                     .addSlashCommand(leaderboardCommand)
                     .addSlashCommand(websiteCommand)
@@ -98,7 +98,7 @@ public class DiscordBotService {
                     .addSlashCommand(setPointsCommand)
                     .addSlashCommand(thankCommand)
                     .addSlashCommand(veteranCommand)
-                    .addSlashCommand(challengeCommand)
+                    .addSlashCommand(challengeCommand).forceGuildOnly("503656531665879063")
                     .addSlashCommand(jokeCommand).forceGuildOnly("503656531665879063")
                     //.addSlashCommand(ceoCommand)
                     //.addSlashCommand(ceoBidCommand)

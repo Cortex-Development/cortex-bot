@@ -1,6 +1,6 @@
 package me.kodysimpson.cortexbot.repositories;
 
-import me.kodysimpson.cortexbot.model.Challenge;
+import me.kodysimpson.cortexbot.model.challenges.Challenge;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 public interface ChallengeRepository extends MongoRepository<Challenge, String> {

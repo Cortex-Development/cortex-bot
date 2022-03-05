@@ -1,4 +1,4 @@
-package me.kodysimpson.cortexbot.model;
+package me.kodysimpson.cortexbot.model.challenges;
 
 import lombok.Data;
 import org.springframework.data.annotation.Id;
@@ -13,7 +13,11 @@ public class Submission {
     @Id
     private String id;
 
+    private String challengeId;
+
     private String userid;
-    private Date date;
+    private String channel;
+    private boolean won; //if they won the challenge
+    private long date; //when they submitted
 
 }
