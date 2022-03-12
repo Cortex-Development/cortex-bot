@@ -2,6 +2,7 @@ package me.kodysimpson.cortexbot.commands.challenges;
 
 import com.jagrosh.jdautilities.command.SlashCommand;
 import me.kodysimpson.cortexbot.model.challenges.Challenge;
+import me.kodysimpson.cortexbot.model.challenges.ChallengeStatus;
 import me.kodysimpson.cortexbot.model.challenges.Submission;
 import me.kodysimpson.cortexbot.repositories.ChallengeRepository;
 import me.kodysimpson.cortexbot.repositories.SubmissionRepository;
@@ -130,6 +131,7 @@ public class ChallengeCommand extends SlashCommand {
             }
 
             challenge.setEndDate(System.currentTimeMillis());
+            challenge.setStatus(ChallengeStatus.NEEDS_GRADING);
 
             //get all submission channels for the challenge
             List<Submission> submissions = submissionRepository.findAllByChallengeIdEquals(challenge.getId());
@@ -139,17 +141,9 @@ public class ChallengeCommand extends SlashCommand {
             challengeRepository.save(challenge);
 
             //Announce the end of the challenge
-
-            //Get all of the participants into a string list in bold
-            StringBuilder participants = new StringBuilder();
-            for(Submission submission : submissions){
-                participants.append("**").append(event.getGuild().getMemberById(submission.getUserid()).getEffectiveName()).append("**, ");
-            }
-
             MessageBuilder messageBuilder = new MessageBuilder();
             messageBuilder.setContent(event.getGuild().getRoleById("770425465063604244").getAsMention() + "\n\n" +
-                    "The challenge **\"" + challenge.getName() + "\"** has ended.\n" +
-                    "Participants: " + participants + "\n");
+                    "The challenge **\"" + challenge.getName() + "\"** has ended.\n");
             event.getGuild().getTextChannelById("803777799353270293").sendMessage(messageBuilder.build()).queue();
 
             event.reply("The currently ongoing challenge has been ended.").setEphemeral(true).queue();

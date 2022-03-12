@@ -1,6 +1,8 @@
 package me.kodysimpson.cortexbot.services;
 
 import me.kodysimpson.cortexbot.model.challenges.Challenge;
+import me.kodysimpson.cortexbot.model.challenges.ChallengeGrade;
+import me.kodysimpson.cortexbot.model.challenges.ChallengeStatus;
 import me.kodysimpson.cortexbot.model.challenges.Submission;
 import me.kodysimpson.cortexbot.repositories.ChallengeRepository;
 import me.kodysimpson.cortexbot.repositories.SubmissionRepository;
@@ -13,7 +15,10 @@ import net.dv8tion.jda.api.interactions.components.Button;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.Duration;
 import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 
 @Service
 public class ChallengeService {
@@ -136,81 +141,115 @@ public class ChallengeService {
             channel.createPermissionOverride(guild.getPublicRole()).setDeny(Permission.VIEW_CHANNEL).queue();
             channel.putPermissionOverride(role).setAllow(Permission.VIEW_CHANNEL).queue();
 
+            MessageBuilder messageBuilder = new MessageBuilder();
+            messageBuilder.setContent("Your submission has been closed and will be looked at, look out for an announcement on the results. Thank you for participating!");
+            messageBuilder.setActionRows(ActionRow.of(Button.success("challenge-grade-pass", "Passed"), Button.danger("challenge-grade-fail", "Failed")));
+
             //tell the member that their submission has been closed and will be looked at
             member.getUser().openPrivateChannel().queue(privateChannel -> {
-                privateChannel.sendMessage("Your submission has been closed and will be looked at. Look out for an announcement on the results. Thank you for participating!").queue();
+                privateChannel.sendMessage(messageBuilder.build()).queue();
             });
         }
 
     }
-//
-//    public void closeBounty(Interaction interaction){
-//
-//        Guild guild = interaction.getGuild();
-//        Member member = interaction.getMember();
-//
-//        //see if the bounty actually exists in the DB
-//        if (bountyRepository.existsBountyByChannelIdEquals(interaction.getChannel().getId())){
-//
-//            //Get the bounty
-//            Bounty bounty = bountyRepository.findBountyByChannelIdEquals(interaction.getChannel().getId());
-//
-//            //make sure the person who is trying to finish is the owner of the bounty or they are me
-//            if (bounty.getUserId().equalsIgnoreCase(member.getId()) || member.isOwner()){
-//
-//                //mark the bounty as finished and save it
-//                bounty.setFinished(true);
-//                bountyRepository.save(bounty);
-//
-//                //send it for staff approval and grading
-//                interaction.getTextChannel().getManager().setParent(guild.getCategoryById("786974851818192916")).complete();
-//
-//                //adjust the channel view permissions
-//                Role role = guild.getRoleById("786974475354505248");
-//                interaction.getTextChannel().createPermissionOverride(guild.getPublicRole()).setDeny(Permission.VIEW_CHANNEL).queue();
-//                interaction.getTextChannel().putPermissionOverride(role).setAllow(Permission.VIEW_CHANNEL).queue();
-//
-//                //Send a message in the channel with instructions for staff
-//                MessageBuilder builder = new MessageBuilder();
-//                builder.allowMentions(Message.MentionType.ROLE)
-//                        .append("""
-//                        <@&786974475354505248> Check this conversation to see if anyone should be given points for helping the creator of this bounty. Do /done or click the button when done.
-//                        """);
-//                builder.setActionRows(ActionRow.of(Button.primary("grade-bounty", "Finished Grading")));
-//                interaction.getTextChannel().sendMessage(builder.build()).queue();
-//
-//                interaction.getHook().sendMessage("Bounty finished.").queue();
-//
-//                //send a message to the bounty owner telling them what just happened
-//                member.getUser().openPrivateChannel().queue(privateChannel -> {
-//                    privateChannel.sendMessage("Your help bounty has been closed and transferred to Community Managers so that points can be awarded if someone helped you.").queue();
-//                });
-//
-//            }else{
-//                interaction.getHook().sendMessage("This isn't your bounty noob.").queue();
-//            }
-//        }
-//
-//    }
-//
-//    public void finishGrading(Interaction interaction){
-//
-//        Member member = interaction.getMember();
-//        if (member.isOwner() || member.getRoles().contains(interaction.getJDA().getRoleById(discordConfiguration.getStaffRole()))){
-//            if(bountyRepository.existsBountyByChannelIdEquals(interaction.getChannel().getId())){
-//
-//                Bounty bounty = bountyRepository.deleteBountyByChannelIdEquals(interaction.getChannel().getId());
-//
-//                //delete the channel
-//                interaction.getTextChannel().delete().queue();
-//
-//                loggingService.log("Bounty help channel finished by " + member.getEffectiveName() + ". Bounty: " + bounty);
-//            }else{
-//                interaction.getHook().sendMessage("This isn't a bounty channel.").queue();
-//            }
-//        }else{
-//            interaction.getHook().sendMessage("You cannot run this command.").queue();
-//        }
-//    }
+
+    public void gradeSubmission(Interaction interaction, boolean pass){
+
+        //Get the current challenge
+        Challenge challenge = getCurrentChallenge();
+
+        //Make sure its ungraded
+
+        Member member = interaction.getMember();
+
+        Submission submission = submissionRepository.findSubmissionByUseridEqualsAndChallengeIdEquals(member.getId(), challenge.getId());
+
+        if(submission.getStatus() != ChallengeGrade.UNGRADED){
+            interaction.reply("This submission has already been graded.").setEphemeral(true).queue();
+        }
+
+        if(pass){
+            submission.setStatus(ChallengeGrade.PASS);
+        }else{
+            submission.setStatus(ChallengeGrade.FAIL);
+        }
+
+        submissionRepository.save(submission);
+
+        //Check to see if all of the submissions for this challenge have been graded. If they have, do soemthing
+        if(submissionRepository.countSubmissionsByChallengeIdAndStatusEquals(challenge.getId(), ChallengeGrade.UNGRADED) == 0){
+
+            finishChallenge(challenge, interaction.getGuild());
+
+        }
+
+        interaction.reply("Submission graded.").setEphemeral(true).queue();
+
+    }
+
+    public void finishChallenge(Challenge challenge, Guild guild){
+
+        //Finalize the state of the challenge and announce the final results
+        challenge.setStatus(ChallengeStatus.GRADED);
+
+        List<Submission> submissions = submissionRepository.findAllByChallengeIdEquals(challenge.getId());
+
+        submissions.forEach(submission -> {
+
+            //Get the channel
+            TextChannel channel = guild.getTextChannelById(submission.getChannel());
+
+            //Get the member/owner of the channel
+            Member member = guild.getMemberById(submission.getUserid());
+
+            //Give the user access to the channel
+            channel.putPermissionOverride(member).setAllow(Permission.VIEW_CHANNEL).queue();
+
+            MessageBuilder messageBuilder = new MessageBuilder();
+            if(submission.getStatus() == ChallengeGrade.PASS){
+
+                //Send a message to the channel that the submission was passed
+                messageBuilder.setContent("Your submission has been passed! **Congratulations**! You have been awarded the full reward and a shiny new role.");
+
+            }else{
+
+                //Send a message to the channel that the submission was failed
+                messageBuilder.setContent("Your submission has been failed, it is great that you tried! You have been awarded half of the reward.");
+
+            }
+
+            //Send the message to the channel
+            channel.sendMessage(messageBuilder.build()).queue();
+
+            //Tell them they can view the channel for 24 hours and then it will be deleted
+            channel.sendMessage("...You can view this channel for *24 hours*, it will be deleted after...").queue();
+
+            channel.delete().queueAfter(24, TimeUnit.HOURS);
+
+
+        });
+
+        //Get a list of names of all of the people who have participated and winners
+        StringBuilder participants = new StringBuilder();
+        StringBuilder winners = new StringBuilder();
+        for(Submission submission : submissions){
+            participants.append("**").append(guild.getMemberById(submission.getUserid()).getEffectiveName()).append("**, ");
+
+            if (submission.getStatus() == ChallengeGrade.PASS){
+                winners.append("**").append(guild.getMemberById(submission.getUserid()).getEffectiveName()).append("**, ");
+            }
+
+        }
+
+        //Announce the end of the challenge
+        MessageBuilder messageBuilder = new MessageBuilder();
+        messageBuilder.setContent(guild.getRoleById("770425465063604244").getAsMention() + "\n\n" +
+                "Results for challenge **\"" + challenge.getName() + "\"**.\n" +
+                "Participants: " + participants + "\n" +
+                "Winners: " + winners + "\n");
+        guild.getTextChannelById("803777799353270293").sendMessage(messageBuilder.build()).queue();
+
+        challengeRepository.save(challenge);
+    }
 
 }

@@ -17,6 +17,7 @@ public class Challenge {
 
     private String name;
     private String description;
+    private ChallengeStatus status;
     private String link;
     private String startedBy; //userid of who made the challenge on discord
     private long startDate;
@@ -27,7 +28,7 @@ public class Challenge {
     private List<String> submissions = new ArrayList<>(); //ids of submissions to this challenge
 
     public boolean isActive(){
-        return new Date().getTime() < endDate;
+        return status == ChallengeStatus.ACTIVE;
     }
 
 }

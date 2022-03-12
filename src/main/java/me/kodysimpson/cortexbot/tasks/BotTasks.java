@@ -1,7 +1,9 @@
 package me.kodysimpson.cortexbot.tasks;
 
 import me.kodysimpson.cortexbot.model.Bounty;
+import me.kodysimpson.cortexbot.model.challenges.ChallengeStatus;
 import me.kodysimpson.cortexbot.repositories.BountyRepository;
+import me.kodysimpson.cortexbot.repositories.ChallengeRepository;
 import me.kodysimpson.cortexbot.repositories.MemberRepository;
 import me.kodysimpson.cortexbot.services.DiscordBotService;
 import net.dv8tion.jda.api.MessageBuilder;
@@ -20,11 +22,27 @@ public class BotTasks {
 
     private final MemberRepository memberRepository;
     private final BountyRepository bountyRepository;
+    private final ChallengeRepository challengeRepository;
 
     @Autowired
-    public BotTasks(MemberRepository memberRepository, BountyRepository bountyRepository) {
+    public BotTasks(MemberRepository memberRepository, BountyRepository bountyRepository, ChallengeRepository challengeRepository) {
         this.memberRepository = memberRepository;
         this.bountyRepository = bountyRepository;
+        this.challengeRepository = challengeRepository;
+    }
+
+    @Scheduled(fixedDelay = 54000)
+    public void endChallenges(){
+
+        System.out.println("THIS IS RUNNING OMG THIS IS RUNNING HOLY SHIT THIS IS RUNNING LOOK OUT");
+
+        //Get all challenges that are Active
+
+//        challengeRepository.findAll().forEach(challenge -> {
+//            challenge.setStatus(ChallengeStatus.ACTIVE);
+//            challengeRepository.save(challenge);
+//        });
+
     }
 
     @Scheduled(fixedRate = 864000000, initialDelay = 60000)

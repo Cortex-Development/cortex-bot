@@ -43,10 +43,18 @@ public class ButtonClickListener extends ListenerAdapter {
             Role role = event.getInteraction().getGuild().getRoleById("770425465063604244");
 
             //add the role to the user
-            event.getInteraction().getMember().getRoles().add(role);
+            event.getInteraction().getGuild().addRoleToMember(event.getMember(), role).queue();
 
             //reply
-            event.reply("You have been given the @ChallengePing role!").queue();
+            event.reply("You have been given the @ChallengePing role!").setEphemeral(true).queue();
+
+        }else if(event.getButton().getId().equalsIgnoreCase("challenge-grade-pass")){
+
+            challengeService.gradeSubmission(event.getInteraction(), true);
+
+        }else if(event.getButton().getId().equalsIgnoreCase("challenge-grade-fail")){
+
+            challengeService.gradeSubmission(event.getInteraction(), false);
 
         }
 

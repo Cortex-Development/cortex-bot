@@ -16,7 +16,9 @@ import me.kodysimpson.cortexbot.commands.points.*;
 import me.kodysimpson.cortexbot.config.DiscordConfiguration;
 import me.kodysimpson.cortexbot.listeners.*;
 import me.kodysimpson.cortexbot.model.Member;
+import me.kodysimpson.cortexbot.model.challenges.ChallengeStatus;
 import me.kodysimpson.cortexbot.repositories.BountyRepository;
+import me.kodysimpson.cortexbot.repositories.ChallengeRepository;
 import me.kodysimpson.cortexbot.repositories.MemberRepository;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
@@ -71,6 +73,7 @@ public class DiscordBotService {
     private final ButtonClickListener buttonClickListener;
     private final ChallengeCommand challengeCommand;
     private final JokeCommand jokeCommand;
+    private final ChallengeRepository challengeRepository;
 
     private static JDA api;
 
@@ -117,8 +120,6 @@ public class DiscordBotService {
                     .setAutoReconnect(true)
                     .setBulkDeleteSplittingEnabled(false)
                     .build().awaitReady();
-
-//            getGuild().
 
         } catch (LoginException e) {
             e.printStackTrace();
