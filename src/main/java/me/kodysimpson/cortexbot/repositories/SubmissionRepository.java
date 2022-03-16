@@ -11,8 +11,10 @@ import java.util.List;
 public interface SubmissionRepository extends MongoRepository<Submission, String> {
 
     boolean existsSubmissionByUseridEqualsAndChallengeIdEquals(String userid, String challengeId);
-
     Submission findSubmissionByUseridEqualsAndChallengeIdEquals(String userid, String challengeId);
+
+    boolean existsSubmissionByChannelEquals(String channel);
+    Submission findSubmissionByChannelEquals(String channel);
 
     List<Submission> findAllByChallengeIdEquals(String challengeId);
 

@@ -36,7 +36,7 @@ public class ChallengeCommand extends SlashCommand {
         this.submissionRepository = submissionRepository;
         this.name = "challenge";
         this.help = "Manage the Cortex challenges";
-        this.children = new SlashCommand[]{new Create(), new End()};
+        this.children = new SlashCommand[]{new Create(), new End(), new FinishGrading()};
     }
 
     @Override
@@ -86,6 +86,7 @@ public class ChallengeCommand extends SlashCommand {
             challenge.setStartDate(new Date().getTime());
             challenge.setEndDate(whenEnd * 1000);
             challenge.setReward(reward);
+            challenge.setStatus(ChallengeStatus.ACTIVE);
 
             challengeRepository.insert(challenge);
 
@@ -150,6 +151,27 @@ public class ChallengeCommand extends SlashCommand {
 
         }
     }
+
+    private class FinishGrading extends SlashCommand{
+
+        public FinishGrading() {
+            this.name = "finishgrading";
+            this.help = "Finish grading the ongoing challenge";
+            this.userPermissions = new Permission[]{Permission.ADMINISTRATOR};
+        }
+
+        @Override
+        protected void execute(SlashCommandEvent event) {
+
+            Challenge challenge = challengeService.getCurrentUngradedChallenge();
+
+            challengeService.finishChallenge(challenge, event.getGuild());
+
+            event.reply("The challenge has finished.").setEphemeral(true).queue();
+
+        }
+    }
+
 }
 
 

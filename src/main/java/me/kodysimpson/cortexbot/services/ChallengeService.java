@@ -15,10 +15,7 @@ import net.dv8tion.jda.api.interactions.components.Button;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.Duration;
 import java.util.List;
-import java.util.Optional;
-import java.util.concurrent.TimeUnit;
 
 @Service
 public class ChallengeService {
@@ -50,6 +47,16 @@ public class ChallengeService {
 
         for (Challenge challenge : challengeRepository.findAll()) {
             if(challenge.isActive()){
+                return challenge;
+            }
+        }
+        return null;
+    }
+
+    public Challenge getCurrentUngradedChallenge(){
+
+        for (Challenge challenge : challengeRepository.findAll()) {
+            if(challenge.getStatus() == ChallengeStatus.NEEDS_GRADING){
                 return challenge;
             }
         }
@@ -89,7 +96,7 @@ public class ChallengeService {
         sm.setDate(System.currentTimeMillis());
         sm.setChallengeId(challenge.getId());
         sm.setUserid(member.getId());
-
+        sm.setStatus(ChallengeGrade.UNGRADED);
 
         MessageBuilder messageBuilder = new MessageBuilder();
 
@@ -138,7 +145,7 @@ public class ChallengeService {
 
             //make it so that only staff can see the channel
             Role role = guild.getRoleById("786974475354505248");
-            channel.createPermissionOverride(guild.getPublicRole()).setDeny(Permission.VIEW_CHANNEL).queue();
+            channel.putPermissionOverride(guild.getPublicRole()).setDeny(Permission.VIEW_CHANNEL).queue();
             channel.putPermissionOverride(role).setAllow(Permission.VIEW_CHANNEL).queue();
 
             MessageBuilder messageBuilder = new MessageBuilder();
@@ -146,44 +153,48 @@ public class ChallengeService {
             messageBuilder.setActionRows(ActionRow.of(Button.success("challenge-grade-pass", "Passed"), Button.danger("challenge-grade-fail", "Failed")));
 
             //tell the member that their submission has been closed and will be looked at
-            member.getUser().openPrivateChannel().queue(privateChannel -> {
-                privateChannel.sendMessage(messageBuilder.build()).queue();
-            });
+            channel.sendMessage(messageBuilder.build()).queue();
         }
 
     }
 
     public void gradeSubmission(Interaction interaction, boolean pass){
 
-        //Get the current challenge
-        Challenge challenge = getCurrentChallenge();
+        Submission submission = submissionRepository.findSubmissionByChannelEquals(interaction.getChannel().getId());
 
-        //Make sure its ungraded
+        //Get the challenge associated with this submission channel
+        Challenge challenge = challengeRepository.findById(submission.getChallengeId()).get();
 
-        Member member = interaction.getMember();
+        if(submission.getStatus() != null && submission.getStatus() != ChallengeGrade.UNGRADED){
 
-        Submission submission = submissionRepository.findSubmissionByUseridEqualsAndChallengeIdEquals(member.getId(), challenge.getId());
+            interaction.getHook().sendMessage("This submission has already been graded.").setEphemeral(true).queue();
 
-        if(submission.getStatus() != ChallengeGrade.UNGRADED){
-            interaction.reply("This submission has already been graded.").setEphemeral(true).queue();
+            return;
         }
 
         if(pass){
             submission.setStatus(ChallengeGrade.PASS);
+
+            //Append the checkmark emoji to the channel name
+            TextChannel channel = (TextChannel) interaction.getChannel();
+            channel.getManager().setName(channel.getName() + " ✅").queue();
+
+            submissionRepository.save(submission);
+
+            interaction.getHook().sendMessage("Submission grade: " + ChallengeGrade.PASS).queue();
+
         }else{
             submission.setStatus(ChallengeGrade.FAIL);
+
+            //Append the cross emoji to the channel name
+            TextChannel channel = (TextChannel) interaction.getChannel();
+            channel.getManager().setName(channel.getName() + " ❌").queue();
+
+            submissionRepository.save(submission);
+
+            interaction.getHook().sendMessage("Submission grade: " + ChallengeGrade.FAIL).queue();
+
         }
-
-        submissionRepository.save(submission);
-
-        //Check to see if all of the submissions for this challenge have been graded. If they have, do soemthing
-        if(submissionRepository.countSubmissionsByChallengeIdAndStatusEquals(challenge.getId(), ChallengeGrade.UNGRADED) == 0){
-
-            finishChallenge(challenge, interaction.getGuild());
-
-        }
-
-        interaction.reply("Submission graded.").setEphemeral(true).queue();
 
     }
 
@@ -224,9 +235,7 @@ public class ChallengeService {
             //Tell them they can view the channel for 24 hours and then it will be deleted
             channel.sendMessage("...You can view this channel for *24 hours*, it will be deleted after...").queue();
 
-            channel.delete().queueAfter(24, TimeUnit.HOURS);
-
-
+            //channel.delete().queueAfter(24, TimeUnit.HOURS);
         });
 
         //Get a list of names of all of the people who have participated and winners
