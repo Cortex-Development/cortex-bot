@@ -1,7 +1,6 @@
 package me.kodysimpson.cortexbot.tasks;
 
 import me.kodysimpson.cortexbot.model.Bounty;
-import me.kodysimpson.cortexbot.model.challenges.ChallengeStatus;
 import me.kodysimpson.cortexbot.repositories.BountyRepository;
 import me.kodysimpson.cortexbot.repositories.ChallengeRepository;
 import me.kodysimpson.cortexbot.repositories.MemberRepository;
@@ -66,9 +65,9 @@ public class BotTasks {
     @Scheduled(fixedRate = 120000, initialDelay = 120000)
     public void updateBountiesList(){
 
-        System.out.println("Bounties Leaderboard");
+        System.out.println("...Bounties Leaderboard...");
 
-        List<Bounty> bounties = bountyRepository.findAllByFinishedEquals(false);
+        List<Bounty> unfinishedBounties = bountyRepository.findAllByFinishedEquals(false);
 
         MessageBuilder message = new MessageBuilder("""
                 **~~---------------------------------------------------------------------------------------------~~**
@@ -79,11 +78,25 @@ public class BotTasks {
 
                 """);
 
-        if (!bounties.isEmpty()){
+        if (!unfinishedBounties.isEmpty()){
+
+            //Prompt the bounty owner to tell us if they still need help or not
+            // if enough time has passed with no messages.
+            for(Bounty bounty : unfinishedBounties){
+
+                //see if the bounty has not been active for more than 36 hours
+                if(System.currentTimeMillis() - bounty.getWhenLastActive() > 129600000){
+
+                    getGuild().getTextChannelById(bounty.getChannelId()).sendMessage("The bounty has been inactive for more than 36 hours. Do you still need help?").queue();
+
+                }
+
+            }
+
             message.append("Active Bounties:", MessageBuilder.Formatting.BOLD).append("\n\n");
 
-            for (int i = 0; i < bounties.size(); i++){
-                message.append("[ #" + (i + 1) + " ] - ", MessageBuilder.Formatting.BOLD).append(DiscordBotService.getUsernameFromUserID(bounties.get(i).getUserId()) + " *-* " + "<#" + bounties.get(i).getChannelId() + ">").append("\n");
+            for (int i = 0; i < unfinishedBounties.size(); i++){
+                message.append("[ #" + (i + 1) + " ] - ", MessageBuilder.Formatting.BOLD).append(DiscordBotService.getUsernameFromUserID(unfinishedBounties.get(i).getUserId()) + " *-* " + "<#" + unfinishedBounties.get(i).getChannelId() + ">").append("\n");
             }
 
             message.append("\n\n*updated every 2 mins*");

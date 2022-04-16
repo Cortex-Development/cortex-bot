@@ -4,8 +4,6 @@ import lombok.Data;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.util.Date;
-
 @Document
 @Data
 public class Bounty {
@@ -15,11 +13,12 @@ public class Bounty {
 
     private String userId;
     private String channelId;
-
     private boolean finished;
-
     private String staffId;
 
-    private Date lastMessage;
+    private long whenLastActive;
+
+    private long whenLastPrompted;
+    private boolean promptResult;
 
 }

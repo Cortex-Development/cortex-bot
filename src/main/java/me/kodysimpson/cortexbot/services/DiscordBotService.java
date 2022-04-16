@@ -6,18 +6,15 @@ import me.kodysimpson.cortexbot.commands.*;
 import me.kodysimpson.cortexbot.commands.bounty.CreateBountyCommand;
 import me.kodysimpson.cortexbot.commands.bounty.DeleteBountyCommand;
 import me.kodysimpson.cortexbot.commands.bounty.DoneCommand;
-import me.kodysimpson.cortexbot.commands.ceo.CEOBidCommand;
-import me.kodysimpson.cortexbot.commands.ceo.CEOBidListCommand;
-import me.kodysimpson.cortexbot.commands.ceo.CEOCommand;
 import me.kodysimpson.cortexbot.commands.challenges.ChallengeCommand;
 import me.kodysimpson.cortexbot.commands.etc.VeteranCommand;
 import me.kodysimpson.cortexbot.commands.jokes.JokeCommand;
 import me.kodysimpson.cortexbot.commands.points.*;
 import me.kodysimpson.cortexbot.config.DiscordConfiguration;
-import me.kodysimpson.cortexbot.listeners.*;
+import me.kodysimpson.cortexbot.listeners.ButtonClickListener;
+import me.kodysimpson.cortexbot.listeners.MessageListeners;
+import me.kodysimpson.cortexbot.listeners.NewMemberListener;
 import me.kodysimpson.cortexbot.model.Member;
-import me.kodysimpson.cortexbot.model.challenges.ChallengeStatus;
-import me.kodysimpson.cortexbot.repositories.BountyRepository;
 import me.kodysimpson.cortexbot.repositories.ChallengeRepository;
 import me.kodysimpson.cortexbot.repositories.MemberRepository;
 import net.dv8tion.jda.api.JDA;
@@ -52,9 +49,6 @@ public class DiscordBotService {
     private final DiscordConfiguration discordConfiguration;
     private final VeteranCommand veteranCommand;
     private final GivePointsCommand givePointsCommand;
-    private final CEOCommand ceoCommand;
-    private final CEOBidCommand ceoBidCommand;
-    private final CEOBidListCommand ceoBidListCommand;
     private final PointsCommand pointsCommand;
     private final PayCommand payCommand;
     private final CreateBountyCommand createBountyCommand;
@@ -127,6 +121,8 @@ public class DiscordBotService {
             e.printStackTrace();
         }
     }
+
+
 
     public static JDA getApi() {
         return api;

@@ -10,9 +10,8 @@ import net.dv8tion.jda.api.interactions.Interaction;
 import net.dv8tion.jda.api.interactions.components.ActionRow;
 import net.dv8tion.jda.api.interactions.components.Button;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-
-import java.util.Date;
 
 @Service
 public class BountyService {
@@ -20,6 +19,17 @@ public class BountyService {
     private final BountyRepository bountyRepository;
     private final DiscordConfiguration discordConfiguration;
     private final LoggingService loggingService;
+
+    @Scheduled(fixedDelay = 1000)
+    public void checkBounties(){
+
+        System.out.println("...Viewing bounties...");
+
+
+
+        System.out.println("...done viewing bounties...");
+
+    }
 
     @Autowired
     public BountyService(BountyRepository bountyRepository, DiscordConfiguration discordConfiguration, LoggingService loggingService) {
@@ -39,12 +49,12 @@ public class BountyService {
         }else{
 
             TextChannel channel = guild.createTextChannel("Help Bounty by " + member.getEffectiveName())
-                    .setParent(guild.getCategoryById("503656779213963264")).complete();
+                    .setParent(guild.getCategoryById("964721281033441310")).complete();
 
             Bounty bounty = new Bounty();
             bounty.setUserId(member.getId());
             bounty.setChannelId(channel.getId());
-            bounty.setLastMessage(new Date());
+            bounty.setWhenLastActive(System.currentTimeMillis());
             bountyRepository.insert(bounty);
 
             MessageBuilder messageBuilder = new MessageBuilder();

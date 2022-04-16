@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.Nonnull;
-import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.Random;
@@ -47,7 +46,7 @@ public class MessageListeners extends ListenerAdapter{
             List<Bounty> bounties = bountyRepository.findAllByFinishedEquals(false);
             for (Bounty bounty : bounties){
                 if (bounty.getChannelId().equalsIgnoreCase(event.getChannel().getId())){
-                    bounty.setLastMessage(new Date());
+                    bounty.setWhenLastActive(System.currentTimeMillis());
                     bountyRepository.save(bounty);
                     break;
                 }
