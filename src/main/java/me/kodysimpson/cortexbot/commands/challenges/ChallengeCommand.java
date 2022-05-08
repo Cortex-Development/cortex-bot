@@ -1,6 +1,7 @@
 package me.kodysimpson.cortexbot.commands.challenges;
 
 import com.jagrosh.jdautilities.command.SlashCommand;
+import com.jagrosh.jdautilities.command.SlashCommandEvent;
 import me.kodysimpson.cortexbot.model.challenges.Challenge;
 import me.kodysimpson.cortexbot.model.challenges.ChallengeStatus;
 import me.kodysimpson.cortexbot.model.challenges.Submission;
@@ -10,11 +11,10 @@ import me.kodysimpson.cortexbot.services.ChallengeService;
 import net.dv8tion.jda.api.MessageBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 import net.dv8tion.jda.api.interactions.components.ActionRow;
-import net.dv8tion.jda.api.interactions.components.Button;
+import net.dv8tion.jda.api.interactions.components.buttons.Button;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

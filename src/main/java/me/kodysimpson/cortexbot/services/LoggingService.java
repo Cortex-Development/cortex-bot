@@ -1,5 +1,6 @@
 package me.kodysimpson.cortexbot.services;
 
+import me.kodysimpson.cortexbot.DiscordBot;
 import me.kodysimpson.cortexbot.config.DiscordConfiguration;
 import net.dv8tion.jda.api.entities.TextChannel;
 import org.jetbrains.annotations.Nullable;
@@ -19,7 +20,7 @@ public class LoggingService {
     }
 
     public void log(String message){
-        TextChannel channel = DiscordBotService.getApi().getGuildById("503656531665879063").getTextChannelById(discordConfiguration.getLoggingChannel());
+        TextChannel channel = DiscordBot.getApi().getGuildById("503656531665879063").getTextChannelById(discordConfiguration.getLoggingChannel());
         channel.sendMessage(message + " [" + new Date() + "]").queue();
     }
 

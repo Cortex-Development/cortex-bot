@@ -8,10 +8,13 @@ import me.kodysimpson.cortexbot.repositories.ChallengeRepository;
 import me.kodysimpson.cortexbot.repositories.SubmissionRepository;
 import net.dv8tion.jda.api.MessageBuilder;
 import net.dv8tion.jda.api.Permission;
-import net.dv8tion.jda.api.entities.*;
-import net.dv8tion.jda.api.interactions.Interaction;
+import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.Member;
+import net.dv8tion.jda.api.entities.Role;
+import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.interactions.components.ActionRow;
-import net.dv8tion.jda.api.interactions.components.Button;
+import net.dv8tion.jda.api.interactions.components.buttons.Button;
+import net.dv8tion.jda.api.interactions.components.buttons.ButtonInteraction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -63,7 +66,7 @@ public class ChallengeService {
         return null;
     }
 
-    public void createSubmissionChannel(Interaction interaction){
+    public void createSubmissionChannel(ButtonInteraction interaction){
 
         //See if there is an ongoing challenge
         Challenge challenge = getCurrentChallenge();
@@ -87,9 +90,9 @@ public class ChallengeService {
                 .setParent(guild.getCategoryById("803777453914456104")).complete();
 
         Role role = guild.getRoleById("786974475354505248");
-        channel.createPermissionOverride(guild.getPublicRole()).setDeny(Permission.VIEW_CHANNEL).queue();
-        channel.putPermissionOverride(role).setAllow(Permission.VIEW_CHANNEL).queue();
-        channel.putPermissionOverride(member).setAllow(Permission.VIEW_CHANNEL).queue();
+        channel.getManager().putRolePermissionOverride(guild.getPublicRole().getIdLong(), null, List.of(Permission.VIEW_CHANNEL)).queue();
+        channel.getManager().putRolePermissionOverride(role.getIdLong(), List.of(Permission.VIEW_CHANNEL), null).queue();
+        channel.getManager().putMemberPermissionOverride(member.getIdLong(), List.of(Permission.VIEW_CHANNEL), null).queue();
 
         Submission sm = new Submission();
         sm.setChannel(channel.getId());
@@ -116,7 +119,7 @@ public class ChallengeService {
         submissionRepository.insert(sm);
     }
 
-    public void closeSubmissionChannel(Interaction interaction){
+    public void closeSubmissionChannel(ButtonInteraction interaction){
 
         //Get the current challenge
         Challenge challenge = getCurrentChallenge();
@@ -145,8 +148,8 @@ public class ChallengeService {
 
             //make it so that only staff can see the channel
             Role role = guild.getRoleById("786974475354505248");
-            channel.putPermissionOverride(guild.getPublicRole()).setDeny(Permission.VIEW_CHANNEL).queue();
-            channel.putPermissionOverride(role).setAllow(Permission.VIEW_CHANNEL).queue();
+            channel.getManager().putRolePermissionOverride(guild.getPublicRole().getIdLong(), null, List.of(Permission.VIEW_CHANNEL)).queue();
+            channel.getManager().putRolePermissionOverride(role.getIdLong(), List.of(Permission.VIEW_CHANNEL), null).queue();
 
             MessageBuilder messageBuilder = new MessageBuilder();
             messageBuilder.setContent("Your submission has been closed and will be looked at, look out for an announcement on the results. Thank you for participating!");
@@ -158,7 +161,7 @@ public class ChallengeService {
 
     }
 
-    public void gradeSubmission(Interaction interaction, boolean pass){
+    public void gradeSubmission(ButtonInteraction interaction, boolean pass){
 
         Submission submission = submissionRepository.findSubmissionByChannelEquals(interaction.getChannel().getId());
 
@@ -214,7 +217,7 @@ public class ChallengeService {
             Member member = guild.getMemberById(submission.getUserid());
 
             //Give the user access to the channel
-            channel.putPermissionOverride(member).setAllow(Permission.VIEW_CHANNEL).queue();
+            channel.getManager().putMemberPermissionOverride(member.getIdLong(), List.of(Permission.VIEW_CHANNEL), null).queue();
 
             MessageBuilder messageBuilder = new MessageBuilder();
             if(submission.getStatus() == ChallengeGrade.PASS){

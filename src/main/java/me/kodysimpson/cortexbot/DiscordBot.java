@@ -1,9 +1,11 @@
-package me.kodysimpson.cortexbot.services;
+package me.kodysimpson.cortexbot;
 
 import com.jagrosh.jdautilities.command.CommandClientBuilder;
 import lombok.RequiredArgsConstructor;
-import me.kodysimpson.cortexbot.commands.*;
-import me.kodysimpson.cortexbot.commands.bounty.CreateBountyCommand;
+import me.kodysimpson.cortexbot.commands.CodeBlockCommand;
+import me.kodysimpson.cortexbot.commands.JavaTutCommand;
+import me.kodysimpson.cortexbot.commands.LeaderboardCommand;
+import me.kodysimpson.cortexbot.commands.SuggestionCommand;
 import me.kodysimpson.cortexbot.commands.bounty.DeleteBountyCommand;
 import me.kodysimpson.cortexbot.commands.bounty.DoneCommand;
 import me.kodysimpson.cortexbot.commands.challenges.ChallengeCommand;
@@ -13,6 +15,7 @@ import me.kodysimpson.cortexbot.commands.points.*;
 import me.kodysimpson.cortexbot.config.DiscordConfiguration;
 import me.kodysimpson.cortexbot.listeners.ButtonClickListener;
 import me.kodysimpson.cortexbot.listeners.MessageListeners;
+import me.kodysimpson.cortexbot.listeners.ModalListener;
 import me.kodysimpson.cortexbot.listeners.NewMemberListener;
 import me.kodysimpson.cortexbot.model.Member;
 import me.kodysimpson.cortexbot.repositories.ChallengeRepository;
@@ -43,7 +46,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Service
 @Lazy(false)
-public class DiscordBotService {
+public class DiscordBot {
 
     private final MemberRepository memberRepository;
     private final DiscordConfiguration discordConfiguration;
@@ -51,13 +54,12 @@ public class DiscordBotService {
     private final GivePointsCommand givePointsCommand;
     private final PointsCommand pointsCommand;
     private final PayCommand payCommand;
-    private final CreateBountyCommand createBountyCommand;
     private final DeleteBountyCommand deleteBountyCommand;
     private final MessageListeners messageListeners;
+    private final ModalListener modalListener;
     private final NewMemberListener newMemberListener;
     private final DoneCommand doneCommand;
     private final SuggestionCommand suggestionCommand;
-    private final WebsiteCommand websiteCommand;
     private final JavaTutCommand javaTutCommand;
     private final CodeBlockCommand codeBlockCommand;
     private final LeaderboardCommand leaderboardCommand;
@@ -81,14 +83,12 @@ public class DiscordBotService {
                     .setActivity(Activity.listening("Glory to Ukraine"))
                     //Add commands
                     .addSlashCommand(leaderboardCommand)
-                    .addSlashCommand(websiteCommand)
                     .addSlashCommand(suggestionCommand)
                     .addSlashCommand(codeBlockCommand)
                     .addSlashCommand(javaTutCommand)
                     .addSlashCommand(pointsCommand)
                     .addSlashCommand(givePointsCommand)
                     .addSlashCommand(payCommand)
-                    .addSlashCommand(createBountyCommand)
                     .addSlashCommand(deleteBountyCommand)
                     .addSlashCommand(doneCommand)
                     .addSlashCommand(takePointsCommand)
@@ -96,12 +96,7 @@ public class DiscordBotService {
                     .addSlashCommand(thankCommand)
                     .addSlashCommand(veteranCommand)
                     .addSlashCommand(challengeCommand).forceGuildOnly("503656531665879063")
-                    .addSlashCommand(jokeCommand).forceGuildOnly("503656531665879063")
-                    //.addSlashCommand(ceoCommand)
-                    //.addSlashCommand(ceoBidCommand)
-                    //.addSlashCommand(ceoBidListCommand)
-                    ;
-
+                    .addSlashCommand(jokeCommand).forceGuildOnly("503656531665879063");
 
             api = JDABuilder.create(List.of(GatewayIntent.GUILD_EMOJIS, GatewayIntent.GUILD_MEMBERS,
                     GatewayIntent.GUILD_MESSAGES, GatewayIntent.DIRECT_MESSAGES, GatewayIntent.GUILD_MESSAGE_REACTIONS))
@@ -111,13 +106,12 @@ public class DiscordBotService {
                     .addEventListeners(messageListeners)
                     .addEventListeners(newMemberListener)
                     .addEventListeners(buttonClickListener)
+                    .addEventListeners(modalListener)
                     .setAutoReconnect(true)
                     .setBulkDeleteSplittingEnabled(false)
                     .build().awaitReady();
 
-        } catch (LoginException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
+        } catch (LoginException | InterruptedException e) {
             e.printStackTrace();
         }
     }
@@ -193,9 +187,6 @@ public class DiscordBotService {
     @Scheduled(fixedRate = 3600000, initialDelay = 5000L)
     public void applyVeteranRoles() {
 
-        //Veteran Exclusions
-        List<String> veteranExclusions = memberRepository.findMembersByVeteranEquals(true).stream().map(Member::getUserID).collect(Collectors.toList());
-
         ArrayList<String> topFive = (ArrayList<String>) memberRepository.findAll()
                 .stream()
                 .sorted(Comparator.comparing(Member::getPoints).reversed())
@@ -206,7 +197,7 @@ public class DiscordBotService {
         //Remove the regular role from the current members if they are not top 5
         getGuild().getMembers()
                 .forEach(member -> {
-                    if (member.getRoles().contains(getApi().getRoleById(discordConfiguration.getRegularRoleId())) && !topFive.contains(member.getId()) && !veteranExclusions.contains(member.getId())) {
+                    if (member.getRoles().contains(getApi().getRoleById(discordConfiguration.getRegularRoleId())) && !topFive.contains(member.getId())) {
                         getGuild().removeRoleFromMember(member, getApi().getRoleById(discordConfiguration.getVeteranRoleId())).queue();
                     }
                 });
@@ -220,7 +211,6 @@ public class DiscordBotService {
     }
 
     public static String getUsernameFromUserID(String userId){
-
         return getApi().retrieveUserById(userId, true).complete().getAsTag();
     }
 

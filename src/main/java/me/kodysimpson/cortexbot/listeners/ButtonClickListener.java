@@ -3,8 +3,13 @@ package me.kodysimpson.cortexbot.listeners;
 import me.kodysimpson.cortexbot.services.BountyService;
 import me.kodysimpson.cortexbot.services.ChallengeService;
 import net.dv8tion.jda.api.entities.Role;
-import net.dv8tion.jda.api.events.interaction.ButtonClickEvent;
+import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import net.dv8tion.jda.api.interactions.components.ActionRow;
+import net.dv8tion.jda.api.interactions.components.Modal;
+import net.dv8tion.jda.api.interactions.components.text.TextInput;
+import net.dv8tion.jda.api.interactions.components.text.TextInputStyle;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -21,7 +26,28 @@ public class ButtonClickListener extends ListenerAdapter {
     }
 
     @Override
-    public void onButtonClick(ButtonClickEvent event){
+    public void onButtonInteraction(@NotNull ButtonInteractionEvent event) {
+
+        if(event.getButton().getId().equalsIgnoreCase("i-got-helped")){
+
+            TextInput email = TextInput.create("helper", "Who helped you?", TextInputStyle.SHORT)
+                    .setPlaceholder("Put their name here")
+                    .setRequired(true)
+                    .build();
+
+            TextInput body = TextInput.create("proof", "Body", TextInputStyle.PARAGRAPH)
+                    .setPlaceholder("Put a link to the message, screenshot, etc.")
+                    .setRequired(true)
+                    .build();
+
+            Modal modal = Modal.create("got-helped", "I Got Helped")
+                    .addActionRows(ActionRow.of(email), ActionRow.of(body))
+                    .build();
+
+            event.replyModal(modal).queue();
+
+            return;
+        }
 
         event.deferReply().setEphemeral(true).queue();
 
@@ -56,6 +82,22 @@ public class ButtonClickListener extends ListenerAdapter {
 
             challengeService.gradeSubmission(event.getInteraction(), false);
 
+        }else if(event.getButton().getId().equalsIgnoreCase("points-given")){
+
+            //Make sure the user is in the correct role
+            Role communityManager = event.getInteraction().getGuild().getRoleById("786974475354505248");
+
+            if(!event.getMember().getRoles().contains(communityManager)){
+                event.getHook().sendMessage("Nice try.").setEphemeral(true).queue();
+                return;
+            }
+
+            // Add [POINTS GIVEN] to the message
+            event.getInteraction().getMessage().editMessage(event.getInteraction().getMessage().getContentRaw() + " [POINTS GIVEN]").queue();
+
+            //remove the reactions from the message
+
+            event.getHook().sendMessage("Roger.").setEphemeral(true).queue();
         }
 
     }

@@ -6,12 +6,14 @@ import me.kodysimpson.cortexbot.repositories.BountyRepository;
 import net.dv8tion.jda.api.MessageBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.*;
-import net.dv8tion.jda.api.interactions.Interaction;
+import net.dv8tion.jda.api.interactions.commands.SlashCommandInteraction;
 import net.dv8tion.jda.api.interactions.components.ActionRow;
-import net.dv8tion.jda.api.interactions.components.Button;
+import net.dv8tion.jda.api.interactions.components.buttons.Button;
+import net.dv8tion.jda.api.interactions.components.buttons.ButtonInteraction;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class BountyService {
@@ -20,17 +22,6 @@ public class BountyService {
     private final DiscordConfiguration discordConfiguration;
     private final LoggingService loggingService;
 
-    @Scheduled(fixedDelay = 1000)
-    public void checkBounties(){
-
-        System.out.println("...Viewing bounties...");
-
-
-
-        System.out.println("...done viewing bounties...");
-
-    }
-
     @Autowired
     public BountyService(BountyRepository bountyRepository, DiscordConfiguration discordConfiguration, LoggingService loggingService) {
         this.bountyRepository = bountyRepository;
@@ -38,11 +29,16 @@ public class BountyService {
         this.loggingService = loggingService;
     }
 
-    public void createNewBounty(Interaction interaction){
+    public void createNewBounty(ButtonInteraction interaction){
 
         //create a new channel for this bounty
         Guild guild = interaction.getGuild();
         Member member = interaction.getMember();
+
+        if(guild == null){
+            interaction.getHook().sendMessage("An error occurred. Please try again later.").queue();
+            return;
+        }
 
         if(bountyRepository.existsBountyByUserIdEquals(member.getId())){
             interaction.getHook().sendMessage("You already have a bounty open.").queue();
@@ -74,7 +70,48 @@ public class BountyService {
 
     }
 
-    public void deleteBounty(Interaction interaction){
+    public void createNewBounty(SlashCommandInteraction interaction){
+
+        //create a new channel for this bounty
+        Guild guild = interaction.getGuild();
+        Member member = interaction.getMember();
+
+        if(guild == null){
+            interaction.getHook().sendMessage("An error occurred. Please try again later.").queue();
+            return;
+        }
+
+        if(bountyRepository.existsBountyByUserIdEquals(member.getId())){
+            interaction.getHook().sendMessage("You already have a bounty open.").queue();
+        }else{
+
+            TextChannel channel = guild.createTextChannel("Help Bounty by " + member.getEffectiveName())
+                    .setParent(guild.getCategoryById("964721281033441310")).complete();
+
+            Bounty bounty = new Bounty();
+            bounty.setUserId(member.getId());
+            bounty.setChannelId(channel.getId());
+            bounty.setWhenLastActive(System.currentTimeMillis());
+            bountyRepository.insert(bounty);
+
+            MessageBuilder messageBuilder = new MessageBuilder();
+
+            messageBuilder.append("---------------------------------------------------------------------------------------------", MessageBuilder.Formatting.STRIKETHROUGH).append("\n");
+            messageBuilder.append(member.getEffectiveName() + "'s Help Bounty", MessageBuilder.Formatting.BOLD).append("\n\n");
+            messageBuilder.append("*For " + member.getEffectiveName() + "*: Describe the issue you need solving in as much detail as possible. Post the code snippets in good formatting so it can be read easily.").append("\n");
+            messageBuilder.append("Once the issue has been solved, close the channel by clicking the green button.").append("\n\n");
+            messageBuilder.setActionRows(ActionRow.of(Button.success("done-bounty", "Done")));
+            messageBuilder.append("---------------------------------------------------------------------------------------------", MessageBuilder.Formatting.STRIKETHROUGH);
+
+            Message message = channel.sendMessage(messageBuilder.build()).complete();
+
+            interaction.getHook().sendMessage("A help bounty has been created for you in #" + "Help Bounty by " + member.getEffectiveName()).queue();
+
+        }
+
+    }
+
+    public void deleteBounty(ButtonInteraction interaction){
 
         Guild guild = interaction.getGuild();
         Member member = interaction.getMember();
@@ -89,7 +126,22 @@ public class BountyService {
         }
     }
 
-    public void closeBounty(Interaction interaction){
+    public void deleteBounty(SlashCommandInteraction interaction){
+
+        Guild guild = interaction.getGuild();
+        Member member = interaction.getMember();
+        if(bountyRepository.existsBountyByUserIdEquals(member.getId())){
+
+            Bounty bounty = bountyRepository.deleteBountyByUserIdEquals(member.getId());
+            guild.getTextChannelById(bounty.getChannelId()).delete().complete();
+
+            interaction.getHook().sendMessage("Bounty help channel deleted. You can now open a new bounty.").setEphemeral(true).queue();
+        }else{
+            interaction.getHook().sendMessage("You don't have a bounty currently open dummy.").setEphemeral(true).queue();
+        }
+    }
+
+    public void closeBounty(ButtonInteraction interaction){
 
         Guild guild = interaction.getGuild();
         Member member = interaction.getMember();
@@ -112,8 +164,8 @@ public class BountyService {
 
                 //adjust the channel view permissions
                 Role role = guild.getRoleById("786974475354505248");
-                interaction.getTextChannel().createPermissionOverride(guild.getPublicRole()).setDeny(Permission.VIEW_CHANNEL).queue();
-                interaction.getTextChannel().putPermissionOverride(role).setAllow(Permission.VIEW_CHANNEL).queue();
+                interaction.getTextChannel().getManager().putPermissionOverride(guild.getPublicRole(), null, List.of(Permission.VIEW_CHANNEL)).queue();
+                interaction.getTextChannel().getManager().putPermissionOverride(role, List.of(Permission.VIEW_CHANNEL), null).queue();
 
                 //Send a message in the channel with instructions for staff
                 MessageBuilder builder = new MessageBuilder();
@@ -127,9 +179,14 @@ public class BountyService {
                 interaction.getHook().sendMessage("Bounty finished.").queue();
 
                 //send a message to the bounty owner telling them what just happened
-                member.getUser().openPrivateChannel().queue(privateChannel -> {
-                    privateChannel.sendMessage("Your help bounty has been closed and transferred to Community Managers so that points can be awarded if someone helped you.").queue();
-                });
+
+                Member bountyOwner = guild.getMemberById(bounty.getUserId());
+
+                if(bountyOwner != null){
+                    bountyOwner.getUser().openPrivateChannel().queue(privateChannel -> {
+                        privateChannel.sendMessage("Your help bounty has been closed and transferred to Community Managers so that points can be awarded if someone helped you.").queue();
+                    });
+                }
 
             }else{
                 interaction.getHook().sendMessage("This isn't your bounty noob.").queue();
@@ -138,7 +195,27 @@ public class BountyService {
 
     }
 
-    public void finishGrading(Interaction interaction){
+    public void finishGrading(ButtonInteraction interaction){
+
+        Member member = interaction.getMember();
+        if (member.isOwner() || member.getRoles().contains(interaction.getJDA().getRoleById(discordConfiguration.getStaffRole()))){
+            if(bountyRepository.existsBountyByChannelIdEquals(interaction.getChannel().getId())){
+
+                Bounty bounty = bountyRepository.deleteBountyByChannelIdEquals(interaction.getChannel().getId());
+
+                //delete the channel
+                interaction.getTextChannel().delete().queue();
+
+                loggingService.log("Bounty help channel finished by " + member.getEffectiveName() + ". Bounty: " + bounty);
+            }else{
+                interaction.getHook().sendMessage("This isn't a bounty channel.").queue();
+            }
+        }else{
+            interaction.getHook().sendMessage("You cannot run this command.").queue();
+        }
+    }
+
+    public void finishGrading(SlashCommandInteraction interaction){
 
         Member member = interaction.getMember();
         if (member.isOwner() || member.getRoles().contains(interaction.getJDA().getRoleById(discordConfiguration.getStaffRole()))){

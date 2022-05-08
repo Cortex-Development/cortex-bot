@@ -6,7 +6,7 @@ import me.kodysimpson.cortexbot.model.Member;
 import me.kodysimpson.cortexbot.repositories.BountyRepository;
 import me.kodysimpson.cortexbot.repositories.MemberRepository;
 import net.dv8tion.jda.api.EmbedBuilder;
-import net.dv8tion.jda.api.events.message.guild.GuildMessageReceivedEvent;
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -34,7 +34,7 @@ public class MessageListeners extends ListenerAdapter{
     }
 
     @Override
-    public void onGuildMessageReceived(@Nonnull GuildMessageReceivedEvent event) {
+    public void onMessageReceived(@Nonnull MessageReceivedEvent event) {
 
         if (event.getChannel().getId().equalsIgnoreCase("855669438170267698")){
             event.getGuild().getTextChannelById(event.getChannel().getId()).deleteMessageById(event.getMessageId()).completeAfter(5, TimeUnit.SECONDS);
@@ -94,7 +94,7 @@ public class MessageListeners extends ListenerAdapter{
                 eb.setAuthor(event.getAuthor().getName(), null, event.getAuthor().getAvatarUrl())
                         .setDescription(event.getMessage().getContentRaw());
                 eb.setColor(event.getMember().getColorRaw());
-                event.getChannel().sendMessage(eb.build()).queue(m -> {
+                event.getChannel().sendMessageEmbeds(eb.build()).queue(m -> {
                     m.addReaction(Objects.requireNonNull(event.getGuild().getEmoteById(discordConfiguration.getGreenTickId()))).queue();
                     m.addReaction(Objects.requireNonNull(event.getGuild().getEmoteById(discordConfiguration.getNeutralTickId()))).queue();
                     m.addReaction(Objects.requireNonNull(event.getGuild().getEmoteById(discordConfiguration.getRedTickId()))).queue();

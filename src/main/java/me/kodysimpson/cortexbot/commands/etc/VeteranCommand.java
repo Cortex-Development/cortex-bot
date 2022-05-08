@@ -1,10 +1,10 @@
 package me.kodysimpson.cortexbot.commands.etc;
 
 import com.jagrosh.jdautilities.command.SlashCommand;
+import com.jagrosh.jdautilities.command.SlashCommandEvent;
 import me.kodysimpson.cortexbot.model.Member;
 import me.kodysimpson.cortexbot.repositories.MemberRepository;
 import net.dv8tion.jda.api.entities.User;
-import net.dv8tion.jda.api.events.interaction.SlashCommandEvent;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,7 +45,6 @@ public class VeteranCommand extends SlashCommand {
                 Member member = memberRepository.findByUserIDIs(user.getId());
 
                 if (member != null) {
-                    member.setVeteran(true);
                     memberRepository.save(member);
                     user.openPrivateChannel().flatMap(channel -> channel.sendMessage("You are now a Veteran on Cortex Development for your activity.")).queue();
                 } else {

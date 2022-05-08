@@ -1,7 +1,7 @@
 package me.kodysimpson.cortexbot.listeners;
 
+import me.kodysimpson.cortexbot.DiscordBot;
 import me.kodysimpson.cortexbot.config.DiscordConfiguration;
-import me.kodysimpson.cortexbot.services.DiscordBotService;
 import net.dv8tion.jda.api.MessageBuilder;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -23,7 +23,7 @@ public class NewMemberListener extends ListenerAdapter {
 
     @Override
     public void onGuildMemberJoin(@Nonnull GuildMemberJoinEvent event) {
-        DiscordBotService.addRoleToMember(event.getMember(), discordConfiguration.getMemberRoleId(), new Consumer<Void>() {
+        DiscordBot.addRoleToMember(event.getMember(), discordConfiguration.getMemberRoleId(), new Consumer<Void>() {
             @Override
             public void accept(Void unused) {
                 event.getMember().getUser().openPrivateChannel().queue(privateChannel -> {

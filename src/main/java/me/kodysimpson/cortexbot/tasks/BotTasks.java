@@ -1,20 +1,21 @@
 package me.kodysimpson.cortexbot.tasks;
 
+import me.kodysimpson.cortexbot.DiscordBot;
 import me.kodysimpson.cortexbot.model.Bounty;
 import me.kodysimpson.cortexbot.repositories.BountyRepository;
 import me.kodysimpson.cortexbot.repositories.ChallengeRepository;
 import me.kodysimpson.cortexbot.repositories.MemberRepository;
-import me.kodysimpson.cortexbot.services.DiscordBotService;
 import net.dv8tion.jda.api.MessageBuilder;
+import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.interactions.components.ActionRow;
-import net.dv8tion.jda.api.interactions.components.Button;
+import net.dv8tion.jda.api.interactions.components.buttons.Button;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-import static me.kodysimpson.cortexbot.services.DiscordBotService.getGuild;
+import static me.kodysimpson.cortexbot.DiscordBot.getGuild;
 
 @Service
 public class BotTasks {
@@ -30,39 +31,12 @@ public class BotTasks {
         this.challengeRepository = challengeRepository;
     }
 
-    @Scheduled(fixedDelay = 54000)
-    public void endChallenges(){
-
-        System.out.println("THIS IS RUNNING OMG THIS IS RUNNING HOLY SHIT THIS IS RUNNING LOOK OUT");
-
-        //Get all challenges that are Active
-
-//        challengeRepository.findAll().forEach(challenge -> {
-//            challenge.setStatus(ChallengeStatus.ACTIVE);
-//            challengeRepository.save(challenge);
-//        });
-
-    }
-
     @Scheduled(fixedRate = 864000000, initialDelay = 60000)
     public void announceStart(){
         getGuild().getTextChannelById("786974733123846214").sendMessage("Cortex bot redeployed. Version: 1.3.2").queue();
     }
 
-    @Scheduled(fixedRate = 3600000)
-    public void payMembers(){
-
-        System.out.println("Running Passive Income Task");
-
-        memberRepository.findAll().stream()
-                .forEach(member -> {
-                    member.setPoints(member.getPoints() + 1);
-                    memberRepository.save(member);
-                });
-
-    }
-
-    @Scheduled(fixedRate = 120000, initialDelay = 120000)
+    @Scheduled(fixedRate = 120000)
     public void updateBountiesList(){
 
         System.out.println("...Bounties Leaderboard...");
@@ -80,26 +54,33 @@ public class BotTasks {
 
         if (!unfinishedBounties.isEmpty()){
 
+            message.append("Active Bounties:", MessageBuilder.Formatting.BOLD).append("\n\n");
+
             //Prompt the bounty owner to tell us if they still need help or not
             // if enough time has passed with no messages.
-            for(Bounty bounty : unfinishedBounties){
+            for(int i = 0; i < unfinishedBounties.size(); i++){
+
+                Bounty bounty = unfinishedBounties.get(i);
+
+                //If the channel associated with the bounty does not exist, remove the bounty
+                TextChannel channel = getGuild().getTextChannelById(bounty.getChannelId());
+
+                if(channel == null){
+                    bountyRepository.delete(bounty);
+                    continue;
+                }
 
                 //see if the bounty has not been active for more than 36 hours
                 if(System.currentTimeMillis() - bounty.getWhenLastActive() > 129600000){
-
-                    getGuild().getTextChannelById(bounty.getChannelId()).sendMessage("The bounty has been inactive for more than 36 hours. Do you still need help?").queue();
-
+                    channel.sendMessage("The bounty has been inactive for more than 36 hours. Do you still need help?").queue();
                 }
 
+                message.append("[ #" + (i + 1) + " ] - ", MessageBuilder.Formatting.BOLD)
+                        .append(DiscordBot.getUsernameFromUserID(unfinishedBounties.get(i).getUserId())).append(" *-* ").append("<#").append(unfinishedBounties.get(i).getChannelId()).append(">")
+                        .append("\n");
             }
 
-            message.append("Active Bounties:", MessageBuilder.Formatting.BOLD).append("\n\n");
-
-            for (int i = 0; i < unfinishedBounties.size(); i++){
-                message.append("[ #" + (i + 1) + " ] - ", MessageBuilder.Formatting.BOLD).append(DiscordBotService.getUsernameFromUserID(unfinishedBounties.get(i).getUserId()) + " *-* " + "<#" + unfinishedBounties.get(i).getChannelId() + ">").append("\n");
-            }
-
-            message.append("\n\n*updated every 2 mins*");
+            message.append("\n\n*updated every 2 mins* [<t:").append(String.valueOf(System.currentTimeMillis() / 1000)).append(":R>]");
         }else{
             message.append("Active Bounties:", MessageBuilder.Formatting.BOLD).append("\n\n");
 
@@ -107,16 +88,39 @@ public class BotTasks {
 
             message.append("\n");
             message.append("---------------------------------------------------------------------------------------------", MessageBuilder.Formatting.STRIKETHROUGH);
-            message.append("\n\n*updated every 2 mins*");
+            message.append("\n\n*updated every 2 mins* [<t:").append(String.valueOf(System.currentTimeMillis() / 1000)).append(":R>]");
         }
+
         message.setActionRows(ActionRow.of(
                 Button.primary("new-bounty", "New Bounty"),
                 Button.danger("delete-bounty", "Delete Bounty")
         ));
 
-//        String last = DiscordBotService.getGuild().getTextChannelById("856780175449784347").getLatestMessageId();
-//        DiscordBotService.getGuild().getTextChannelById("856780175449784347").deleteMessageById(last).queue();
         getGuild().getTextChannelById("856780175449784347").editMessageById("856784347231158272", message.build()).queue();
+
+    }
+
+    //TODO - Provide a mechanism to allow people to report when they got helped
+    // and also show a list of the weekly helpers
+    @Scheduled(fixedRate = 120000)
+    public void updateHelpedChannel(){
+
+        System.out.println("...I got helped channel...");
+
+        MessageBuilder message = new MessageBuilder("""
+                **~~---------------------------------------------------------------------------------------------~~**
+                **Did someone help you?**
+                If you got helped, hit the button below and provide proof of them helping you and they will be compensated. Or, leave a message below yourself.\s
+
+                You can also directly thank someone with */thank* and provide a tip.
+
+                """);
+
+        message.setActionRows(ActionRow.of(
+                Button.primary("i-got-helped", "I Got Helped!")
+        ));
+
+        getGuild().getTextChannelById("838841366498246757").editMessageById("972863421517299772", message.build()).queue();
 
     }
 

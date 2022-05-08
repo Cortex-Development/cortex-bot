@@ -4,8 +4,6 @@ import lombok.Data;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.util.List;
-
 /**
  * The Member class represents each user in the discord server
  * , used to track score and such
@@ -36,9 +34,7 @@ public class Member {
      */
     private long messagesSent;
 
-    private boolean isCEO;
-
-    private boolean isVeteran;
+    private int level;
 
     public void setPoints(long points) {
         if (points <= 0){
