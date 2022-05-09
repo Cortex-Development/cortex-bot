@@ -3,8 +3,8 @@ package me.kodysimpson.cortexbot.commands.points;
 import com.jagrosh.jdautilities.command.SlashCommand;
 import com.jagrosh.jdautilities.command.SlashCommandEvent;
 import me.kodysimpson.cortexbot.config.DiscordConfiguration;
-import me.kodysimpson.cortexbot.model.Member;
-import me.kodysimpson.cortexbot.repositories.MemberRepository;
+import me.kodysimpson.cortexbot.model.CortexMember;
+import me.kodysimpson.cortexbot.repositories.CortexMemberRepository;
 import me.kodysimpson.cortexbot.services.LoggingService;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
@@ -19,13 +19,13 @@ import java.util.List;
 @Component
 public class SetPointsCommand extends SlashCommand {
 
-    private final MemberRepository memberRepository;
+    private final CortexMemberRepository cortexMemberRepository;
     private final DiscordConfiguration discordConfiguration;
     private final LoggingService loggingService;
 
     @Autowired
-    public SetPointsCommand(MemberRepository memberRepository, DiscordConfiguration discordConfiguration, LoggingService loggingService){
-        this.memberRepository = memberRepository;
+    public SetPointsCommand(CortexMemberRepository cortexMemberRepository, DiscordConfiguration discordConfiguration, LoggingService loggingService){
+        this.cortexMemberRepository = cortexMemberRepository;
         this.discordConfiguration = discordConfiguration;
         this.loggingService = loggingService;
         this.name = "set-points";
@@ -64,9 +64,9 @@ public class SetPointsCommand extends SlashCommand {
                         return;
                     }
 
-                    Member member = memberRepository.findByUserIDIs(user.getId());
+                    CortexMember cortexMember = cortexMemberRepository.findByUserIDIs(user.getId());
 
-                    if (member != null){
+                    if (cortexMember != null){
 
                         try{
 
@@ -76,8 +76,8 @@ public class SetPointsCommand extends SlashCommand {
                                 return;
                             }
 
-                            member.setPoints(points);
-                            memberRepository.save(member);
+                            cortexMember.setPoints(points);
+                            cortexMemberRepository.save(cortexMember);
 
                             event.getHook().sendMessage(points + " point(s) have been set for " + user.getName() + ".").queue();
 
@@ -85,7 +85,7 @@ public class SetPointsCommand extends SlashCommand {
                             loggingService.logPointsSet(user.getName(), points, event.getMember().getEffectiveName());
 
                             user.openPrivateChannel().flatMap(channel -> {
-                                return channel.sendMessage("You now have a total of " + member.getPoints() + " community points.");
+                                return channel.sendMessage("You now have a total of " + cortexMember.getPoints() + " community points.");
                             }).queue();
                         }catch (NumberFormatException ex){
                             event.getHook().sendMessage("Unable to process request, invalid points value provided.").queue();

@@ -1,7 +1,7 @@
 package me.kodysimpson.cortexbot.services;
 
-import me.kodysimpson.cortexbot.model.Member;
-import me.kodysimpson.cortexbot.repositories.MemberRepository;
+import me.kodysimpson.cortexbot.model.CortexMember;
+import me.kodysimpson.cortexbot.repositories.CortexMemberRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -9,16 +9,16 @@ import org.springframework.stereotype.Service;
 public class PointsService {
 
     @Autowired
-    MemberRepository memberRepository;
+    CortexMemberRepository cortexMemberRepository;
 
     public long getPoints(String userID){
 
-        Member member = memberRepository.findByUserIDIs(userID);
+        CortexMember cortexMember = cortexMemberRepository.findByUserIDIs(userID);
 
-        if (member == null){
+        if (cortexMember == null){
             return -1;
         }else{
-            return member.getPoints();
+            return cortexMember.getPoints();
         }
 
     }

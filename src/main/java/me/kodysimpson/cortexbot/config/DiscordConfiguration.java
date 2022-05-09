@@ -27,6 +27,9 @@ public class DiscordConfiguration {
     @Value("${discord.role.everyone}")
     private Long everyoneRoleId;
 
+    @Value("${discord.role.overlord}")
+    private Long overlordRole;
+
     @Value("${discord.role.staff}")
     private Long staffRole;
 
@@ -72,7 +75,13 @@ public class DiscordConfiguration {
         return everyoneRoleId;
     }
 
-    public Long getStaffRole(){ return staffRole;}
+    public Long getOverlordRole() {
+        return overlordRole;
+    }
+
+    public Long getStaffRole() {
+        return staffRole;
+    }
 
     public String getBotToken() {
         return botToken;

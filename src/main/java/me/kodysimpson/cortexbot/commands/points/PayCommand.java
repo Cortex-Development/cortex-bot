@@ -2,8 +2,8 @@ package me.kodysimpson.cortexbot.commands.points;
 
 import com.jagrosh.jdautilities.command.SlashCommand;
 import com.jagrosh.jdautilities.command.SlashCommandEvent;
-import me.kodysimpson.cortexbot.model.Member;
-import me.kodysimpson.cortexbot.repositories.MemberRepository;
+import me.kodysimpson.cortexbot.model.CortexMember;
+import me.kodysimpson.cortexbot.repositories.CortexMemberRepository;
 import me.kodysimpson.cortexbot.services.LoggingService;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
@@ -17,12 +17,12 @@ import java.util.List;
 @Component
 public class PayCommand extends SlashCommand {
 
-    private final MemberRepository memberRepository;
+    private final CortexMemberRepository cortexMemberRepository;
     private final LoggingService loggingService;
 
     @Autowired
-    public PayCommand(MemberRepository memberRepository, LoggingService loggingService) {
-        this.memberRepository = memberRepository;
+    public PayCommand(CortexMemberRepository cortexMemberRepository, LoggingService loggingService) {
+        this.cortexMemberRepository = cortexMemberRepository;
         this.loggingService = loggingService;
         this.name = "pay";
         this.help = "give your points to someone else";
@@ -48,8 +48,8 @@ public class PayCommand extends SlashCommand {
             return;
         }
 
-        Member recipient = memberRepository.findByUserIDIs(user.getId());
-        Member payee = memberRepository.findByUserIDIs(event.getMember().getId());
+        CortexMember recipient = cortexMemberRepository.findByUserIDIs(user.getId());
+        CortexMember payee = cortexMemberRepository.findByUserIDIs(event.getMember().getId());
 
         if (recipient != null) {
 
@@ -63,12 +63,12 @@ public class PayCommand extends SlashCommand {
             if (payee.getPoints() >= points) {
                 System.out.println("recipient points: " + recipient.getPoints());
                 recipient.setPoints(recipient.getPoints() + points);
-                memberRepository.save(recipient);
+                cortexMemberRepository.save(recipient);
                 System.out.println("recipient points: " + recipient.getPoints());
 
                 //take the points away from the payee
                 payee.setPoints(payee.getPoints() - points);
-                memberRepository.save(payee);
+                cortexMemberRepository.save(payee);
 
                 event.getHook().sendMessage(points + " point(s) have been given to " + user.getName() + ". You now have a total of " + payee.getPoints() + " point(s).").queue();
 

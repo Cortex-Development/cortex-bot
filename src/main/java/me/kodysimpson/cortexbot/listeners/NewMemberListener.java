@@ -1,7 +1,7 @@
 package me.kodysimpson.cortexbot.listeners;
 
-import me.kodysimpson.cortexbot.DiscordBot;
 import me.kodysimpson.cortexbot.config.DiscordConfiguration;
+import me.kodysimpson.cortexbot.services.DiscordBot;
 import net.dv8tion.jda.api.MessageBuilder;
 import net.dv8tion.jda.api.events.guild.member.GuildMemberJoinEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;

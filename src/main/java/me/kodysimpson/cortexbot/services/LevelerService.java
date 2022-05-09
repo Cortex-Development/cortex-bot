@@ -1,6 +1,6 @@
 package me.kodysimpson.cortexbot.services;
 
-import me.kodysimpson.cortexbot.model.Member;
+import me.kodysimpson.cortexbot.model.CortexMember;
 
 // TODO - WIP
 /*
@@ -16,9 +16,9 @@ public class LevelerService {
     /*
         * Level someone up if they have enough points.
      */
-    public void levelUp(Member member){
+    public void levelUp(CortexMember cortexMember){
 
-        int currentLevel = member.getLevel();
+        int currentLevel = cortexMember.getLevel();
 
         int price = getLevelPrice(currentLevel + 1);
 

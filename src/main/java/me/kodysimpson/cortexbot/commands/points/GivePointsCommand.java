@@ -3,8 +3,8 @@ package me.kodysimpson.cortexbot.commands.points;
 import com.jagrosh.jdautilities.command.SlashCommand;
 import com.jagrosh.jdautilities.command.SlashCommandEvent;
 import me.kodysimpson.cortexbot.config.DiscordConfiguration;
-import me.kodysimpson.cortexbot.model.Member;
-import me.kodysimpson.cortexbot.repositories.MemberRepository;
+import me.kodysimpson.cortexbot.model.CortexMember;
+import me.kodysimpson.cortexbot.repositories.CortexMemberRepository;
 import me.kodysimpson.cortexbot.services.LoggingService;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
@@ -19,7 +19,7 @@ import java.util.List;
 @Component
 public class GivePointsCommand extends SlashCommand {
 
-    private MemberRepository memberRepository;
+    private CortexMemberRepository cortexMemberRepository;
     private DiscordConfiguration discordConfiguration;
     private LoggingService loggingService;
 
@@ -61,9 +61,9 @@ public class GivePointsCommand extends SlashCommand {
                         return;
                     }
 
-                    Member member = memberRepository.findByUserIDIs(user.getId());
+                    CortexMember cortexMember = cortexMemberRepository.findByUserIDIs(user.getId());
 
-                    if (member != null){
+                    if (cortexMember != null){
 
                             int points = (int) event.getOption("amount").getAsDouble();
                             if (points <= 0){
@@ -71,8 +71,8 @@ public class GivePointsCommand extends SlashCommand {
                                 return;
                             }
 
-                            member.setPoints(member.getPoints() + points);
-                            memberRepository.save(member);
+                            cortexMember.setPoints(cortexMember.getPoints() + points);
+                            cortexMemberRepository.save(cortexMember);
 
                             event.getHook().sendMessage(points + " point(s) have been given to " + user.getName() + ".").queue();
 
@@ -82,7 +82,7 @@ public class GivePointsCommand extends SlashCommand {
 
                                 user.openPrivateChannel().flatMap(channel -> {
                                     return channel.sendMessage("You have been given " + points + " points. " +
-                                            "You now have a total of " + member.getPoints() + " community points in Cortex Development.");
+                                            "You now have a total of " + cortexMember.getPoints() + " community points in Cortex Development.");
                                 }).queue();
                             }else{
 
@@ -93,7 +93,7 @@ public class GivePointsCommand extends SlashCommand {
 
                                 user.openPrivateChannel().flatMap(channel -> {
                                     return channel.sendMessage("You have been given " + points + " points for \"" + reason + "\". " +
-                                            "You now have a total of " + member.getPoints() + " community points in Cortex Development.");
+                                            "You now have a total of " + cortexMember.getPoints() + " community points in Cortex Development.");
                                 }).queue();
                             }
 
@@ -121,8 +121,8 @@ public class GivePointsCommand extends SlashCommand {
     }
 
     @Autowired
-    public void setMemberRepository(MemberRepository memberRepository) {
-        this.memberRepository = memberRepository;
+    public void setMemberRepository(CortexMemberRepository cortexMemberRepository) {
+        this.cortexMemberRepository = cortexMemberRepository;
     }
 
     @Autowired

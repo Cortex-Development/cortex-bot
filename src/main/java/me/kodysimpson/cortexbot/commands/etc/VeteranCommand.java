@@ -2,8 +2,8 @@ package me.kodysimpson.cortexbot.commands.etc;
 
 import com.jagrosh.jdautilities.command.SlashCommand;
 import com.jagrosh.jdautilities.command.SlashCommandEvent;
-import me.kodysimpson.cortexbot.model.Member;
-import me.kodysimpson.cortexbot.repositories.MemberRepository;
+import me.kodysimpson.cortexbot.model.CortexMember;
+import me.kodysimpson.cortexbot.repositories.CortexMemberRepository;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
@@ -16,11 +16,11 @@ import java.util.List;
 @Component
 public class VeteranCommand extends SlashCommand {
 
-    private final MemberRepository memberRepository;
+    private final CortexMemberRepository cortexMemberRepository;
 
     @Autowired
-    public VeteranCommand(MemberRepository memberRepository) {
-        this.memberRepository = memberRepository;
+    public VeteranCommand(CortexMemberRepository cortexMemberRepository) {
+        this.cortexMemberRepository = cortexMemberRepository;
         this.name = "veteran";
         this.help = "Assign the Veteran Role to someone manually.";
         List<OptionData> options = new ArrayList<>();
@@ -42,10 +42,10 @@ public class VeteranCommand extends SlashCommand {
                 //determine who was provided as an argument to this command
                 User user = event.getOption("user").getAsUser();
 
-                Member member = memberRepository.findByUserIDIs(user.getId());
+                CortexMember cortexMember = cortexMemberRepository.findByUserIDIs(user.getId());
 
-                if (member != null) {
-                    memberRepository.save(member);
+                if (cortexMember != null) {
+                    cortexMemberRepository.save(cortexMember);
                     user.openPrivateChannel().flatMap(channel -> channel.sendMessage("You are now a Veteran on Cortex Development for your activity.")).queue();
                 } else {
                     event.getHook().sendMessage("The user provided does not exist in our database.").queue();

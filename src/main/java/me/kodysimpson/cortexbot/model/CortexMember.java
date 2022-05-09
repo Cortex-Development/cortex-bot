@@ -8,9 +8,9 @@ import org.springframework.data.mongodb.core.mapping.Document;
  * The Member class represents each user in the discord server
  * , used to track score and such
  */
-@Document
+@Document(collection = "member")
 @Data
-public class Member {
+public class CortexMember {
 
     /**
      * Unique ID identifier for each Discord Member
@@ -42,6 +42,17 @@ public class Member {
         }else{
             this.points = points;
         }
+    }
+
+    public void takePoints(long amount) {
+        this.points -= amount;
+        if (points <= 0) {
+            this.points = 0;
+        }
+    }
+
+    public void addPoints(long amount) {
+        this.points += amount;
     }
 
 }

@@ -2,9 +2,9 @@ package me.kodysimpson.cortexbot.commands.points;
 
 import com.jagrosh.jdautilities.command.SlashCommand;
 import com.jagrosh.jdautilities.command.SlashCommandEvent;
-import me.kodysimpson.cortexbot.model.Member;
+import me.kodysimpson.cortexbot.model.CortexMember;
 import me.kodysimpson.cortexbot.model.Thanked;
-import me.kodysimpson.cortexbot.repositories.MemberRepository;
+import me.kodysimpson.cortexbot.repositories.CortexMemberRepository;
 import me.kodysimpson.cortexbot.repositories.ThankedRepository;
 import me.kodysimpson.cortexbot.services.LoggingService;
 import net.dv8tion.jda.api.entities.User;
@@ -19,12 +19,12 @@ import java.util.List;
 @Component
 public class ThankCommand extends SlashCommand {
 
-    private final MemberRepository memberRepository;
+    private final CortexMemberRepository cortexMemberRepository;
     private final LoggingService loggingService;
     private final ThankedRepository thankedRepository;
 
-    public ThankCommand(MemberRepository memberRepository, LoggingService loggingService, ThankedRepository thankedRepository) {
-        this.memberRepository = memberRepository;
+    public ThankCommand(CortexMemberRepository cortexMemberRepository, LoggingService loggingService, ThankedRepository thankedRepository) {
+        this.cortexMemberRepository = cortexMemberRepository;
         this.loggingService = loggingService;
         this.thankedRepository = thankedRepository;
         this.name = "thank";
@@ -68,8 +68,8 @@ public class ThankCommand extends SlashCommand {
         }
 
         //Get the cortex Member objects of these people using their discord ID's
-        Member recipient = memberRepository.findByUserIDIs(user.getId());
-        Member payee = memberRepository.findByUserIDIs(event.getMember().getId());
+        CortexMember recipient = cortexMemberRepository.findByUserIDIs(user.getId());
+        CortexMember payee = cortexMemberRepository.findByUserIDIs(event.getMember().getId());
 
         if (recipient != null) {
 
@@ -104,12 +104,12 @@ public class ThankCommand extends SlashCommand {
                     //give the points to the recipient
                     System.out.println("recipient points: " + recipient.getPoints());
                     recipient.setPoints(recipient.getPoints() + points);
-                    memberRepository.save(recipient);
+                    cortexMemberRepository.save(recipient);
                     System.out.println("recipient points: " + recipient.getPoints());
 
                     //take the points away from the payee
                     payee.setPoints(payee.getPoints() - points);
-                    memberRepository.save(payee);
+                    cortexMemberRepository.save(payee);
 
                     //log the points paid
                     loggingService.logPointsPayed(user.getName(), points, event.getMember().getEffectiveName());

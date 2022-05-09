@@ -1,6 +1,10 @@
-package me.kodysimpson.cortexbot;
+package me.kodysimpson.cortexbot.services;
 
 import com.jagrosh.jdautilities.command.CommandClientBuilder;
+import dev.mikka.cortexbot.commands.help.menu.HelpingMessageContextMenu;
+import dev.mikka.cortexbot.commands.help.menu.ReportHelpContextMenu;
+import dev.mikka.cortexbot.commands.points.menu.*;
+import dev.mikka.cortexbot.listeners.InteractionListener;
 import lombok.RequiredArgsConstructor;
 import me.kodysimpson.cortexbot.commands.CodeBlockCommand;
 import me.kodysimpson.cortexbot.commands.JavaTutCommand;
@@ -17,9 +21,9 @@ import me.kodysimpson.cortexbot.listeners.ButtonClickListener;
 import me.kodysimpson.cortexbot.listeners.MessageListeners;
 import me.kodysimpson.cortexbot.listeners.ModalListener;
 import me.kodysimpson.cortexbot.listeners.NewMemberListener;
-import me.kodysimpson.cortexbot.model.Member;
+import me.kodysimpson.cortexbot.model.CortexMember;
 import me.kodysimpson.cortexbot.repositories.ChallengeRepository;
-import me.kodysimpson.cortexbot.repositories.MemberRepository;
+import me.kodysimpson.cortexbot.repositories.CortexMemberRepository;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Activity;
@@ -48,7 +52,7 @@ import java.util.stream.Collectors;
 @Lazy(false)
 public class DiscordBot {
 
-    private final MemberRepository memberRepository;
+    private final CortexMemberRepository cortexMemberRepository;
     private final DiscordConfiguration discordConfiguration;
     private final VeteranCommand veteranCommand;
     private final GivePointsCommand givePointsCommand;
@@ -69,18 +73,27 @@ public class DiscordBot {
     private final ButtonClickListener buttonClickListener;
     private final ChallengeCommand challengeCommand;
     private final JokeCommand jokeCommand;
+    private final HelpingMessageContextMenu helpingMessageContextMenu;
+    private final ReportHelpContextMenu reportHelpContextMenu;
+    private final GivePointsContextMenu givePointsContextMenu;
+    private final PayPointsContextMenu payPointsContextMenu;
+    private final SetPointsContextMenu setPointsContextMenu;
+    private final TakePointsContextMenu takePointsContextMenu;
+    private final ThankContextMenu thankContextMenu;
+    private final InteractionListener interactionListener;
     private final ChallengeRepository challengeRepository;
 
     private static JDA api;
 
     @PostConstruct
     public void init() {
+
         try {
             CommandClientBuilder commandClient = new CommandClientBuilder()
                     .setPrefix("/")
                     .setOwnerId(discordConfiguration.getOwnerId())
                     .setHelpWord("help")
-                    .setActivity(Activity.listening("Glory to Ukraine"))
+                    .setActivity(Activity.listening("Pootin cant code"))
                     //Add commands
                     .addSlashCommand(leaderboardCommand)
                     .addSlashCommand(suggestionCommand)
@@ -96,7 +109,15 @@ public class DiscordBot {
                     .addSlashCommand(thankCommand)
                     .addSlashCommand(veteranCommand)
                     .addSlashCommand(challengeCommand).forceGuildOnly("503656531665879063")
-                    .addSlashCommand(jokeCommand).forceGuildOnly("503656531665879063");
+                    .addSlashCommand(jokeCommand).forceGuildOnly("503656531665879063")
+                    .addContextMenu(helpingMessageContextMenu)
+                    .addContextMenu(reportHelpContextMenu)
+                    .addContextMenu(givePointsContextMenu)
+                    .addContextMenu(payPointsContextMenu)
+                    .addContextMenu(setPointsContextMenu)
+                    .addContextMenu(takePointsContextMenu)
+                    .addContextMenu(thankContextMenu);
+
 
             api = JDABuilder.create(List.of(GatewayIntent.GUILD_EMOJIS, GatewayIntent.GUILD_MEMBERS,
                     GatewayIntent.GUILD_MESSAGES, GatewayIntent.DIRECT_MESSAGES, GatewayIntent.GUILD_MESSAGE_REACTIONS))
@@ -106,24 +127,25 @@ public class DiscordBot {
                     .addEventListeners(messageListeners)
                     .addEventListeners(newMemberListener)
                     .addEventListeners(buttonClickListener)
-                    .addEventListeners(modalListener)
+                    .addEventListeners(interactionListener)
                     .setAutoReconnect(true)
                     .setBulkDeleteSplittingEnabled(false)
                     .build().awaitReady();
+
+            System.out.println("BOT STARTED SUCCESSFULLY");
+            System.out.flush();
 
         } catch (LoginException | InterruptedException e) {
             e.printStackTrace();
         }
     }
 
-
-
     public static JDA getApi() {
         return api;
     }
 
     public static Guild getGuild() {
-        return api.getGuildById("503656531665879063");
+        return getApi().getGuildById("503656531665879063");
     }
 
     public void addRoleToMember(net.dv8tion.jda.api.entities.Member member, long roleId) {
@@ -158,11 +180,11 @@ public class DiscordBot {
     @Scheduled(fixedRate = 3600000, initialDelay = 5000L)
     public void applyRegularRoles() {
 
-        ArrayList<String> topTwenty = (ArrayList<String>) memberRepository.findAll()
+        ArrayList<String> topTwenty = (ArrayList<String>) cortexMemberRepository.findAll()
                 .stream()
-                .sorted(Comparator.comparing(Member::getPoints).reversed())
+                .sorted(Comparator.comparing(CortexMember::getPoints).reversed())
                 .limit(20)
-                .map(Member::getUserID)
+                .map(CortexMember::getUserID)
                 .collect(Collectors.toList());
 
         //Remove the regular role from the current members if they are not top ten
@@ -187,11 +209,11 @@ public class DiscordBot {
     @Scheduled(fixedRate = 3600000, initialDelay = 5000L)
     public void applyVeteranRoles() {
 
-        ArrayList<String> topFive = (ArrayList<String>) memberRepository.findAll()
+        ArrayList<String> topFive = (ArrayList<String>) cortexMemberRepository.findAll()
                 .stream()
-                .sorted(Comparator.comparing(Member::getPoints).reversed())
+                .sorted(Comparator.comparing(CortexMember::getPoints).reversed())
                 .limit(5)
-                .map(Member::getUserID)
+                .map(CortexMember::getUserID)
                 .collect(Collectors.toList());
 
         //Remove the regular role from the current members if they are not top 5

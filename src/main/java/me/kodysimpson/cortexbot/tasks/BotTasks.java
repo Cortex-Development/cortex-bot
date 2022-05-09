@@ -1,10 +1,10 @@
 package me.kodysimpson.cortexbot.tasks;
 
-import me.kodysimpson.cortexbot.DiscordBot;
 import me.kodysimpson.cortexbot.model.Bounty;
 import me.kodysimpson.cortexbot.repositories.BountyRepository;
 import me.kodysimpson.cortexbot.repositories.ChallengeRepository;
-import me.kodysimpson.cortexbot.repositories.MemberRepository;
+import me.kodysimpson.cortexbot.repositories.CortexMemberRepository;
+import me.kodysimpson.cortexbot.services.DiscordBot;
 import net.dv8tion.jda.api.MessageBuilder;
 import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.interactions.components.ActionRow;
@@ -15,18 +15,18 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-import static me.kodysimpson.cortexbot.DiscordBot.getGuild;
+import static me.kodysimpson.cortexbot.services.DiscordBot.getGuild;
 
 @Service
 public class BotTasks {
 
-    private final MemberRepository memberRepository;
+    private final CortexMemberRepository cortexMemberRepository;
     private final BountyRepository bountyRepository;
     private final ChallengeRepository challengeRepository;
 
     @Autowired
-    public BotTasks(MemberRepository memberRepository, BountyRepository bountyRepository, ChallengeRepository challengeRepository) {
-        this.memberRepository = memberRepository;
+    public BotTasks(CortexMemberRepository cortexMemberRepository, BountyRepository bountyRepository, ChallengeRepository challengeRepository) {
+        this.cortexMemberRepository = cortexMemberRepository;
         this.bountyRepository = bountyRepository;
         this.challengeRepository = challengeRepository;
     }
@@ -36,7 +36,7 @@ public class BotTasks {
         getGuild().getTextChannelById("786974733123846214").sendMessage("Cortex bot redeployed. Version: 1.3.2").queue();
     }
 
-    @Scheduled(fixedRate = 120000)
+    @Scheduled(initialDelay = 120000L, fixedRate = 120000L)
     public void updateBountiesList(){
 
         System.out.println("...Bounties Leaderboard...");
@@ -102,7 +102,7 @@ public class BotTasks {
 
     //TODO - Provide a mechanism to allow people to report when they got helped
     // and also show a list of the weekly helpers
-    @Scheduled(fixedRate = 120000)
+    @Scheduled(initialDelay = 120000, fixedRate = 120000)
     public void updateHelpedChannel(){
 
         System.out.println("...I got helped channel...");

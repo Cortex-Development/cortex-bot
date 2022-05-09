@@ -2,9 +2,9 @@ package me.kodysimpson.cortexbot.commands;
 
 import com.jagrosh.jdautilities.command.SlashCommand;
 import com.jagrosh.jdautilities.command.SlashCommandEvent;
-import me.kodysimpson.cortexbot.DiscordBot;
-import me.kodysimpson.cortexbot.model.Member;
-import me.kodysimpson.cortexbot.repositories.MemberRepository;
+import me.kodysimpson.cortexbot.model.CortexMember;
+import me.kodysimpson.cortexbot.repositories.CortexMemberRepository;
+import me.kodysimpson.cortexbot.services.DiscordBot;
 import net.dv8tion.jda.api.MessageBuilder;
 import org.springframework.stereotype.Component;
 
@@ -15,13 +15,13 @@ import java.util.stream.Collectors;
 @Component
 public class LeaderboardCommand extends SlashCommand {
 
-    private final MemberRepository memberRepository;
+    private final CortexMemberRepository cortexMemberRepository;
 
-    public LeaderboardCommand(MemberRepository memberRepository){
+    public LeaderboardCommand(CortexMemberRepository cortexMemberRepository){
         this.name = "leaderboard";
         this.help = "Get the top ten leaderboard rankings";
         this.guildOnly = false;
-        this.memberRepository = memberRepository;
+        this.cortexMemberRepository = cortexMemberRepository;
     }
 
     @Override
@@ -29,9 +29,9 @@ public class LeaderboardCommand extends SlashCommand {
 
         event.deferReply().queue();
 
-        ArrayList<Member> top = (ArrayList<Member>) memberRepository.findAll()
+        ArrayList<CortexMember> top = (ArrayList<CortexMember>) cortexMemberRepository.findAll()
                 .stream()
-                .sorted(Comparator.comparing(Member::getPoints).reversed())
+                .sorted(Comparator.comparing(CortexMember::getPoints).reversed())
                 .limit(15)
                 .collect(Collectors.toList());
 

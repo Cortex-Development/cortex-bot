@@ -1,6 +1,6 @@
 package me.kodysimpson.cortexbot.services;
 
-import me.kodysimpson.cortexbot.model.Member;
+import me.kodysimpson.cortexbot.model.CortexMember;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -11,7 +11,7 @@ import java.util.List;
 public class LotteryService {
 
     private long jackpot;
-    private List<Member> entered;
+    private List<CortexMember> entered;
 
     public LotteryService() {
         this.jackpot = 0;
@@ -26,13 +26,13 @@ public class LotteryService {
         // Loop again until there are no more points to give out.
 
         while(jackpot > 0){
-            for(Member member : entered){
+            for(CortexMember cortexMember : entered){
 
                 //Choose a random amount of points to give, max being 100 or the jackpot amount if it is less
                 long pointsToGive = (long) (Math.random() * Math.min(100, jackpot));
 
                 //Give the member the points
-                System.out.println("Giving " + pointsToGive + " points to " + member.getName());
+                System.out.println("Giving " + pointsToGive + " points to " + cortexMember.getName());
 
                 //Subtract the points from the jackpot
                 jackpot -= pointsToGive;
@@ -51,11 +51,11 @@ public class LotteryService {
         return jackpot;
     }
 
-    public void addEntered(Member member) {
-        entered.add(member);
+    public void addEntered(CortexMember cortexMember) {
+        entered.add(cortexMember);
     }
 
-    public List<Member> getEntered() {
+    public List<CortexMember> getEntered() {
         return entered;
     }
 

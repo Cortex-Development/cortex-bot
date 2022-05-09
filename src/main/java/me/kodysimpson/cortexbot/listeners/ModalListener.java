@@ -10,7 +10,7 @@ import net.dv8tion.jda.api.interactions.components.buttons.ButtonStyle;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 
-import static me.kodysimpson.cortexbot.DiscordBot.getGuild;
+import static me.kodysimpson.cortexbot.services.DiscordBot.getGuild;
 
 @Service
 public class ModalListener extends ListenerAdapter {

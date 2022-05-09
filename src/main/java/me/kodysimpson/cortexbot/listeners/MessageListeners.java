@@ -2,9 +2,9 @@ package me.kodysimpson.cortexbot.listeners;
 
 import me.kodysimpson.cortexbot.config.DiscordConfiguration;
 import me.kodysimpson.cortexbot.model.Bounty;
-import me.kodysimpson.cortexbot.model.Member;
+import me.kodysimpson.cortexbot.model.CortexMember;
 import me.kodysimpson.cortexbot.repositories.BountyRepository;
-import me.kodysimpson.cortexbot.repositories.MemberRepository;
+import me.kodysimpson.cortexbot.repositories.CortexMemberRepository;
 import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
@@ -21,14 +21,14 @@ import java.util.concurrent.TimeUnit;
 public class MessageListeners extends ListenerAdapter{
 
     private final Random random;
-    private final MemberRepository memberRepository;
+    private final CortexMemberRepository cortexMemberRepository;
     private final DiscordConfiguration discordConfiguration;
     private final BountyRepository bountyRepository;
 
     @Autowired
-    public MessageListeners(MemberRepository memberRepository, DiscordConfiguration discordConfiguration, BountyRepository bountyRepository){
+    public MessageListeners(CortexMemberRepository cortexMemberRepository, DiscordConfiguration discordConfiguration, BountyRepository bountyRepository){
         this.random = new Random();
-        this.memberRepository = memberRepository;
+        this.cortexMemberRepository = cortexMemberRepository;
         this.discordConfiguration = discordConfiguration;
         this.bountyRepository = bountyRepository;
     }
@@ -62,29 +62,29 @@ public class MessageListeners extends ListenerAdapter{
 //                return;
 //            }
 
-            if (memberRepository.existsByUserID(event.getAuthor().getId())) {
+            if (cortexMemberRepository.existsByUserID(event.getAuthor().getId())) {
 
-                Member member = memberRepository.findByUserIDIs(event.getAuthor().getId());
+                CortexMember cortexMember = cortexMemberRepository.findByUserIDIs(event.getAuthor().getId());
 
-                member.setMessagesSent(member.getMessagesSent() + 1);
-                member.setName(event.getAuthor().getAsTag());
+                cortexMember.setMessagesSent(cortexMember.getMessagesSent() + 1);
+                cortexMember.setName(event.getAuthor().getAsTag());
 
                 if (random.nextInt(5) == 3)
-                    member.setPoints(member.getPoints() + random.nextInt(7));
+                    cortexMember.setPoints(cortexMember.getPoints() + random.nextInt(7));
 
-                memberRepository.save(member);
+                cortexMemberRepository.save(cortexMember);
 
             } else {
 
-                Member member = new Member();
+                CortexMember cortexMember = new CortexMember();
 
-                member.setUserID(event.getAuthor().getId());
-                member.setName(event.getAuthor().getAsTag());
+                cortexMember.setUserID(event.getAuthor().getId());
+                cortexMember.setName(event.getAuthor().getAsTag());
 
-                member.setMessagesSent(1);
-                member.setPoints(1);
+                cortexMember.setMessagesSent(1);
+                cortexMember.setPoints(1);
 
-                memberRepository.save(member);
+                cortexMemberRepository.save(cortexMember);
 
             }
 
