@@ -71,9 +71,9 @@ public class BotTasks {
                 }
 
                 //see if the bounty has not been active for more than 36 hours
-                if(System.currentTimeMillis() - bounty.getWhenLastActive() > 129600000){
-                    channel.sendMessage("The bounty has been inactive for more than 36 hours. Do you still need help?").queue();
-                }
+//                if(System.currentTimeMillis() - bounty.getWhenLastActive() > 129600000){
+//                    channel.sendMessage("The bounty has been inactive for more than 36 hours. Do you still need help?").queue();
+//                }
 
                 message.append("[ #" + (i + 1) + " ] - ", MessageBuilder.Formatting.BOLD)
                         .append(DiscordBot.getUsernameFromUserID(unfinishedBounties.get(i).getUserId())).append(" *-* ").append("<#").append(unfinishedBounties.get(i).getChannelId()).append(">")
