@@ -1,6 +1,5 @@
 package dev.mikka.cortexbot.commands.points.menu;
 
-
 import com.jagrosh.jdautilities.command.UserContextMenu;
 import com.jagrosh.jdautilities.command.UserContextMenuEvent;
 import dev.mikka.cortexbot.commands.IModalHandler;
@@ -8,6 +7,7 @@ import me.kodysimpson.cortexbot.config.DiscordConfiguration;
 import me.kodysimpson.cortexbot.model.CortexMember;
 import me.kodysimpson.cortexbot.repositories.CortexMemberRepository;
 import me.kodysimpson.cortexbot.services.LoggingService;
+import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.interaction.ModalInteractionEvent;
 import net.dv8tion.jda.api.interactions.components.Modal;
@@ -29,10 +29,8 @@ public class GivePointsContextMenu extends UserContextMenu implements IModalHand
         this.cortexMemberRepository = cortexMemberRepository;
         this.loggingService = loggingService;
         this.name = "Give Points";
-        this.defaultEnabled = false;
-        this.enabledRoles = new String[] {
-                discordConfiguration.getOverlordRole().toString(),
-                discordConfiguration.getStaffRole().toString()
+        this.userPermissions = new Permission[] {
+                Permission.MODERATE_MEMBERS,
         };
     }
     

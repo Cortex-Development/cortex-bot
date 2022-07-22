@@ -35,8 +35,14 @@ public class BountyService {
         Guild guild = interaction.getGuild();
         Member member = interaction.getMember();
 
-        if(guild == null){
+        if(guild == null || member == null){
             interaction.getHook().sendMessage("An error occurred. Please try again later.").queue();
+            return;
+        }
+
+        //Make sure the person who is trying to create the bounty does not have a blank name
+        if(member.getEffectiveName().isBlank()){
+            interaction.getHook().sendMessage("Change your name to something not blank.").queue();
             return;
         }
 
@@ -160,12 +166,18 @@ public class BountyService {
                 bountyRepository.save(bounty);
 
                 //send it for staff approval and grading
-                interaction.getTextChannel().getManager().setParent(guild.getCategoryById("786974851818192916")).complete();
+                interaction.getChannel().asTextChannel().getManager().setParent(guild.getCategoryById("786974851818192916")).complete();
 
                 //adjust the channel view permissions
                 Role role = guild.getRoleById("786974475354505248");
-                interaction.getTextChannel().getManager().putPermissionOverride(guild.getPublicRole(), null, List.of(Permission.VIEW_CHANNEL)).queue();
-                interaction.getTextChannel().getManager().putPermissionOverride(role, List.of(Permission.VIEW_CHANNEL), null).queue();
+                if (role == null){
+                    //send a message in the bounty saying that something went wrong
+                    interaction.getChannel().asTextChannel().sendMessage("An error occurred. Please try again later.").queue();
+                    return;
+                }
+                interaction.getChannel().asTextChannel().getManager().putRolePermissionOverride(guild.getPublicRole().getIdLong(), null, List.of(Permission.VIEW_CHANNEL)).queue(unused -> {
+                    interaction.getChannel().asTextChannel().getManager().putRolePermissionOverride(role.getIdLong(), List.of(Permission.VIEW_CHANNEL), null).queue();
+                });
 
                 //Send a message in the channel with instructions for staff
                 MessageBuilder builder = new MessageBuilder();
@@ -174,7 +186,7 @@ public class BountyService {
                         <@&786974475354505248> Check this conversation to see if anyone should be given points for helping the creator of this bounty. Do /done or click the button when done.
                         """);
                 builder.setActionRows(ActionRow.of(Button.primary("grade-bounty", "Finished Grading")));
-                interaction.getTextChannel().sendMessage(builder.build()).queue();
+                interaction.getChannel().asTextChannel().sendMessage(builder.build()).queue();
 
                 interaction.getHook().sendMessage("Bounty finished.").queue();
 
@@ -204,7 +216,7 @@ public class BountyService {
                 Bounty bounty = bountyRepository.deleteBountyByChannelIdEquals(interaction.getChannel().getId());
 
                 //delete the channel
-                interaction.getTextChannel().delete().queue();
+                interaction.getChannel().asTextChannel().delete().queue();
 
                 loggingService.log("Bounty help channel finished by " + member.getEffectiveName() + ". Bounty: " + bounty);
             }else{
@@ -224,7 +236,7 @@ public class BountyService {
                 Bounty bounty = bountyRepository.deleteBountyByChannelIdEquals(interaction.getChannel().getId());
 
                 //delete the channel
-                interaction.getTextChannel().delete().queue();
+                interaction.getChannel().asTextChannel().delete().queue();
 
                 loggingService.log("Bounty help channel finished by " + member.getEffectiveName() + ". Bounty: " + bounty);
             }else{

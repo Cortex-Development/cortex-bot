@@ -119,7 +119,7 @@ public class DiscordBot {
                     .addContextMenu(thankContextMenu);
 
 
-            api = JDABuilder.create(List.of(GatewayIntent.GUILD_EMOJIS, GatewayIntent.GUILD_MEMBERS,
+            api = JDABuilder.create(List.of(GatewayIntent.GUILD_EMOJIS_AND_STICKERS, GatewayIntent.GUILD_MEMBERS, GatewayIntent.MESSAGE_CONTENT,
                     GatewayIntent.GUILD_MESSAGES, GatewayIntent.DIRECT_MESSAGES, GatewayIntent.GUILD_MESSAGE_REACTIONS))
                     .setToken(discordConfiguration.getBotToken())
                     .disableCache(CacheFlag.ACTIVITY, CacheFlag.VOICE_STATE, CacheFlag.CLIENT_STATUS)
@@ -233,7 +233,7 @@ public class DiscordBot {
     }
 
     public static String getUsernameFromUserID(String userId){
-        return getApi().retrieveUserById(userId, true).complete().getAsTag();
+        return getApi().retrieveUserById(userId).complete().getAsTag();
     }
 
 }

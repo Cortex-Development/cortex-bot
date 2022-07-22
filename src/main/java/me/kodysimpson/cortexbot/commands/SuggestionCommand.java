@@ -15,11 +15,8 @@ import java.util.TreeMap;
 
 @Component
 public class SuggestionCommand extends SlashCommand {
-
     private Message calcmessage;
-
     private final DiscordConfiguration discordConfiguration;
-
     public SuggestionCommand(DiscordConfiguration discordConfiguration) {
         this.name = "suggestions";
         this.aliases = new String[]{"topsuggestions", "topsug"};
@@ -36,13 +33,10 @@ public class SuggestionCommand extends SlashCommand {
         for (Message m : mpa) {
             int points = 0;
             for (MessageReaction reaction : m.getReactions()) {
-                if (reaction.getReactionEmote().isEmote()) {
-                    if (reaction.getReactionEmote().getIdLong() == discordConfiguration.getGreenTickId())
-                        points += reaction.getCount(); // upvote
-                    else if (reaction.getReactionEmote().getIdLong() == discordConfiguration.getRedTickId())
-                        points -= reaction.getCount(); // Downvote
-
-                }
+                if (reaction.getEmoji().asCustom().getIdLong() == discordConfiguration.getGreenTickId())
+                    points += reaction.getCount(); // upvote
+                else if (reaction.getEmoji().asCustom().getIdLong() == discordConfiguration.getRedTickId())
+                    points -= reaction.getCount(); // Downvote
             }
             ArrayList<Message> list = map.computeIfAbsent(points, (k) -> new ArrayList<>());
             list.add(m);

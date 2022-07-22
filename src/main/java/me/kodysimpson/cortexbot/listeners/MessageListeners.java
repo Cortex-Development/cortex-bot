@@ -19,7 +19,6 @@ import java.util.concurrent.TimeUnit;
 
 @Component
 public class MessageListeners extends ListenerAdapter{
-
     private final Random random;
     private final CortexMemberRepository cortexMemberRepository;
     private final DiscordConfiguration discordConfiguration;
@@ -95,9 +94,9 @@ public class MessageListeners extends ListenerAdapter{
                         .setDescription(event.getMessage().getContentRaw());
                 eb.setColor(event.getMember().getColorRaw());
                 event.getChannel().sendMessageEmbeds(eb.build()).queue(m -> {
-                    m.addReaction(Objects.requireNonNull(event.getGuild().getEmoteById(discordConfiguration.getGreenTickId()))).queue();
-                    m.addReaction(Objects.requireNonNull(event.getGuild().getEmoteById(discordConfiguration.getNeutralTickId()))).queue();
-                    m.addReaction(Objects.requireNonNull(event.getGuild().getEmoteById(discordConfiguration.getRedTickId()))).queue();
+                    m.addReaction(Objects.requireNonNull(event.getGuild().getEmojiById(discordConfiguration.getGreenTickId()))).queue();
+                    m.addReaction(Objects.requireNonNull(event.getGuild().getEmojiById(discordConfiguration.getNeutralTickId()))).queue();
+                    m.addReaction(Objects.requireNonNull(event.getGuild().getEmojiById(discordConfiguration.getRedTickId()))).queue();
                 });
                 event.getMessage().delete().queue();
             }

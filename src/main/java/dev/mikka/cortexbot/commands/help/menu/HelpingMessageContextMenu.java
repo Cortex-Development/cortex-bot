@@ -7,6 +7,7 @@ import me.kodysimpson.cortexbot.config.DiscordConfiguration;
 import me.kodysimpson.cortexbot.model.CortexMember;
 import me.kodysimpson.cortexbot.repositories.CortexMemberRepository;
 import me.kodysimpson.cortexbot.services.LoggingService;
+import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.interaction.ModalInteractionEvent;
 import net.dv8tion.jda.api.interactions.components.Modal;
@@ -28,10 +29,8 @@ public class HelpingMessageContextMenu extends MessageContextMenu implements IMo
         this.cortexMemberRepository = cortexMemberRepository;
         this.loggingService = loggingService;
         this.name = "Give Points for Helping";
-        this.defaultEnabled = false;
-        this.enabledRoles = new String[] {
-                discordConfiguration.getOverlordRole().toString(),
-                discordConfiguration.getStaffRole().toString()
+        this.userPermissions = new Permission[] {
+                Permission.MODERATE_MEMBERS,
         };
     }
     

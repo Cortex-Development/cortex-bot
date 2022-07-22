@@ -26,7 +26,6 @@ public class InteractionListener extends ListenerAdapter {
     @Autowired
     private ThankContextMenu thankContextMenu;
 
-
     @Override
     public void onButtonInteraction(@NotNull ButtonInteractionEvent event) {
         if (event.getButton().getId().contains("economy-reset")) {
