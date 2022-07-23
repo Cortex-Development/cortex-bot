@@ -118,7 +118,6 @@ public class DiscordBot {
                     .addContextMenu(takePointsContextMenu)
                     .addContextMenu(thankContextMenu);
 
-
             api = JDABuilder.create(List.of(GatewayIntent.GUILD_EMOJIS_AND_STICKERS, GatewayIntent.GUILD_MEMBERS, GatewayIntent.MESSAGE_CONTENT,
                     GatewayIntent.GUILD_MESSAGES, GatewayIntent.DIRECT_MESSAGES, GatewayIntent.GUILD_MESSAGE_REACTIONS))
                     .setToken(discordConfiguration.getBotToken())
