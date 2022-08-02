@@ -90,9 +90,15 @@ public class ChallengeService {
                 .setParent(guild.getCategoryById("803777453914456104")).complete();
 
         Role role = guild.getRoleById("786974475354505248");
-        channel.getManager().putRolePermissionOverride(guild.getPublicRole().getIdLong(), null, List.of(Permission.VIEW_CHANNEL)).queue();
-        channel.getManager().putRolePermissionOverride(role.getIdLong(), List.of(Permission.VIEW_CHANNEL), null).queue();
-        channel.getManager().putMemberPermissionOverride(member.getIdLong(), List.of(Permission.VIEW_CHANNEL), null).queue();
+        if (role == null){
+            //send a message in the bounty saying that something went wrong
+            interaction.getChannel().asTextChannel().sendMessage("An error occurred. Please try again later.").queue();
+            return;
+        }
+        interaction.getChannel().asTextChannel().getManager().putRolePermissionOverride(guild.getPublicRole().getIdLong(), null, List.of(Permission.VIEW_CHANNEL)).queue(unused -> {
+            interaction.getChannel().asTextChannel().getManager().putRolePermissionOverride(role.getIdLong(), List.of(Permission.VIEW_CHANNEL), null).queue();
+            interaction.getChannel().asTextChannel().getManager().putMemberPermissionOverride(member.getIdLong(), List.of(Permission.VIEW_CHANNEL), null).queue();
+        });
 
         Submission sm = new Submission();
         sm.setChannel(channel.getId());
