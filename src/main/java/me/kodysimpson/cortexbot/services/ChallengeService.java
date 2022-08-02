@@ -95,9 +95,9 @@ public class ChallengeService {
             interaction.getChannel().asTextChannel().sendMessage("An error occurred. Please try again later.").queue();
             return;
         }
-        interaction.getChannel().asTextChannel().getManager().putRolePermissionOverride(guild.getPublicRole().getIdLong(), null, List.of(Permission.VIEW_CHANNEL)).queue(unused -> {
-            interaction.getChannel().asTextChannel().getManager().putRolePermissionOverride(role.getIdLong(), List.of(Permission.VIEW_CHANNEL), null).queue();
-            interaction.getChannel().asTextChannel().getManager().putMemberPermissionOverride(member.getIdLong(), List.of(Permission.VIEW_CHANNEL), null).queue();
+        channel.getManager().putRolePermissionOverride(guild.getPublicRole().getIdLong(), null, List.of(Permission.VIEW_CHANNEL)).queue(unused -> {
+            channel.getManager().putRolePermissionOverride(role.getIdLong(), List.of(Permission.VIEW_CHANNEL), null).queue();
+            channel.getManager().putMemberPermissionOverride(member.getIdLong(), List.of(Permission.VIEW_CHANNEL), null).queue();
         });
 
         Submission sm = new Submission();
