@@ -10,16 +10,13 @@ import me.kodysimpson.cortexbot.repositories.SubmissionRepository;
 import me.kodysimpson.cortexbot.services.ChallengeService;
 import net.dv8tion.jda.api.MessageBuilder;
 import net.dv8tion.jda.api.Permission;
-import net.dv8tion.jda.api.entities.Message;
-import net.dv8tion.jda.api.interactions.commands.OptionType;
-import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 import net.dv8tion.jda.api.interactions.components.ActionRow;
-import net.dv8tion.jda.api.interactions.components.buttons.Button;
+import net.dv8tion.jda.api.interactions.components.Modal;
+import net.dv8tion.jda.api.interactions.components.text.TextInput;
+import net.dv8tion.jda.api.interactions.components.text.TextInputStyle;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 @Component
@@ -44,75 +41,60 @@ public class ChallengeCommand extends SlashCommand {
         //yo momma built like a whale
     }
 
-    private class Create extends SlashCommand{
+    private class Create extends SlashCommand {
 
         public Create() {
             this.name = "create";
             this.help = "Create a new challenge";
             this.userPermissions = new Permission[]{Permission.ADMINISTRATOR};
-
-            List<OptionData> options = new ArrayList<>();
-            options.add(new OptionData(OptionType.STRING, "name", "The name of the challenge").setRequired(true));
-            options.add(new OptionData(OptionType.STRING, "description", "The description of the challenge announcement").setRequired(true));
-            options.add(new OptionData(OptionType.STRING, "link", "Link to the challenge specification document.").setRequired(true));
-
-            options.add(new OptionData(OptionType.STRING, "end", "When the challenge ends in epoch time").setRequired(true));
-            options.add(new OptionData(OptionType.STRING, "reward", "When the challenge ends in epoch time").setRequired(true));
-
-            this.options = options;
         }
 
         @Override
         protected void execute(SlashCommandEvent event) {
 
             //If there is already an ongoing challenge, don't allow a new one to be created
-            if(challengeService.isChallengeOngoing()){
+            if (challengeService.isChallengeOngoing()) {
                 event.reply("There is already an ongoing challenge. Please wait until the current challenge is over.").queue();
                 return;
             }
 
-            //Construct a new Challenge object with the given information
-            String name = event.getOption("name").getAsString();
-            String description = event.getOption("name").getAsString();
-            String link = event.getOption("link").getAsString();
+            //Create a modal that asks for the challenge information
+            TextInput name = TextInput.create("challenge-name", "Name", TextInputStyle.SHORT)
+                    .setMinLength(1)
+                    .setRequired(true)
+                    .build();
 
-            long whenEnd = event.getOption("end").getAsLong();
-            long reward = event.getOption("reward").getAsLong();
+            TextInput description = TextInput.create("challenge-desc", "Description", TextInputStyle.PARAGRAPH)
+                    .setMinLength(10)
+                    .setMaxLength(100)
+                    .setRequired(true)
+                    .build();
 
-            Challenge challenge = new Challenge();
-            challenge.setName(name);
-            challenge.setDescription(description);
-            challenge.setLink(link);
-            challenge.setStartDate(new Date().getTime());
-            challenge.setEndDate(whenEnd * 1000);
-            challenge.setReward(reward);
-            challenge.setStatus(ChallengeStatus.ACTIVE);
+            TextInput link = TextInput.create("challenge-link", "Link", TextInputStyle.SHORT)
+                    .setMinLength(1)
+                    .setRequired(true)
+                    .build();
 
-            challengeRepository.insert(challenge);
+            TextInput endTime = TextInput.create("challenge-end", "End Time(Epoch)", TextInputStyle.SHORT)
+                    .setMinLength(1)
+                    .setPlaceholder("in seconds you donut")
+                    .setRequired(true)
+                    .build();
 
-            //Make the announcement
-            //803777799353270293 <- challenges channel
-            String announcement = event.getGuild().getRoleById("770425465063604244").getAsMention() + "\n\n" +
-                    "NEW CODING CHALLENGE!: **\"" + challenge.getName() + "\"**\n\n" +
-                    "**Description**: " + challenge.getDescription() + "\n" +
-                    "**Link**: " + challenge.getLink() + "\n" +
-                    "**Ends on**: <t:" + whenEnd + ":D>\n\n" +
-                    "**Reward**: " + challenge.getReward() + " points\n\n" +
-                    "Join by clicking the button below!\n";
+            TextInput reward = TextInput.create("challenge-reward", "Reward Amount", TextInputStyle.SHORT)
+                    .setMinLength(1)
+                    .setRequired(true)
+                    .build();
 
-            MessageBuilder messageBuilder = new MessageBuilder();
-            messageBuilder.setContent(announcement);
-            messageBuilder.setActionRows(ActionRow.of(Button.success("submit-challenge", "Submit Solution"), Button.primary("get-challenge-role", "Get Alerted for Future Challenges")));
+            Modal modal = Modal.create("new-challenge-modal", "New Challenge")
+                    .addActionRows(ActionRow.of(name), ActionRow.of(description), ActionRow.of(link), ActionRow.of(endTime), ActionRow.of(reward))
+                    .build();
 
-            Message message = messageBuilder.build();
-            event.getGuild().getTextChannelById("803777799353270293").sendMessage(message).queue();
-
-            event.reply("The challenge has been created and posted in the Challenges channel.").setEphemeral(true).queue();
-
+            event.replyModal(modal).queue();
         }
     }
 
-    private class End extends SlashCommand{
+    private class End extends SlashCommand {
 
         public End() {
             this.name = "end";
@@ -126,7 +108,7 @@ public class ChallengeCommand extends SlashCommand {
             Challenge challenge = challengeService.getCurrentChallenge();
 
             //If there is already an ongoing challenge, don't allow a new one to be created
-            if(challenge == null){
+            if (challenge == null) {
                 event.reply("There is not an ongoing challenge.").queue();
                 return;
             }
@@ -152,7 +134,7 @@ public class ChallengeCommand extends SlashCommand {
         }
     }
 
-    private class FinishGrading extends SlashCommand{
+    private class FinishGrading extends SlashCommand {
 
         public FinishGrading() {
             this.name = "finishgrading";

@@ -2,7 +2,9 @@ package me.kodysimpson.cortexbot.listeners;
 
 import me.kodysimpson.cortexbot.services.BountyService;
 import me.kodysimpson.cortexbot.services.ChallengeService;
+import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Role;
+import net.dv8tion.jda.api.entities.TextChannel;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.components.ActionRow;
@@ -13,9 +15,10 @@ import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.Objects;
+
 @Component
 public class ButtonClickListener extends ListenerAdapter {
-
     private final BountyService bountyService;
     private final ChallengeService challengeService;
 
@@ -65,14 +68,37 @@ public class ButtonClickListener extends ListenerAdapter {
             challengeService.closeSubmissionChannel(event.getInteraction());
         }else if(event.getButton().getId().equalsIgnoreCase("get-challenge-role")){
 
-            //get the challengeping role
-            Role role = event.getInteraction().getGuild().getRoleById("770425465063604244");
+            //get the challengers role
+            Role role = Objects.requireNonNull(event.getInteraction().getGuild()).getRoleById("770425465063604244");
+            Member member = event.getInteraction().getMember();
+
+            if (role == null) {
+                event.getHook().sendMessage("Error, could not find the Challengers role").queue();
+                return;
+            }
+
+            if (member == null){
+                event.getHook().sendMessage("Error, you do not exist").queue();
+                return;
+            }
+
+            //See if the user already has the role
+            if(event.getInteraction().getMember().getRoles().contains(role)){
+                event.getHook().sendMessage("You already have the <@&770425465063604244> role.").setEphemeral(true).queue();
+                return;
+            }
 
             //add the role to the user
-            event.getInteraction().getGuild().addRoleToMember(event.getMember(), role).queue();
+            event.getInteraction().getGuild().addRoleToMember(member, role).queue(then -> {
+                //send a message in #challenge-chat that this user has joined the role
+                TextChannel challengeChat = event.getGuild().getTextChannelById("803795646565843003");
+                if (challengeChat != null) {
+                    challengeChat.sendMessage(member.getAsMention() + " has joined the Challengers role.").queue();
+                }
+            });
 
             //reply
-            event.reply("You have been given the @ChallengePing role!").setEphemeral(true).queue();
+            event.getHook().sendMessage("You have been given the <@&770425465063604244> role! If you want it removed, ask a Community Manager.").setEphemeral(true).queue();
 
         }else if(event.getButton().getId().equalsIgnoreCase("challenge-grade-pass")){
 

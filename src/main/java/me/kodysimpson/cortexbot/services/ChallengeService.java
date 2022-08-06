@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 @Service
 public class ChallengeService {
@@ -95,9 +96,10 @@ public class ChallengeService {
             interaction.getChannel().asTextChannel().sendMessage("An error occurred. Please try again later.").queue();
             return;
         }
-        channel.getManager().putRolePermissionOverride(guild.getPublicRole().getIdLong(), null, List.of(Permission.VIEW_CHANNEL)).queue(unused -> {
-            channel.getManager().putRolePermissionOverride(role.getIdLong(), List.of(Permission.VIEW_CHANNEL), null).queue();
-            channel.getManager().putMemberPermissionOverride(member.getIdLong(), List.of(Permission.VIEW_CHANNEL), null).queue();
+        channel.getManager().putRolePermissionOverride(guild.getPublicRole().getIdLong(), null, List.of(Permission.VIEW_CHANNEL)).queueAfter(3, TimeUnit.SECONDS, unused -> {
+            channel.getManager().putRolePermissionOverride(role.getIdLong(), List.of(Permission.VIEW_CHANNEL), null).queueAfter(3, TimeUnit.SECONDS, unused1 -> {
+                channel.getManager().putMemberPermissionOverride(member.getIdLong(), List.of(Permission.VIEW_CHANNEL), null).queue();
+            });
         });
 
         Submission sm = new Submission();

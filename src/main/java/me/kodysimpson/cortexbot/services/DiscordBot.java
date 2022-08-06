@@ -127,6 +127,7 @@ public class DiscordBot {
                     .addEventListeners(newMemberListener)
                     .addEventListeners(buttonClickListener)
                     .addEventListeners(interactionListener)
+                    .addEventListeners(modalListener)
                     .setAutoReconnect(true)
                     .setBulkDeleteSplittingEnabled(false)
                     .build().awaitReady();

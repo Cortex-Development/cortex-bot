@@ -1,52 +1,98 @@
 package me.kodysimpson.cortexbot.listeners;
 
-import me.kodysimpson.cortexbot.services.BountyService;
+import me.kodysimpson.cortexbot.model.challenges.Challenge;
+import me.kodysimpson.cortexbot.model.challenges.ChallengeStatus;
+import me.kodysimpson.cortexbot.repositories.ChallengeRepository;
 import net.dv8tion.jda.api.MessageBuilder;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.events.interaction.ModalInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import net.dv8tion.jda.api.interactions.components.ActionRow;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
-import net.dv8tion.jda.api.interactions.components.buttons.ButtonStyle;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 
-import static me.kodysimpson.cortexbot.services.DiscordBot.getGuild;
+import java.util.Date;
 
 @Service
 public class ModalListener extends ListenerAdapter {
 
-    private final BountyService bountyService;
+    private final ChallengeRepository challengeRepository;
 
-    public ModalListener(BountyService bountyService) {
-        this.bountyService = bountyService;
+    public ModalListener(ChallengeRepository challengeRepository) {
+        this.challengeRepository = challengeRepository;
     }
-
 
     @Override
     public void onModalInteraction(@NotNull ModalInteractionEvent event) {
 
         if (event.getModalId().equals("got-helped")){
 
-            String helperName = event.getValue("helper").getAsString();
-            String proof = event.getValue("proof").getAsString();
+//            String helperName = event.getValue("helper").getAsString();
+//            String proof = event.getValue("proof").getAsString();
+//
+//            Button pointsGiven = Button.of(ButtonStyle.SUCCESS, "points-given", "Points Given");
+//            Button pointsNotGiven = Button.of(ButtonStyle.DANGER, "points-not-given", "Points not Given");
+//
+//            Message message = new MessageBuilder()
+//                    .append("--->  ")
+//                    .append(helperName)
+//                    .append(" helped ")
+//                    .append(event.getMember().getEffectiveName())
+//                    .append(", ")
+//                    .append(proof)
+////                    .setActionRows(ActionRow.of(pointsGiven, pointsNotGiven))
+//                    .build();
+//
+//            getGuild().getTextChannelById("838841366498246757").sendMessage(message).queue();
+//
+//            event.reply("Thanks! A Community Manager will take a look and give them points if they helped you.").setEphemeral(true).queue();
 
-            Button pointsGiven = Button.of(ButtonStyle.SUCCESS, "points-given", "Points Given");
-            Button pointsNotGiven = Button.of(ButtonStyle.DANGER, "points-not-given", "Points not Given");
+        }else if (event.getModalId().equals("new-challenge-modal")){
 
-            Message message = new MessageBuilder()
-                    .append("--->  ")
-                    .append(helperName)
-                    .append(" helped ")
-                    .append(event.getMember().getEffectiveName())
-                    .append(", ")
-                    .append(proof)
-//                    .setActionRows(ActionRow.of(pointsGiven, pointsNotGiven))
-                    .build();
+            //Construct a new Challenge object with the given information
+            String name = event.getValue("challenge-name").getAsString();
+            String description = event.getValue("challenge-desc").getAsString();
+            String link = event.getValue("challenge-link").getAsString();
+            long whenEnd, reward;
 
-            getGuild().getTextChannelById("838841366498246757").sendMessage(message).queue();
+            try{
+                whenEnd = Long.parseLong(event.getValue("challenge-end").getAsString());
+                reward = Long.parseLong(event.getValue("challenge-reward").getAsString());
+            }catch (NumberFormatException e){
+                event.reply("Please enter a valid number for the end and reward fields.").queue();
+                return;
+            }
 
-            event.reply("Thanks! A Community Manager will take a look and give them points if they helped you.").setEphemeral(true).queue();
+            Challenge challenge = new Challenge();
+            challenge.setName(name);
+            challenge.setDescription(description);
+            challenge.setLink(link);
+            challenge.setStartDate(new Date().getTime());
+            challenge.setEndDate(whenEnd);
+            challenge.setReward(reward);
+            challenge.setStatus(ChallengeStatus.ACTIVE);
 
+            challengeRepository.insert(challenge);
+
+            //Make the announcement
+            //803777799353270293 <- challenges channel
+            String announcement = event.getGuild().getRoleById("770425465063604244").getAsMention() + "\n\n" +
+                    "NEW CODING CHALLENGE!: **\"" + challenge.getName() + "\"**\n\n" +
+                    "**Description**: " + challenge.getDescription() + "\n" +
+                    "**Link**: " + challenge.getLink() + "\n" +
+                    "**Ends on**: <t:" + whenEnd + ":D>\n\n" +
+                    "**Reward**: " + challenge.getReward() + " points\n\n" +
+                    "Join by clicking the button below!\n";
+
+            MessageBuilder messageBuilder = new MessageBuilder();
+            messageBuilder.setContent(announcement);
+            messageBuilder.setActionRows(ActionRow.of(Button.success("submit-challenge", "Submit Solution"), Button.primary("get-challenge-role", "Get Alerted for Future Challenges")));
+
+            Message message = messageBuilder.build();
+            event.getGuild().getTextChannelById("803777799353270293").sendMessage(message).queue();
+
+            event.reply("The challenge has been created and posted in the Challenges channel.").setEphemeral(true).queue();
         }
 
     }
