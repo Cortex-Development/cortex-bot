@@ -5,22 +5,19 @@ import dev.mikka.cortexbot.commands.help.menu.HelpingMessageContextMenu;
 import dev.mikka.cortexbot.commands.help.menu.ReportHelpContextMenu;
 import dev.mikka.cortexbot.commands.points.menu.*;
 import dev.mikka.cortexbot.listeners.InteractionListener;
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import me.kodysimpson.cortexbot.commands.CodeBlockCommand;
 import me.kodysimpson.cortexbot.commands.JavaTutCommand;
 import me.kodysimpson.cortexbot.commands.LeaderboardCommand;
 import me.kodysimpson.cortexbot.commands.SuggestionCommand;
-import me.kodysimpson.cortexbot.commands.bounty.DeleteBountyCommand;
-import me.kodysimpson.cortexbot.commands.bounty.DoneCommand;
 import me.kodysimpson.cortexbot.commands.challenges.ChallengeCommand;
-import me.kodysimpson.cortexbot.commands.etc.VeteranCommand;
 import me.kodysimpson.cortexbot.commands.jokes.JokeCommand;
 import me.kodysimpson.cortexbot.commands.points.*;
 import me.kodysimpson.cortexbot.config.DiscordConfiguration;
 import me.kodysimpson.cortexbot.listeners.ButtonClickListener;
 import me.kodysimpson.cortexbot.listeners.MessageListeners;
 import me.kodysimpson.cortexbot.listeners.ModalListener;
-import me.kodysimpson.cortexbot.listeners.NewMemberListener;
 import me.kodysimpson.cortexbot.model.CortexMember;
 import me.kodysimpson.cortexbot.repositories.ChallengeRepository;
 import me.kodysimpson.cortexbot.repositories.CortexMemberRepository;
@@ -37,8 +34,6 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.PostConstruct;
-import javax.security.auth.login.LoginException;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -54,15 +49,11 @@ public class DiscordBot {
 
     private final CortexMemberRepository cortexMemberRepository;
     private final DiscordConfiguration discordConfiguration;
-    private final VeteranCommand veteranCommand;
     private final GivePointsCommand givePointsCommand;
     private final PointsCommand pointsCommand;
     private final PayCommand payCommand;
-    private final DeleteBountyCommand deleteBountyCommand;
     private final MessageListeners messageListeners;
     private final ModalListener modalListener;
-    private final NewMemberListener newMemberListener;
-    private final DoneCommand doneCommand;
     private final SuggestionCommand suggestionCommand;
     private final JavaTutCommand javaTutCommand;
     private final CodeBlockCommand codeBlockCommand;
@@ -102,12 +93,9 @@ public class DiscordBot {
                     .addSlashCommand(pointsCommand)
                     .addSlashCommand(givePointsCommand)
                     .addSlashCommand(payCommand)
-                    .addSlashCommand(deleteBountyCommand)
-                    .addSlashCommand(doneCommand)
                     .addSlashCommand(takePointsCommand)
                     .addSlashCommand(setPointsCommand)
                     .addSlashCommand(thankCommand)
-                    .addSlashCommand(veteranCommand)
                     .addSlashCommand(challengeCommand).forceGuildOnly("503656531665879063")
                     .addSlashCommand(jokeCommand).forceGuildOnly("503656531665879063")
                     .addContextMenu(helpingMessageContextMenu)
@@ -124,7 +112,6 @@ public class DiscordBot {
                     .disableCache(CacheFlag.ACTIVITY, CacheFlag.VOICE_STATE, CacheFlag.CLIENT_STATUS)
                     .addEventListeners(commandClient.build())
                     .addEventListeners(messageListeners)
-                    .addEventListeners(newMemberListener)
                     .addEventListeners(buttonClickListener)
                     .addEventListeners(interactionListener)
                     .addEventListeners(modalListener)
@@ -135,7 +122,7 @@ public class DiscordBot {
             System.out.println("BOT STARTED SUCCESSFULLY");
             System.out.flush();
 
-        } catch (LoginException | InterruptedException e) {
+        } catch (InterruptedException e) {
             e.printStackTrace();
         }
     }

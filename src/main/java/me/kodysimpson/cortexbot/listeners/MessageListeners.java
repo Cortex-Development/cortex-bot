@@ -1,5 +1,6 @@
 package me.kodysimpson.cortexbot.listeners;
 
+import jakarta.annotation.Nonnull;
 import me.kodysimpson.cortexbot.config.DiscordConfiguration;
 import me.kodysimpson.cortexbot.model.Bounty;
 import me.kodysimpson.cortexbot.model.CortexMember;
@@ -11,7 +12,6 @@ import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.Nonnull;
 import java.util.List;
 import java.util.Objects;
 import java.util.Random;

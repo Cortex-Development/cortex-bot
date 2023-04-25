@@ -3,12 +3,12 @@ package me.kodysimpson.cortexbot.listeners;
 import me.kodysimpson.cortexbot.model.challenges.Challenge;
 import me.kodysimpson.cortexbot.model.challenges.ChallengeStatus;
 import me.kodysimpson.cortexbot.repositories.ChallengeRepository;
-import net.dv8tion.jda.api.MessageBuilder;
 import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.events.interaction.ModalInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.components.ActionRow;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
+import net.dv8tion.jda.api.utils.messages.MessageCreateBuilder;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 
@@ -85,12 +85,11 @@ public class ModalListener extends ListenerAdapter {
                     "**Reward**: " + challenge.getReward() + " points\n\n" +
                     "Join by clicking the button below!\n";
 
-            MessageBuilder messageBuilder = new MessageBuilder();
+            MessageCreateBuilder messageBuilder = new MessageCreateBuilder();
             messageBuilder.setContent(announcement);
-            messageBuilder.setActionRows(ActionRow.of(Button.success("submit-challenge", "Submit Solution"), Button.primary("get-challenge-role", "Get Alerted for Future Challenges")));
+            messageBuilder.setActionRow(Button.success("submit-challenge", "Submit Solution"), Button.primary("get-challenge-role", "Get Alerted for Future Challenges"));
 
-            Message message = messageBuilder.build();
-            event.getGuild().getTextChannelById("803777799353270293").sendMessage(message).queue();
+            event.getGuild().getTextChannelById("803777799353270293").sendMessage(messageBuilder.build()).queue();
 
             event.reply("The challenge has been created and posted in the Challenges channel.").setEphemeral(true).queue();
         }

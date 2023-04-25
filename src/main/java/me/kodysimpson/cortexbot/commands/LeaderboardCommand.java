@@ -5,12 +5,11 @@ import com.jagrosh.jdautilities.command.SlashCommandEvent;
 import me.kodysimpson.cortexbot.model.CortexMember;
 import me.kodysimpson.cortexbot.repositories.CortexMemberRepository;
 import me.kodysimpson.cortexbot.services.DiscordBot;
-import net.dv8tion.jda.api.MessageBuilder;
+import net.dv8tion.jda.api.utils.messages.MessageCreateBuilder;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.stream.Collectors;
 
 @Component
 public class LeaderboardCommand extends SlashCommand {
@@ -33,19 +32,20 @@ public class LeaderboardCommand extends SlashCommand {
                 .stream()
                 .sorted(Comparator.comparing(CortexMember::getPoints).reversed())
                 .limit(15)
-                .collect(Collectors.toList());
+                .toList();
 
-        MessageBuilder message = new MessageBuilder();
+        MessageCreateBuilder message = new MessageCreateBuilder();
 
-        message.append("---------------------------------------------------------------------------------------------", MessageBuilder.Formatting.STRIKETHROUGH).append("\n");
-        message.append("Top 15 Leaderboard Rankings", MessageBuilder.Formatting.BOLD).append("\n\n");
+        message.addContent("---------------------------------------------------------------------------------------------").addContent("\n");
+        message.addContent("Top 15 Leaderboard Rankings").addContent("\n\n");
 
         for (int i = 0; i < top.size(); i++){
-            message.append("(" + (i + 1) + ") - ", MessageBuilder.Formatting.BOLD).append(DiscordBot.getUsernameFromUserID(top.get(i).getUserID()) + " *-* " + top.get(i).getPoints() + " pts").append("\n");
+            message.addContent("(" + (i + 1) + ") - ").addContent(DiscordBot.getUsernameFromUserID(top.get(i).getUserID()) + " *-* " + top.get(i).getPoints() + " pts").addContent("\n");
         }
 
-        message.append("\nYou can view the full leaderboard here: COMING SOON").append("\n");
-        message.append("---------------------------------------------------------------------------------------------", MessageBuilder.Formatting.STRIKETHROUGH);
+        //Might have a web interface in the future, no touch
+//        message.addContent("\nYou can view the full leaderboard here: COMING SOON").addContent("\n");
+        message.addContent("---------------------------------------------------------------------------------------------");
 
         event.getHook().sendMessage(message.build()).queue();
 

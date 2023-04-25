@@ -8,12 +8,12 @@ import me.kodysimpson.cortexbot.model.challenges.Submission;
 import me.kodysimpson.cortexbot.repositories.ChallengeRepository;
 import me.kodysimpson.cortexbot.repositories.SubmissionRepository;
 import me.kodysimpson.cortexbot.services.ChallengeService;
-import net.dv8tion.jda.api.MessageBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.interactions.components.ActionRow;
-import net.dv8tion.jda.api.interactions.components.Modal;
 import net.dv8tion.jda.api.interactions.components.text.TextInput;
 import net.dv8tion.jda.api.interactions.components.text.TextInputStyle;
+import net.dv8tion.jda.api.interactions.modals.Modal;
+import net.dv8tion.jda.api.utils.messages.MessageCreateBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -124,7 +124,7 @@ public class ChallengeCommand extends SlashCommand {
             challengeRepository.save(challenge);
 
             //Announce the end of the challenge
-            MessageBuilder messageBuilder = new MessageBuilder();
+            MessageCreateBuilder messageBuilder = new MessageCreateBuilder();
             messageBuilder.setContent(event.getGuild().getRoleById("770425465063604244").getAsMention() + "\n\n" +
                     "The challenge **\"" + challenge.getName() + "\"** has ended.\n");
             event.getGuild().getTextChannelById("803777799353270293").sendMessage(messageBuilder.build()).queue();

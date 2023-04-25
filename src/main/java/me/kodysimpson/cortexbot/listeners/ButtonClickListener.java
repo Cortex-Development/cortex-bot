@@ -1,16 +1,15 @@
 package me.kodysimpson.cortexbot.listeners;
 
-import me.kodysimpson.cortexbot.services.BountyService;
 import me.kodysimpson.cortexbot.services.ChallengeService;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Role;
-import net.dv8tion.jda.api.entities.TextChannel;
+import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.events.interaction.component.ButtonInteractionEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.components.ActionRow;
-import net.dv8tion.jda.api.interactions.components.Modal;
 import net.dv8tion.jda.api.interactions.components.text.TextInput;
 import net.dv8tion.jda.api.interactions.components.text.TextInputStyle;
+import net.dv8tion.jda.api.interactions.modals.Modal;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -19,12 +18,10 @@ import java.util.Objects;
 
 @Component
 public class ButtonClickListener extends ListenerAdapter {
-    private final BountyService bountyService;
     private final ChallengeService challengeService;
 
     @Autowired
-    public ButtonClickListener(BountyService bountyService, ChallengeService challengeService) {
-        this.bountyService = bountyService;
+    public ButtonClickListener(ChallengeService challengeService) {
         this.challengeService = challengeService;
     }
 
@@ -54,15 +51,7 @@ public class ButtonClickListener extends ListenerAdapter {
 
         event.deferReply().setEphemeral(true).queue();
 
-        if (event.getButton().getId().equalsIgnoreCase("new-bounty")) {
-            bountyService.createNewBounty(event.getInteraction());
-        }else if (event.getButton().getId().equalsIgnoreCase("delete-bounty")){
-            bountyService.deleteBounty(event.getInteraction());
-        }else if (event.getButton().getId().equalsIgnoreCase("done-bounty")){
-            bountyService.closeBounty(event.getInteraction());
-        }else if (event.getButton().getId().equalsIgnoreCase("grade-bounty")){
-            bountyService.finishGrading(event.getInteraction());
-        }else if(event.getButton().getId().equalsIgnoreCase("submit-challenge")){
+        if(event.getButton().getId().equalsIgnoreCase("submit-challenge")){
             challengeService.createSubmissionChannel(event.getInteraction());
         }else if(event.getButton().getId().equalsIgnoreCase("challenge-close-submission")){
             challengeService.closeSubmissionChannel(event.getInteraction());

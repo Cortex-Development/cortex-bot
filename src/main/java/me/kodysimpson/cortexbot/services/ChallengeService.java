@@ -6,15 +6,14 @@ import me.kodysimpson.cortexbot.model.challenges.ChallengeStatus;
 import me.kodysimpson.cortexbot.model.challenges.Submission;
 import me.kodysimpson.cortexbot.repositories.ChallengeRepository;
 import me.kodysimpson.cortexbot.repositories.SubmissionRepository;
-import net.dv8tion.jda.api.MessageBuilder;
 import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.Role;
-import net.dv8tion.jda.api.entities.TextChannel;
-import net.dv8tion.jda.api.interactions.components.ActionRow;
+import net.dv8tion.jda.api.entities.channel.concrete.TextChannel;
 import net.dv8tion.jda.api.interactions.components.buttons.Button;
 import net.dv8tion.jda.api.interactions.components.buttons.ButtonInteraction;
+import net.dv8tion.jda.api.utils.messages.MessageCreateBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -109,14 +108,13 @@ public class ChallengeService {
         sm.setUserid(member.getId());
         sm.setStatus(ChallengeGrade.UNGRADED);
 
-        MessageBuilder messageBuilder = new MessageBuilder();
-
-        messageBuilder.append("---------------------------------------------------------------------------------------------", MessageBuilder.Formatting.STRIKETHROUGH).append("\n");
-        messageBuilder.append(member.getEffectiveName() + "'s Challenge Submission Channel", MessageBuilder.Formatting.BOLD).append("\n\n");
-        messageBuilder.append("*For " + member.getEffectiveName() + "*: Post a link to your code submission here. Acceptable links include: Pastebin, Github(Gist or Repository), and Hastebin. Feel free to change your answer before the challenge ends.").append("\n");
-        messageBuilder.append("\nThis channel will automatically lock when the challenge ends.").append("\n");
-        messageBuilder.setActionRows(ActionRow.of(Button.danger("challenge-close-submission", "Delete Channel")));
-        messageBuilder.append("---------------------------------------------------------------------------------------------", MessageBuilder.Formatting.STRIKETHROUGH);
+        MessageCreateBuilder messageBuilder = new MessageCreateBuilder();
+        messageBuilder.addContent("---------------------------------------------------------------------------------------------").addContent("\n");
+        messageBuilder.addContent(member.getEffectiveName() + "'s Challenge Submission Channel").addContent("\n\n");
+        messageBuilder.addContent("*For " + member.getEffectiveName() + "*: Post a link to your code submission here. Acceptable links include: Pastebin, Github(Gist or Repository), and Hastebin. Feel free to change your answer before the challenge ends.").addContent("\n");
+        messageBuilder.addContent("\nThis channel will automatically lock when the challenge ends.").addContent("\n");
+        messageBuilder.setActionRow(Button.danger("challenge-close-submission", "Delete Channel"));
+        messageBuilder.addContent("---------------------------------------------------------------------------------------------");
 
         channel.sendMessage(messageBuilder.build()).complete();
 
@@ -159,9 +157,9 @@ public class ChallengeService {
             channel.getManager().putRolePermissionOverride(guild.getPublicRole().getIdLong(), null, List.of(Permission.VIEW_CHANNEL)).queue();
             channel.getManager().putRolePermissionOverride(role.getIdLong(), List.of(Permission.VIEW_CHANNEL), null).queue();
 
-            MessageBuilder messageBuilder = new MessageBuilder();
+            MessageCreateBuilder messageBuilder = new MessageCreateBuilder();
             messageBuilder.setContent("Your submission has been closed and will be looked at, look out for an announcement on the results. Thank you for participating!");
-            messageBuilder.setActionRows(ActionRow.of(Button.success("challenge-grade-pass", "Passed"), Button.danger("challenge-grade-fail", "Failed")));
+            messageBuilder.setActionRow(Button.success("challenge-grade-pass", "Passed"), Button.danger("challenge-grade-fail", "Failed"));
 
             //tell the member that their submission has been closed and will be looked at
             channel.sendMessage(messageBuilder.build()).queue();
@@ -227,7 +225,7 @@ public class ChallengeService {
             //Give the user access to the channel
             channel.getManager().putMemberPermissionOverride(member.getIdLong(), List.of(Permission.VIEW_CHANNEL), null).queue();
 
-            MessageBuilder messageBuilder = new MessageBuilder();
+            MessageCreateBuilder messageBuilder = new MessageCreateBuilder();
             if(submission.getStatus() == ChallengeGrade.PASS){
 
                 //Send a message to the channel that the submission was passed
@@ -262,7 +260,7 @@ public class ChallengeService {
         }
 
         //Announce the end of the challenge
-        MessageBuilder messageBuilder = new MessageBuilder();
+        MessageCreateBuilder messageBuilder = new MessageCreateBuilder();
         messageBuilder.setContent(guild.getRoleById("770425465063604244").getAsMention() + "\n\n" +
                 "Results for challenge **\"" + challenge.getName() + "\"**.\n" +
                 "Participants: " + participants + "\n" +
