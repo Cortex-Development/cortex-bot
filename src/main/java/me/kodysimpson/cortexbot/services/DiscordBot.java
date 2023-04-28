@@ -28,6 +28,7 @@ import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.Role;
 import net.dv8tion.jda.api.exceptions.HierarchyException;
 import net.dv8tion.jda.api.exceptions.InsufficientPermissionException;
+import net.dv8tion.jda.api.exceptions.InvalidTokenException;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import net.dv8tion.jda.api.utils.cache.CacheFlag;
 import org.springframework.context.annotation.Lazy;
@@ -122,7 +123,7 @@ public class DiscordBot {
             System.out.println("BOT STARTED SUCCESSFULLY");
             System.out.flush();
 
-        } catch (InterruptedException e) {
+        } catch (InvalidTokenException | InterruptedException e) {
             e.printStackTrace();
         }
     }
