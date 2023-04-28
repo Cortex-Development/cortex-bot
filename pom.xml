@@ -8,7 +8,7 @@
         <version>3.0.6</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
-    <groupId>me.kodysimpson</groupId>
+    <groupId>dev.cortex</groupId>
     <artifactId>cortex-bot</artifactId>
     <version>1.0</version>
     <name>cortex-bot</name>
