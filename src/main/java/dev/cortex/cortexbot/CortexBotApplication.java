@@ -5,7 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 @SpringBootApplication(
-        scanBasePackages = {"me.kodysimpson.cortexbot.*", "dev.mikka.cortexbot.*"}
+        scanBasePackages = {"dev.cortex.cortexbot.*"}
 )
 @EnableScheduling
 public class CortexBotApplication {
