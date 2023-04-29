@@ -1,26 +1,26 @@
 package dev.cortex.cortexbot.services;
 
 import com.jagrosh.jdautilities.command.CommandClientBuilder;
-import dev.cortex.cortexbot.commands.challenges.ChallengeCommand;
-import dev.cortex.cortexbot.commands.menu.HelpingMessageContextMenu;
-import dev.cortex.cortexbot.commands.menu.ReportHelpContextMenu;
-import dev.cortex.cortexbot.commands.points.*;
-import dev.cortex.cortexbot.commands.points.menu.*;
-import dev.cortex.cortexbot.listeners.ButtonClickListener;
-import dev.cortex.cortexbot.listeners.InteractionListener;
-import dev.cortex.cortexbot.listeners.MessageListeners;
-import dev.cortex.cortexbot.listeners.ModalListener;
-import dev.cortex.cortexbot.repositories.ChallengeRepository;
-import dev.cortex.cortexbot.repositories.CortexMemberRepository;
-import jakarta.annotation.PostConstruct;
-import lombok.RequiredArgsConstructor;
 import dev.cortex.cortexbot.commands.CodeBlockCommand;
 import dev.cortex.cortexbot.commands.JavaTutCommand;
 import dev.cortex.cortexbot.commands.LeaderboardCommand;
 import dev.cortex.cortexbot.commands.SuggestionCommand;
+import dev.cortex.cortexbot.commands.challenges.ChallengeCommand;
 import dev.cortex.cortexbot.commands.jokes.JokeCommand;
+import dev.cortex.cortexbot.commands.menu.HelpingMessageContextMenu;
+import dev.cortex.cortexbot.commands.menu.ReportHelpContextMenu;
+import dev.cortex.cortexbot.commands.points.*;
+import dev.cortex.cortexbot.commands.points.menu.*;
 import dev.cortex.cortexbot.config.DiscordConfiguration;
+import dev.cortex.cortexbot.listeners.ButtonClickListener;
+import dev.cortex.cortexbot.listeners.InteractionListener;
+import dev.cortex.cortexbot.listeners.MessageListeners;
+import dev.cortex.cortexbot.listeners.ModalListener;
 import dev.cortex.cortexbot.model.CortexMember;
+import dev.cortex.cortexbot.repositories.ChallengeRepository;
+import dev.cortex.cortexbot.repositories.CortexMemberRepository;
+import jakarta.annotation.PostConstruct;
+import lombok.RequiredArgsConstructor;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Activity;
@@ -40,7 +40,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
-import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -132,7 +131,7 @@ public class DiscordBot {
         return api;
     }
 
-    public static Guild getGuild() {
+    public Guild getGuild() {
         return getApi().getGuildById(discordConfiguration.getGuildId());
     }
 
@@ -141,20 +140,7 @@ public class DiscordBot {
             Role role = member.getGuild().getRoleById(roleId);
 
             if (role != null) {
-                getGuild().addRoleToMember(member, role).queueAfter(1, TimeUnit.MINUTES);
-            }
-        } catch (IllegalArgumentException | InsufficientPermissionException | HierarchyException e) {
-            System.out.println(member.getUser().getAsTag() + " did not get the role on join");
-            System.out.println(e);
-        }
-    }
-
-    public static void addRoleToMember(net.dv8tion.jda.api.entities.Member member, long roleId, Consumer<Void> successResponse) {
-        try {
-            Role role = member.getGuild().getRoleById(roleId);
-
-            if (role != null) {
-                getGuild().addRoleToMember(member, role).queueAfter(1, TimeUnit.MINUTES, successResponse);
+                member.getGuild().addRoleToMember(member, role).queueAfter(1, TimeUnit.MINUTES);
             }
         } catch (IllegalArgumentException | InsufficientPermissionException | HierarchyException e) {
             System.out.println(member.getUser().getAsTag() + " did not get the role on join");
@@ -165,7 +151,7 @@ public class DiscordBot {
     /**
      * Will give the Regular role to top 20 on the leaderboard every 1 hour
      */
-    @Scheduled(fixedRate = 3600000, initialDelay = 5000L)
+    @Scheduled(cron = "0 0 * * * *")
     public void applyRegularRoles() {
 
         ArrayList<String> topTwenty = (ArrayList<String>) cortexMemberRepository.findAll()
@@ -194,7 +180,7 @@ public class DiscordBot {
     /**
      * Will give the Veteran Coder role to top 5 on the leaderboard every 1 hour
      */
-    @Scheduled(fixedRate = 3600000, initialDelay = 5000L)
+    @Scheduled(cron = "0 0 * * * *")
     public void applyVeteranRoles() {
 
         ArrayList<String> topFive = (ArrayList<String>) cortexMemberRepository.findAll()
