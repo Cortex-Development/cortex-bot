@@ -6,6 +6,36 @@ The Cortex Bot is a Discord bot that is used to help manage the [Cortex Developm
 
 It does things that discord does not already provide that help make the server experience better for everyone.
 
+## Commands
+- `/code` - Get information on how to properly post your code.
+- `/leaderboard` - Get the top ten leaderboard rankings for points
+- `/javatutorials` - Get a link to Kody's Ultimate Java Tutorial Series
+- `/givepoints <user> <amount> [reason]` - **MOD** - Give points to a member
+- `/pay <user> <amount> [reason]` - Give your points to someone else
+- `/points [user]` - See how many points you or someone else has
+- `/set-points <user> <amount> [reason]` - **MOD** - Set points for a member
+- `/take-points <user> <amount> [reason]` - **MOD** - Take points from a member
+- `/thank <user> [amount] [reason]` - Thank someone for helping you on the server. Optionally tip them an amount of points.
+- `/joke` - Get a Chuck Norris joke
+- `/challenge create` - **ADMIN** - Create a new challenge
+- `/challenge end` - **ADMIN** - End the ongoing challenge
+- `/challenge finishgrading` - **ADMIN** - Finish grading the ongoing challenge
+- `/suggestions` - Shows top 10 most upvoted suggestions
+- `/resetpoints` - **OWNER** - Reset all points to 0 - *WIP*
+
+## Context Menus
+- `Give Points for Helping` - **MOD** - Give points to a member for helping someone
+- `I Got Helped` - Inform a staff member that you got help by this user - *WIP*
+- `Give Points` - **MOD** - Give points to a member
+- `Take Points` - **MOD** - Take points from a member
+- `Set Points` - **MOD** - Set points for a member
+- `Thank Points` - Thank someone for helping you on the server.
+
+## Features
+- **Points** - Members can get points from other members or from getting their work acknowledged by staff. These points can be accumulated and 
+flexed on the leaderboard
+- **Challenges** - Staff can create challenges for members to complete. These challenges can be graded by staff.
+
 ## Contribution
 We welcome contributions from the community! To contribute to this project, please follow these guidelines:
 
@@ -24,7 +54,3 @@ If you have any ideas that you would like to add, please create an issue and we 
 If you decide to work on something without there first being an issue, just be warned it might not be accepted if we do not find it needed for the community.
 
 You can also come talk to us on our [Discord](https://discord.gg/cortexdev) server if you have any questions or just want to chat.
-
-## Commands & Features
-
-TODO: Add commands
