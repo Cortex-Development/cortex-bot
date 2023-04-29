@@ -10,16 +10,26 @@ It does things that discord does not already provide that help make the server e
 - `/code` - Get information on how to properly post your code.
 - `/leaderboard` - Get the top ten leaderboard rankings for points
 - `/javatutorials` - Get a link to Kody's Ultimate Java Tutorial Series
-- `/givepoints <user> <amount> [reason]` - **STAFF** - Give points to a member
+- `/givepoints <user> <amount> [reason]` - **MOD** - Give points to a member
 - `/pay <user> <amount> [reason]` - Give your points to someone else
 - `/points [user]` - See how many points you or someone else has
-- `/set-points <user> <amount> [reason]` - **STAFF** - Set points for a member
-- `/take-points <user> <amount> [reason]` - **STAFF** - Take points from a member
+- `/set-points <user> <amount> [reason]` - **MOD** - Set points for a member
+- `/take-points <user> <amount> [reason]` - **MOD** - Take points from a member
 - `/thank <user> [amount] [reason]` - Thank someone for helping you on the server. Optionally tip them an amount of points.
 - `/joke` - Get a Chuck Norris joke
-- `/challenge create` - **STAFF** - Create a new challenge
-- `/challenge end` - **STAFF** - End the ongoing challenge
-- `/challenge finishgrading` - **STAFF** - Finish grading the ongoing challenge
+- `/challenge create` - **ADMIN** - Create a new challenge
+- `/challenge end` - **ADMIN** - End the ongoing challenge
+- `/challenge finishgrading` - **ADMIN** - Finish grading the ongoing challenge
+- `/suggestions` - Shows top 10 most upvoted suggestions
+- `/resetpoints` - **OWNER** - Reset all points to 0 - *WIP*
+
+## Context Menus
+- `Give Points for Helping` - **MOD** - Give points to a member for helping someone
+- `I Got Helped` - Inform a staff member that you got help by this user - *WIP*
+- `Give Points` - **MOD** - Give points to a member
+- `Take Points` - **MOD** - Take points from a member
+- `Set Points` - **MOD** - Set points for a member
+- `Thank Points` - Thank someone for helping you on the server.
 
 ## Features
 - **Points** - Members can get points from other members or from getting their work acknowledged by staff. These points can be accumulated and 
