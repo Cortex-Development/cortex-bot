@@ -28,7 +28,7 @@ It does things that discord does not already provide that help make the server e
 - `/challenge finishgrading` - Finish grading the ongoing challenge
 - `/challenge end` - End the ongoing challenge
 3. **Owner**
-- `/resetpoints` - **OWNER** - Reset all points to 0 - *WIP*
+- `/resetpoints` - Reset all points to 0 - *WIP*
 
 
 ## Context Menus
