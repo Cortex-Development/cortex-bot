@@ -21,6 +21,12 @@ It does things that discord does not already provide that help make the server e
 - `/challenge end` - **STAFF** - End the ongoing challenge
 - `/challenge finishgrading` - **STAFF** - Finish grading the ongoing challenge
 
+## Features
+- **Points** - Members can get points from other members or from getting their work acknowledged by staff. These points can be accumulated and 
+flexed on the leaderboard
+- **Challenges** - Staff can create challenges for members to complete. These challenges can be graded by staff.
+
+
 ## Contribution
 We welcome contributions from the community! To contribute to this project, please follow these guidelines:
 
