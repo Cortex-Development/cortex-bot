@@ -6,6 +6,21 @@ The Cortex Bot is a Discord bot that is used to help manage the [Cortex Developm
 
 It does things that discord does not already provide that help make the server experience better for everyone.
 
+## Commands
+- `/code` - Get information on how to properly post your code.
+- `/leaderboard` - Get the top ten leaderboard rankings for points
+- `/javatutorials` - Get a link to Kody's Ultimate Java Tutorial Series
+- `/givepoints <user> <amount> [reason]` - **STAFF** - Give points to a member
+- `/pay <user> <amount> [reason]` - Give your points to someone else
+- `/points [user]` - See how many points you or someone else has
+- `/set-points <user> <amount> [reason]` - **STAFF** - Set points for a member
+- `/take-points <user> <amount> [reason]` - **STAFF** - Take points from a member
+- `/thank <user> [amount] [reason]` - Thank someone for helping you on the server. Optionally tip them an amount of points.
+- `/joke` - Get a Chuck Norris joke
+- `/challenge create` - **STAFF** - Create a new challenge
+- `/challenge end` - **STAFF** - End the ongoing challenge
+- `/challenge finishgrading` - **STAFF** - Finish grading the ongoing challenge
+
 ## Contribution
 We welcome contributions from the community! To contribute to this project, please follow these guidelines:
 
