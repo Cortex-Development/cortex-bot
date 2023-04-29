@@ -133,7 +133,7 @@ public class DiscordBot {
     }
 
     public static Guild getGuild() {
-        return getApi().getGuildById("503656531665879063");
+        return getApi().getGuildById(discordConfiguration.getGuildId());
     }
 
     public void addRoleToMember(net.dv8tion.jda.api.entities.Member member, long roleId) {
