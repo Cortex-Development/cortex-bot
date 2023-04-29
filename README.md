@@ -26,7 +26,6 @@ It does things that discord does not already provide that help make the server e
 flexed on the leaderboard
 - **Challenges** - Staff can create challenges for members to complete. These challenges can be graded by staff.
 
-
 ## Contribution
 We welcome contributions from the community! To contribute to this project, please follow these guidelines:
 
@@ -45,7 +44,3 @@ If you have any ideas that you would like to add, please create an issue and we 
 If you decide to work on something without there first being an issue, just be warned it might not be accepted if we do not find it needed for the community.
 
 You can also come talk to us on our [Discord](https://discord.gg/cortexdev) server if you have any questions or just want to chat.
-
-## Commands & Features
-
-TODO: Add commands
