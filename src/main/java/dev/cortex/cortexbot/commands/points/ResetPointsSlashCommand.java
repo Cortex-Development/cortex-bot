@@ -20,20 +20,24 @@ public class ResetPointsSlashCommand extends SlashCommand {
     
     @Override
     protected void execute(SlashCommandEvent event) {
-//        event.deferReply(true).queue();
-//
-//        event.getHook().sendMessage(
-//                new MessageBuilder("Do you really want to reset the economy?").setActionRows(
-//                        ActionRow.of(Button.danger("economy-reset-confirm", "Reset"), Button.primary("economy-reset-cancel", "Cancel"))
-//                ).build()
-//        ).queue();
+        /*event.deferReply(true).queue();
+
+        if (event.getGuild() == null || event.getGuild().getIdLong() != 503656531665879063L) {
+            event.getHook().sendMessage("You must execute this command on the main server").queue();
+        }
+
+        event.getHook().sendMessage(
+                new MessageBuilder("Do you really want to reset the economy?").setActionRows(
+                        ActionRow.of(Button.danger("economy-reset-confirm", "Reset"), Button.primary("economy-reset-cancel", "Cancel"))
+                ).build()
+        ).queue();*/
     }
     
     public static void handleClick(ButtonInteractionEvent event) {
-//        if (event.getButton().getId().equals("economy-reset-confirm")) {
-//
-//        } else {
-//
-//        }
+        /*if (event.getButton().getId().equals("economy-reset-confirm")) {
+
+        } else {
+
+        }*/
     }
 }
