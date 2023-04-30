@@ -39,6 +39,10 @@ public class TakePointsCommand extends SlashCommand {
 
         event.deferReply().queue();
 
+        if (event.getGuild() == null || event.getGuild().getIdLong() != 503656531665879063L) {
+            event.getHook().sendMessage("You must execute this command on the main server").queue();
+        }
+
         if (event.getMember().isOwner() || event.getMember().getRoles().contains(event.getJDA().getRoleById(discordConfiguration.getStaffRole()))) {
 
             if (event.getOptions().isEmpty()) {

@@ -39,6 +39,10 @@ public class PayCommand extends SlashCommand {
 
         event.deferReply().queue();
 
+        if (event.getGuild() == null || event.getGuild().getIdLong() != 503656531665879063L) {
+            event.getHook().sendMessage("You must execute this command on the main server").queue();
+        }
+
         //determine who was provided as an argument to this command
         User user = event.getOption("user").getAsUser();
 

@@ -31,6 +31,10 @@ public class PointsCommand extends SlashCommand {
 
         event.deferReply().queue();
 
+        if (event.getGuild() == null || event.getGuild().getIdLong() != 503656531665879063L) {
+            event.getHook().sendMessage("You must execute this command on the main server").queue();
+        }
+
         if (event.getOptions().isEmpty()){
 
             //Since no arguments were provided, show the user their own points amount
