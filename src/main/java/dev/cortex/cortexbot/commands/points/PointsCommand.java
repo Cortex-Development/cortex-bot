@@ -39,7 +39,7 @@ public class PointsCommand extends SlashCommand {
             if (points != -1){
                 event.getHook().sendMessage("You have " + points + " point(s).").setEphemeral(true).queue();
             }else{
-                event.getHook().sendMessage("You don't exist!").setEphemeral(true);
+                event.getHook().sendMessage("You don't exist!").setEphemeral(true).queue();
             }
 
         }else{
