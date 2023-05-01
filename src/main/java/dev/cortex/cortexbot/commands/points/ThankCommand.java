@@ -63,7 +63,7 @@ public class ThankCommand extends SlashCommand {
 
         //see if they are trying to give points to themself
         if (user.getId().equals(event.getMember().getId()) && !event.getMember().isOwner()) {
-            event.getHook().sendMessage("You can't thank yourself dummy.").queue();
+            event.getHook().sendMessage("You can't thank yourself dummy.").setEphemeral(true).queue();
             return;
         }
 
@@ -93,7 +93,7 @@ public class ThankCommand extends SlashCommand {
 
                 //did they give any points?
                 if (points == 0){
-                    event.getHook().sendMessage("You have thanked " + user.getName() + ".").setEphemeral(true).queue();
+                    event.getHook().sendMessage(payee.getName() + " has thanked " + user.getName() + ".").queue();
 
                     String finalReason = reason;
                     user.openPrivateChannel().flatMap(channel -> {

@@ -42,11 +42,11 @@ public class TakePointsCommand extends SlashCommand {
         if (event.getMember().isOwner() || event.getMember().getRoles().contains(event.getJDA().getRoleById(discordConfiguration.getStaffRole()))) {
 
             if (event.getOptions().isEmpty()) {
-                event.getHook().sendMessage("Provide a person to take points from. Ex: $take-points 250856681724968960 100").queue();
+                event.getHook().sendMessage("Provide a person to take points from. Ex: $take-points 250856681724968960 100").setEphemeral(true).queue();
             } else {
 
                 if (event.getOptions().size() == 1) {
-                    event.getHook().sendMessage("An amount of points must be provided. Ex: $take-points 250856681724968960 100").queue();
+                    event.getHook().sendMessage("An amount of points must be provided. Ex: $take-points 250856681724968960 100").setEphemeral(true).queue();
                 } else {
 
                     //determine who was provided as an argument to this command
@@ -54,7 +54,7 @@ public class TakePointsCommand extends SlashCommand {
 
                     //see if they are trying to give points to themself
                     if (user.getId().equals(event.getMember().getId()) && !event.getMember().isOwner()) {
-                        event.getHook().sendMessage("You can't take points from yourself dummy.").queue();
+                        event.getHook().sendMessage("You can't take points from yourself dummy.").setEphemeral(true).queue();
                         return;
                     }
 
@@ -64,7 +64,7 @@ public class TakePointsCommand extends SlashCommand {
 
                         int points = (int) event.getOption("amount").getAsDouble();
                         if (points <= 0) {
-                            event.getHook().sendMessage("You need to provide a positive number of points.").queue();
+                            event.getHook().sendMessage("You need to provide a positive number of points.").setEphemeral(true).queue();
                             return;
                         }
 
@@ -83,7 +83,7 @@ public class TakePointsCommand extends SlashCommand {
 
 
                     } else {
-                        event.getHook().sendMessage("The user provided does not exist in our database.").queue();
+                        event.getHook().sendMessage("The user provided does not exist in our database.").setEphemeral(true).queue();
                     }
 
                 }
@@ -91,7 +91,7 @@ public class TakePointsCommand extends SlashCommand {
             }
 
         } else {
-            event.getHook().sendMessage("You must be staff to execute this command.").queue();
+            event.getHook().sendMessage("You must be staff to execute this command.").setEphemeral(true).queue();
         }
 
     }

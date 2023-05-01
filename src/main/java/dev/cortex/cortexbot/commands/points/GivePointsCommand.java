@@ -45,11 +45,11 @@ public class GivePointsCommand extends SlashCommand {
             List<OptionMapping> options = event.getOptions();
 
             if (options.isEmpty()){
-                event.getHook().sendMessage("Provide a person to give points to. Ex: /give-points 250856681724968960 100").queue();
+                event.getHook().sendMessage("Provide a person to give points to. Ex: /give-points 250856681724968960 100").setEphemeral(true).queue();
             }else{
 
                 if (options.size() == 1){
-                    event.getHook().sendMessage("An amount of points must be provided. Ex: /give-points 250856681724968960 100").queue();
+                    event.getHook().sendMessage("An amount of points must be provided. Ex: /give-points 250856681724968960 100").setEphemeral(true).queue();
                 }else{
 
                     //determine who was provided as an argument to this command
@@ -57,7 +57,7 @@ public class GivePointsCommand extends SlashCommand {
 
                     //see if they are trying to give points to themself
                     if (user.getId().equals(event.getMember().getId()) && !event.getMember().isOwner()){
-                        event.getHook().sendMessage("You can't give points to yourself dummy.").queue();
+                        event.getHook().sendMessage("You can't give points to yourself dummy.").setEphemeral(true).queue();
                         return;
                     }
 
@@ -67,7 +67,7 @@ public class GivePointsCommand extends SlashCommand {
 
                             int points = (int) event.getOption("amount").getAsDouble();
                             if (points <= 0){
-                                event.getHook().sendMessage("You need to provide a positive number of points.").queue();
+                                event.getHook().sendMessage("You need to provide a positive number of points.").setEphemeral(true).queue();
                                 return;
                             }
 
@@ -97,11 +97,8 @@ public class GivePointsCommand extends SlashCommand {
                                 }).queue();
                             }
 
-
-
-
                     }else{
-                        event.getHook().sendMessage("The user provided does not exist in our database.").queue();
+                        event.getHook().sendMessage("The user provided does not exist in our database.").setEphemeral(true).queue();
                     }
 
                 }
@@ -109,7 +106,7 @@ public class GivePointsCommand extends SlashCommand {
             }
 
         }else{
-            event.getHook().sendMessage("You must be staff to execute this command.").queue();
+            event.getHook().sendMessage("You must be staff to execute this command.").setEphemeral(true).queue();
         }
 
     }
