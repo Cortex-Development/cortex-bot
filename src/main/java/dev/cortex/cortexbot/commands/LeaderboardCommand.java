@@ -38,7 +38,7 @@ public class LeaderboardCommand extends SlashCommand {
         message.addContent("\uD83D\uDE80 **Top 15 Leaderboard Rankings** \uD83D\uDE80").addContent("\n\n");
 
         for (int i = 0; i < top.size(); i++){
-            message.addContent("(" + (i + 1) + ") - ").addContent("<@" + top.get(i).getUserID() + "> *-* " + top.get(i).getPoints() + " pts");
+            message.addContent("(" + (i + 1) + ") - ").addContent(top.get(i).getName() + " *-* " + top.get(i).getPoints() + " pts");
             if (i == 0) message.addContent(":first_place:");
             if (i == 1) message.addContent(":second_place:");
             if (i == 2) message.addContent(":third_place:");
