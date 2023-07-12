@@ -8,6 +8,7 @@ import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.exceptions.HierarchyException;
 import org.springframework.stereotype.Component;
 
+import java.awt.*;
 import java.util.List;
 
 @Component
@@ -40,10 +41,9 @@ public class ClearNicknamesCommand extends SlashCommand {
 
         EmbedBuilder embed = new EmbedBuilder();
         embed.setTitle("Clear Nicknames");
+        embed.setColor(Color.CYAN);
         embed.addField("Nicknames Cleared Successfully", String.valueOf(successCount), false);
         embed.addField("Nicknames Failed to Clear", String.valueOf(failCount), false);
-        embed.setDescription("✅ Operation completed successfully!");
-        embed.setFooter("Cortex Bot", event.getJDA().getSelfUser().getAvatarUrl());
 
         event.replyEmbeds(embed.build()).queue();
     }
