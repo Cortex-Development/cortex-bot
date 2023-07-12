@@ -7,21 +7,29 @@ The Cortex Bot is a Discord bot that is used to help manage the [Cortex Developm
 It does things that discord does not already provide that help make the server experience better for everyone.
 
 ## Commands
+
+### Users commands
 - `/code` - Get information on how to properly post your code.
 - `/leaderboard` - Get the top ten leaderboard rankings for points
 - `/javatutorials` - Get a link to Kody's Ultimate Java Tutorial Series
-- `/givepoints <user> <amount> [reason]` - **MOD** - Give points to a member
 - `/pay <user> <amount> [reason]` - Give your points to someone else
 - `/points [user]` - See how many points you or someone else has
-- `/set-points <user> <amount> [reason]` - **MOD** - Set points for a member
-- `/take-points <user> <amount> [reason]` - **MOD** - Take points from a member
 - `/thank <user> [amount] [reason]` - Thank someone for helping you on the server. Optionally tip them an amount of points.
 - `/joke` - Get a Chuck Norris joke
-- `/challenge create` - **ADMIN** - Create a new challenge
-- `/challenge end` - **ADMIN** - End the ongoing challenge
-- `/challenge finishgrading` - **ADMIN** - Finish grading the ongoing challenge
 - `/suggestions` - Shows top 10 most upvoted suggestions
-- `/resetpoints` - **OWNER** - Reset all points to 0 - *WIP*
+
+### Staff Only Commands
+1. **Mod**
+- `/givepoints <user> <amount> [reason]` - Give points to a member
+- `/set-points <user> <amount> [reason]` - Set points for a member
+- `/take-points <user> <amount> [reason]` - Take points from a member
+2. **Admin**
+- `/challenge create` - Create a new challenge
+- `/challenge finishgrading` - Finish grading the ongoing challenge
+- `/challenge end` - End the ongoing challenge
+3. **Owner**
+- `/resetpoints` - Reset all points to 0 - *WIP*
+
 
 ## Context Menus
 - `Give Points for Helping` - **MOD** - Give points to a member for helping someone
