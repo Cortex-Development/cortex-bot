@@ -24,6 +24,7 @@ public class ClearNicknamesCommand extends SlashCommand {
     @Override
     protected void execute(SlashCommandEvent event) {
         List<Member> members = event.getGuild().getMembers();
+        event.deferReply().queue();
 
         int successCount = 0;
         int failCount = 0;
@@ -45,6 +46,6 @@ public class ClearNicknamesCommand extends SlashCommand {
         embed.addField("Nicknames Cleared Successfully", String.valueOf(successCount), false);
         embed.addField("Nicknames Failed to Clear", String.valueOf(failCount), false);
 
-        event.replyEmbeds(embed.build()).queue();
+        event.getHook().editOriginalEmbeds(embed.build()).queue();
     }
 }
