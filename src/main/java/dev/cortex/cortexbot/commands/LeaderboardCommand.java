@@ -1,15 +1,14 @@
 package dev.cortex.cortexbot.commands;
 
-import com.jagrosh.jdautilities.command.SlashCommand;
-import com.jagrosh.jdautilities.command.SlashCommandEvent;
+import com.jagrosh.jdautilities.command.*;
 import dev.cortex.cortexbot.repositories.CortexMemberRepository;
 import dev.cortex.cortexbot.model.CortexMember;
-import net.dv8tion.jda.api.utils.messages.MessageCreateBuilder;
+import net.dv8tion.jda.api.EmbedBuilder;
 import org.springframework.stereotype.Component;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.stream.Collectors;
 
 @Component
 public class LeaderboardCommand extends SlashCommand {
@@ -30,27 +29,30 @@ public class LeaderboardCommand extends SlashCommand {
                 .stream()
                 .sorted(Comparator.comparing(CortexMember::getPoints).reversed())
                 .limit(15)
-                .collect(Collectors.toList());
+                .toList();
 
-        MessageCreateBuilder message = new MessageCreateBuilder();
+        EmbedBuilder builder = new EmbedBuilder();
 
-        message.addContent("---------------------------------------------------------------------------------------------").addContent("\n");
-        message.addContent("\uD83D\uDE80 **Top 15 Leaderboard Rankings** \uD83D\uDE80").addContent("\n\n");
+        builder
+                .setColor(Color.CYAN)
+                .setTitle("**Top 15 Leaderboard Rankings**")
+                .addBlankField(false);
 
         for (int i = 0; i < top.size(); i++){
-            message.addContent("(" + (i + 1) + ") - ").addContent("<@" + top.get(i).getUserID() + "> *-* " + top.get(i).getPoints() + " pts");
-            if (i == 0) message.addContent(":first_place:");
-            if (i == 1) message.addContent(":second_place:");
-            if (i == 2) message.addContent(":third_place:");
-            message.addContent("\n");
+
+            StringBuilder nameString = new StringBuilder("(" + (i + 1) + ")  <@" + top.get(i).getUserID() + ">");
+            if (i == 0) nameString.append(":first_place:");
+            if (i == 1) nameString.append(":second_place:");
+            if (i == 2) nameString.append(":third_place:");
+
+            builder.addField(nameString.toString(), top.get(i) + "pts", false);
         }
 
         //Might have a web interface in the future, no touch
 //        message.addContent("\nYou can view the full leaderboard here: COMING SOON").addContent("\n");
-        message.addContent("\nYou can get points by being active in the server and helping others.").addContent("\n");
-        message.addContent("---------------------------------------------------------------------------------------------");
+        builder.appendDescription("You can get points by being active in the server and helping others.");
 
-        event.reply(message.build()).setEphemeral(true).queue();
+        event.replyEmbeds(builder.build()).setEphemeral(true).queue();
 
     }
 
