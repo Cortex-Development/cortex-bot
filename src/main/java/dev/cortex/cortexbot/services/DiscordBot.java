@@ -96,7 +96,7 @@ public class DiscordBot {
                     .addSlashCommand(thankCommand)
                     .addSlashCommand(challengeCommand).forceGuildOnly("503656531665879063")
                     .addSlashCommand(jokeCommand).forceGuildOnly("503656531665879063")
-                    .addSlashCommand(clearNicknamesCommand).forceGuildOnly("898585494403842119")
+                    .addSlashCommand(clearNicknamesCommand).forceGuildOnly("503656531665879063")
                     .addContextMenu(helpingMessageContextMenu)
                     .addContextMenu(reportHelpContextMenu)
                     .addContextMenu(givePointsContextMenu)
