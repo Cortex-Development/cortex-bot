@@ -1,10 +1,7 @@
 package dev.cortex.cortexbot.services;
 
 import com.jagrosh.jdautilities.command.CommandClientBuilder;
-import dev.cortex.cortexbot.commands.CodeBlockCommand;
-import dev.cortex.cortexbot.commands.JavaTutCommand;
-import dev.cortex.cortexbot.commands.LeaderboardCommand;
-import dev.cortex.cortexbot.commands.SuggestionCommand;
+import dev.cortex.cortexbot.commands.*;
 import dev.cortex.cortexbot.commands.challenges.ChallengeCommand;
 import dev.cortex.cortexbot.commands.jokes.JokeCommand;
 import dev.cortex.cortexbot.commands.menu.HelpingMessageContextMenu;
@@ -64,6 +61,7 @@ public class DiscordBot {
     private final ButtonClickListener buttonClickListener;
     private final ChallengeCommand challengeCommand;
     private final JokeCommand jokeCommand;
+    private final ClearNicknamesCommand clearNicknamesCommand;
     private final HelpingMessageContextMenu helpingMessageContextMenu;
     private final ReportHelpContextMenu reportHelpContextMenu;
     private final GivePointsContextMenu givePointsContextMenu;
@@ -96,6 +94,7 @@ public class DiscordBot {
                     .addSlashCommand(takePointsCommand)
                     .addSlashCommand(setPointsCommand)
                     .addSlashCommand(thankCommand)
+                    .addSlashCommand(clearNicknamesCommand).forceGuildOnly(discordConfiguration.getGuildId())
                     .addSlashCommand(challengeCommand).forceGuildOnly(discordConfiguration.getGuildId())
                     .addSlashCommand(jokeCommand).forceGuildOnly(discordConfiguration.getGuildId())
                     .addContextMenu(helpingMessageContextMenu)
