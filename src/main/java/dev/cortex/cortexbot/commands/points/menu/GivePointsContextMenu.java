@@ -85,7 +85,7 @@ public class GivePointsContextMenu extends UserContextMenu implements IModalHand
             )).queue();
             
         } catch (NumberFormatException exception) {
-            event.getHook().sendMessage("Points must be a positive integer, dummy.").queue();
+            event.getHook().sendMessage("Points must be a positive integer, dummy.").setEphemeral(true).queue();
         }
     }
 }

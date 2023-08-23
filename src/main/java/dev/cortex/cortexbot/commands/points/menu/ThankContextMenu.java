@@ -96,11 +96,11 @@ public class ThankContextMenu extends UserContextMenu implements IModalHandler {
                 )).queue();
 
             } else {
-                event.getHook().sendMessage("You do not have " + points + " point(s).").queue();
+                event.getHook().sendMessage("You do not have " + points + " point(s).").setEphemeral(true).queue();
             }
 
         } catch (NumberFormatException exception) {
-            event.getHook().sendMessage("Points must be a positive integer, dummy.").queue();
+            event.getHook().sendMessage("Points must be a positive integer, dummy.").setEphemeral(true).queue();
         }
     }
 }

@@ -79,7 +79,7 @@ public class SetPointsContextMenu extends UserContextMenu implements IModalHandl
             )).queue();
             
         } catch (NumberFormatException exception) {
-            event.getHook().sendMessage("Points must be a positive integer, dummy.").queue();
+            event.getHook().sendMessage("Points must be a positive integer, dummy.").setEphemeral(true).queue();
         }
     }
 }

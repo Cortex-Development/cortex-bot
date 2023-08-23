@@ -44,7 +44,7 @@ public class PayCommand extends SlashCommand {
 
         //see if they are trying to give points to themself
         if (user.getId().equals(event.getMember().getId()) && !event.getMember().isOwner()) {
-            event.reply("You can't give points to yourself dummy.").queue();
+            event.reply("You can't give points to yourself dummy.").setEphemeral(true).queue();
             return;
         }
 
@@ -56,7 +56,7 @@ public class PayCommand extends SlashCommand {
             int points = (int) event.getOption("amount").getAsDouble();
 
             if (points <= 0) {
-                event.getHook().sendMessage("You need to provide a positive number of points.").queue();
+                event.getHook().sendMessage("You need to provide a positive number of points.").setEphemeral(true).queue();
                 return;
             }
 
@@ -80,11 +80,11 @@ public class PayCommand extends SlashCommand {
                             "You now have a total of " + recipient.getPoints() + " community points.");
                 }).queue();
             } else {
-                event.getHook().sendMessage("You do not have " + points + " point(s).").queue();
+                event.getHook().sendMessage("You do not have " + points + " point(s).").setEphemeral(true).queue();
             }
 
         } else {
-            event.getHook().sendMessage("The user provided does not exist in our database.").queue();
+            event.getHook().sendMessage("The user provided does not exist in our database.").setEphemeral(true).queue();
         }
     }
 
