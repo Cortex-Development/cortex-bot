@@ -39,7 +39,7 @@ public class PointsCommand extends SlashCommand {
             if (points != -1){
                 event.getHook().sendMessage("You have " + points + " point(s).").setEphemeral(true).queue();
             }else{
-                event.getHook().sendMessage("You don't exist!").queue();
+                event.getHook().sendMessage("You don't exist!").setEphemeral(true).queue();
             }
 
         }else{
@@ -52,7 +52,7 @@ public class PointsCommand extends SlashCommand {
             if (points != -1){
                 event.getHook().sendMessage(user.getName() + " has " + points + " point(s).").queue();
             }else{
-                event.getHook().sendMessage("The user provided does not exist.").queue();
+                event.getHook().sendMessage("The user provided does not exist.").setEphemeral(true).queue();
             }
 
         }
