@@ -39,7 +39,6 @@ public class ThankCommand extends SlashCommand {
 
     @Override
     protected void execute(SlashCommandEvent event) {
-
         event.deferReply().queue();
 
         //determine who was provided as an argument to this command
@@ -52,7 +51,7 @@ public class ThankCommand extends SlashCommand {
 
         //get the reason if it was provided
         String reason = null;
-        if (event.getOption("reason") != null){
+        if (event.getOption("reason") != null) {
             reason = event.getOption("reason").getAsString();
             thanked.setReason(reason);
             thanked.setReason(reason);
@@ -71,66 +70,64 @@ public class ThankCommand extends SlashCommand {
         CortexMember recipient = cortexMemberRepository.findByUserIDIs(user.getId());
         CortexMember payee = cortexMemberRepository.findByUserIDIs(event.getMember().getId());
 
-        if (recipient != null) {
-
-            int points = 0;
-            if (event.getOption("amount") != null){
-                points = (int) event.getOption("amount").getAsDouble();
-
-                if (points <= 0) {
-                    event.getHook().sendMessage("You need to provide a positive number of points.").setEphemeral(true).queue();
-                    return;
-                }
-
-                thanked.setPoints(points);
-            }
-
-            //Make sure the person giving the points can afford it
-            if (payee.getPoints() >= points) {
-
-                //store the thank in the db
-                thankedRepository.insert(thanked);
-
-                //did they give any points?
-                if (points == 0){
-                    event.getHook().sendMessage(payee.getName() + " has thanked " + user.getName() + ".").queue();
-
-                    String finalReason = reason;
-                    user.openPrivateChannel().flatMap(channel -> {
-                        return channel.sendMessage("You have been thanked by " + event.getMember().getEffectiveName() + "! " + ((finalReason != null) ? "Reason: " + finalReason : ""));
-                    }).queue();
-                }else{
-
-                    //give the points to the recipient
-                    System.out.println("recipient points: " + recipient.getPoints());
-                    recipient.setPoints(recipient.getPoints() + points);
-                    cortexMemberRepository.save(recipient);
-                    System.out.println("recipient points: " + recipient.getPoints());
-
-                    //take the points away from the payee
-                    payee.setPoints(payee.getPoints() - points);
-                    cortexMemberRepository.save(payee);
-
-                    //log the points paid
-                    loggingService.logPointsPayed(user.getName(), points, event.getMember().getEffectiveName());
-
-                    event.getHook().sendMessage(points + " point(s) have been given to " + user.getName() + " and they have been thanked. You now have a total of " + payee.getPoints() + " point(s).").setEphemeral(true).queue();
-
-                    int finalPoints = points;
-                    String finalReason = reason;
-                    user.openPrivateChannel().flatMap(channel -> {
-                        return channel.sendMessage("You have been thanked by " + event.getMember().getEffectiveName() + " and also tipped " + finalPoints + " points! " +
-                                        ((finalReason != null) ? "Reason: " + finalReason : "") + " \nYou now have a total of " + recipient.getPoints() + " community points.");
-                    }).queue();
-
-                }
-            } else {
-                event.getHook().sendMessage("You do not have " + points + " point(s).").setEphemeral(true).queue();
-            }
-
-        } else {
+        if (recipient == null) {
             event.getHook().sendMessage("The user provided does not exist in our database.").setEphemeral(true).queue();
+            return;
         }
 
+        int points = 0;
+        if (event.getOption("amount") != null) {
+            points = (int) event.getOption("amount").getAsDouble();
+
+            if (points <= 0) {
+                event.getHook().sendMessage("You need to provide a positive number of points.").setEphemeral(true).queue();
+                return;
+            }
+
+            thanked.setPoints(points);
+        }
+
+        //Make sure the person giving the points can afford it
+        if (payee.getPoints() < points) {
+            event.getHook().sendMessage("You do not have " + points + " point(s).").setEphemeral(true).queue();
+            return;
+        }
+
+        //store the thank in the db
+        thankedRepository.insert(thanked);
+
+        //did they give any points?
+        if (points == 0) {
+            event.getHook().sendMessage(payee.getName() + " has thanked " + user.getName() + ".").queue();
+
+            String finalReason = reason;
+            user.openPrivateChannel().flatMap(channel -> {
+                return channel.sendMessage("You have been thanked by " + event.getMember().getEffectiveName() + "! " + ((finalReason != null) ? "Reason: " + finalReason : ""));
+            }).queue();
+        } else {
+
+            //give the points to the recipient
+            System.out.println("recipient points: " + recipient.getPoints());
+            recipient.setPoints(recipient.getPoints() + points);
+            cortexMemberRepository.save(recipient);
+            System.out.println("recipient points: " + recipient.getPoints());
+
+            //take the points away from the payee
+            payee.setPoints(payee.getPoints() - points);
+            cortexMemberRepository.save(payee);
+
+            //log the points paid
+            loggingService.logPointsPayed(user.getName(), points, event.getMember().getEffectiveName());
+
+            event.getHook().sendMessage(points + " point(s) have been given to " + user.getName() + " and they have been thanked. You now have a total of " + payee.getPoints() + " point(s).").setEphemeral(true).queue();
+
+            int finalPoints = points;
+            String finalReason = reason;
+            user.openPrivateChannel().flatMap(channel -> {
+                return channel.sendMessage("You have been thanked by " + event.getMember().getEffectiveName() + " and also tipped " + finalPoints + " points! " +
+                                ((finalReason != null) ? "Reason: " + finalReason : "") + " \nYou now have a total of " + recipient.getPoints() + " community points.");
+            }).queue();
+
+        }
     }
 }

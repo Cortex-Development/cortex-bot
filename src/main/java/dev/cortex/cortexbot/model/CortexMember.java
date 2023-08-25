@@ -37,9 +37,9 @@ public class CortexMember {
     private int level;
 
     public void setPoints(long points) {
-        if (points <= 0){
+        if (points <= 0) {
             this.points = 0;
-        }else{
+        } else {
             this.points = points;
         }
     }
@@ -54,6 +54,5 @@ public class CortexMember {
     public void addPoints(long amount) {
         this.points += amount;
     }
-
 }
 

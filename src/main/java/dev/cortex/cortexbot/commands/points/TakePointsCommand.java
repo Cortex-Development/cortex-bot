@@ -39,61 +39,53 @@ public class TakePointsCommand extends SlashCommand {
 
         event.deferReply().queue();
 
-        if (event.getMember().isOwner() || event.getMember().getRoles().contains(event.getJDA().getRoleById(discordConfiguration.getStaffRole()))) {
-
-            if (event.getOptions().isEmpty()) {
-                event.getHook().sendMessage("Provide a person to take points from. Ex: $take-points 250856681724968960 100").setEphemeral(true).queue();
-            } else {
-
-                if (event.getOptions().size() == 1) {
-                    event.getHook().sendMessage("An amount of points must be provided. Ex: $take-points 250856681724968960 100").setEphemeral(true).queue();
-                } else {
-
-                    //determine who was provided as an argument to this command
-                    User user = event.getOption("user").getAsUser();
-
-                    //see if they are trying to give points to themself
-                    if (user.getId().equals(event.getMember().getId()) && !event.getMember().isOwner()) {
-                        event.getHook().sendMessage("You can't take points from yourself dummy.").setEphemeral(true).queue();
-                        return;
-                    }
-
-                    CortexMember cortexMember = cortexMemberRepository.findByUserIDIs(user.getId());
-
-                    if (cortexMember != null) {
-
-                        int points = (int) event.getOption("amount").getAsDouble();
-                        if (points <= 0) {
-                            event.getHook().sendMessage("You need to provide a positive number of points.").setEphemeral(true).queue();
-                            return;
-                        }
-
-                        cortexMember.setPoints(cortexMember.getPoints() - points);
-                        cortexMemberRepository.save(cortexMember);
-
-                        event.getHook().sendMessage(points + " point(s) have been taken from " + user.getName() + ".").queue();
-
-                        //log the points given
-                        loggingService.logPointsTaken(user.getName(), points, event.getMember().getEffectiveName());
-
-                        user.openPrivateChannel().flatMap(channel -> {
-                            return channel.sendMessage(points + " points have been taken from you. " +
-                                    "You now have a total of " + cortexMember.getPoints() + " community points.");
-                        }).queue();
-
-
-                    } else {
-                        event.getHook().sendMessage("The user provided does not exist in our database.").setEphemeral(true).queue();
-                    }
-
-                }
-
-            }
-
-        } else {
+        if (!event.getMember().isOwner() || !event.getMember().getRoles().contains(event.getJDA().getRoleById(discordConfiguration.getStaffRole()))) {
             event.getHook().sendMessage("You must be staff to execute this command.").setEphemeral(true).queue();
+            return;
         }
 
+        if (event.getOptions().isEmpty()) {
+            event.getHook().sendMessage("Provide a person to take points from. Ex: $take-points 250856681724968960 100").setEphemeral(true).queue();
+            return;
+        }
+        if (event.getOptions().size() == 1) {
+            event.getHook().sendMessage("An amount of points must be provided. Ex: $take-points 250856681724968960 100").setEphemeral(true).queue();
+            return;
+        }
+
+        //determine who was provided as an argument to this command
+        User user = event.getOption("user").getAsUser();
+
+        //see if they are trying to give points to themself
+        if (user.getId().equals(event.getMember().getId()) && !event.getMember().isOwner()) {
+            event.getHook().sendMessage("You can't take points from yourself dummy.").setEphemeral(true).queue();
+            return;
+        }
+
+        CortexMember cortexMember = cortexMemberRepository.findByUserIDIs(user.getId());
+
+        if (cortexMember == null) {
+            event.getHook().sendMessage("The user provided does not exist in our database.").setEphemeral(true).queue();
+            return;
+        }
+        int points = (int) event.getOption("amount").getAsDouble();
+        if (points <= 0) {
+            event.getHook().sendMessage("You need to provide a positive number of points.").setEphemeral(true).queue();
+            return;
+        }
+
+        cortexMember.setPoints(cortexMember.getPoints() - points);
+        cortexMemberRepository.save(cortexMember);
+
+        event.getHook().sendMessage(points + " point(s) have been taken from " + user.getName() + ".").queue();
+
+        //log the points given
+        loggingService.logPointsTaken(user.getName(), points, event.getMember().getEffectiveName());
+
+        user.openPrivateChannel().flatMap(channel -> {
+            return channel.sendMessage(points + " points have been taken from you. " +
+                    "You now have a total of " + cortexMember.getPoints() + " community points.");
+        }).queue();
     }
 
     @Autowired
@@ -110,5 +102,4 @@ public class TakePointsCommand extends SlashCommand {
     public void setDiscordConfiguration(DiscordConfiguration discordConfiguration) {
         this.discordConfiguration = discordConfiguration;
     }
-
 }

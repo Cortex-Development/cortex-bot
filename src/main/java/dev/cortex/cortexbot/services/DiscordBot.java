@@ -106,7 +106,7 @@ public class DiscordBot {
                     .addContextMenu(thankContextMenu);
 
             api = JDABuilder.create(List.of(GatewayIntent.GUILD_EMOJIS_AND_STICKERS, GatewayIntent.GUILD_MEMBERS, GatewayIntent.MESSAGE_CONTENT,
-                    GatewayIntent.GUILD_MESSAGES, GatewayIntent.DIRECT_MESSAGES, GatewayIntent.GUILD_MESSAGE_REACTIONS))
+                            GatewayIntent.GUILD_MESSAGES, GatewayIntent.DIRECT_MESSAGES, GatewayIntent.GUILD_MESSAGE_REACTIONS))
                     .setToken(discordConfiguration.getBotToken())
                     .disableCache(CacheFlag.ACTIVITY, CacheFlag.VOICE_STATE, CacheFlag.CLIENT_STATUS)
                     .addEventListeners(commandClient.build())
@@ -205,8 +205,7 @@ public class DiscordBot {
 
     }
 
-    public static String getUsernameFromUserID(String userId){
+    public static String getUsernameFromUserID(String userId) {
         return getApi().retrieveUserById(userId).complete().getAsTag();
     }
-
 }

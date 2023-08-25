@@ -16,7 +16,7 @@ public class LeaderboardCommand extends SlashCommand {
 
     private final CortexMemberRepository cortexMemberRepository;
 
-    public LeaderboardCommand(CortexMemberRepository cortexMemberRepository){
+    public LeaderboardCommand(CortexMemberRepository cortexMemberRepository) {
         this.name = "leaderboard";
         this.help = "Get the top ten leaderboard rankings";
         this.guildOnly = false;
@@ -37,7 +37,7 @@ public class LeaderboardCommand extends SlashCommand {
         message.addContent("---------------------------------------------------------------------------------------------").addContent("\n");
         message.addContent("\uD83D\uDE80 **Top 15 Leaderboard Rankings** \uD83D\uDE80").addContent("\n\n");
 
-        for (int i = 0; i < top.size(); i++){
+        for (int i = 0; i < top.size(); i++) {
             message.addContent("(" + (i + 1) + ") - ").addContent("<@" + top.get(i).getUserID() + "> *-* " + top.get(i).getPoints() + " pts");
             if (i == 0) message.addContent(":first_place:");
             if (i == 1) message.addContent(":second_place:");
@@ -53,5 +53,4 @@ public class LeaderboardCommand extends SlashCommand {
         event.reply(message.build()).setEphemeral(true).queue();
 
     }
-
 }

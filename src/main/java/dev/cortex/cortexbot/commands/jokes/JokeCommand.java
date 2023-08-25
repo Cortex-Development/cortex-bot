@@ -21,14 +21,13 @@ public class JokeCommand extends SlashCommand {
     @Override
     protected void execute(SlashCommandEvent event) {
         //Tell a chunk norris joke
-        try{
+        try {
             String joke = jokeService.getChuckNorrisJoke();
-            if (joke != null){
-               event.reply(joke).queue();
+            if (joke != null) {
+                event.reply(joke).queue();
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
-
 }

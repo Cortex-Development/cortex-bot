@@ -26,7 +26,7 @@ public class JokeService {
 
         HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
-        if (response.statusCode() == 200){
+        if (response.statusCode() == 200) {
 
             ObjectMapper objectMapper = new ObjectMapper();
             JsonNode node = objectMapper.readTree(response.body());
@@ -35,6 +35,5 @@ public class JokeService {
         }
 
         return null;
-    }
-
+            }
 }

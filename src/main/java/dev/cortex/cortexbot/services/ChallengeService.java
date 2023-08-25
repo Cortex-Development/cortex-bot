@@ -38,7 +38,7 @@ public class ChallengeService {
     public boolean isChallengeOngoing() {
 
         for (Challenge challenge : challengeRepository.findAll()) {
-            if(challenge.isActive()){
+            if (challenge.isActive()) {
                 return true;
             }
         }
@@ -46,32 +46,32 @@ public class ChallengeService {
     }
 
     //If there is an active challenge, return it
-    public Challenge getCurrentChallenge(){
+    public Challenge getCurrentChallenge() {
 
         for (Challenge challenge : challengeRepository.findAll()) {
-            if(challenge.isActive()){
+            if (challenge.isActive()) {
                 return challenge;
             }
         }
         return null;
     }
 
-    public Challenge getCurrentUngradedChallenge(){
+    public Challenge getCurrentUngradedChallenge() {
 
         for (Challenge challenge : challengeRepository.findAll()) {
-            if(challenge.getStatus() == ChallengeStatus.NEEDS_GRADING){
+            if (challenge.getStatus() == ChallengeStatus.NEEDS_GRADING) {
                 return challenge;
             }
         }
         return null;
     }
 
-    public void createSubmissionChannel(ButtonInteraction interaction){
+    public void createSubmissionChannel(ButtonInteraction interaction) {
 
         //See if there is an ongoing challenge
         Challenge challenge = getCurrentChallenge();
 
-        if(challenge == null){
+        if (challenge == null) {
             interaction.getHook().sendMessage("There is no active challenge.").setEphemeral(true).queue();
             return;
         }
@@ -81,7 +81,7 @@ public class ChallengeService {
         Member member = interaction.getMember();
 
         //See if the user already has a submission channel
-        if(submissionRepository.existsSubmissionByUseridEqualsAndChallengeIdEquals(member.getId(), challenge.getId())){
+        if (submissionRepository.existsSubmissionByUseridEqualsAndChallengeIdEquals(member.getId(), challenge.getId())) {
             interaction.getHook().sendMessage("You already have a submission channel for this challenge.").setEphemeral(true).queue();
             return;
         }
@@ -90,7 +90,7 @@ public class ChallengeService {
                 .setParent(guild.getCategoryById("803777453914456104")).complete();
 
         Role role = guild.getRoleById("786974475354505248");
-        if (role == null){
+        if (role == null) {
             //send a message in the bounty saying that something went wrong
             interaction.getChannel().asTextChannel().sendMessage("An error occurred. Please try again later.").queue();
             return;
@@ -125,7 +125,7 @@ public class ChallengeService {
         submissionRepository.insert(sm);
     }
 
-    public void closeSubmissionChannel(ButtonInteraction interaction){
+    public void closeSubmissionChannel(ButtonInteraction interaction) {
 
         //Get the current challenge
         Challenge challenge = getCurrentChallenge();
@@ -144,10 +144,10 @@ public class ChallengeService {
         interaction.getHook().sendMessage("Challenge Submission Channel deleted.").setEphemeral(true).queue();
     }
 
-    public void lockSubmissionChannels(Guild guild, List<Submission> submissions){
+    public void lockSubmissionChannels(Guild guild, List<Submission> submissions) {
 
         //close all submission channels
-        for(Submission submission : submissions){
+        for (Submission submission : submissions) {
 
             Member member = guild.getMemberById(submission.getUserid());
             TextChannel channel = guild.getTextChannelById(submission.getChannel());
@@ -167,21 +167,21 @@ public class ChallengeService {
 
     }
 
-    public void gradeSubmission(ButtonInteraction interaction, boolean pass){
+    public void gradeSubmission(ButtonInteraction interaction, boolean pass) {
 
         Submission submission = submissionRepository.findSubmissionByChannelEquals(interaction.getChannel().getId());
 
         //Get the challenge associated with this submission channel
         Challenge challenge = challengeRepository.findById(submission.getChallengeId()).get();
 
-        if(submission.getStatus() != null && submission.getStatus() != ChallengeGrade.UNGRADED){
+        if (submission.getStatus() != null && submission.getStatus() != ChallengeGrade.UNGRADED) {
 
             interaction.getHook().sendMessage("This submission has already been graded.").setEphemeral(true).queue();
 
             return;
         }
 
-        if(pass){
+        if (pass) {
             submission.setStatus(ChallengeGrade.PASS);
 
             //Append the checkmark emoji to the channel name
@@ -192,7 +192,7 @@ public class ChallengeService {
 
             interaction.getHook().sendMessage("Submission grade: " + ChallengeGrade.PASS).queue();
 
-        }else{
+        } else {
             submission.setStatus(ChallengeGrade.FAIL);
 
             //Append the cross emoji to the channel name
@@ -207,7 +207,7 @@ public class ChallengeService {
 
     }
 
-    public void finishChallenge(Challenge challenge, Guild guild){
+    public void finishChallenge(Challenge challenge, Guild guild) {
 
         //Finalize the state of the challenge and announce the final results
         challenge.setStatus(ChallengeStatus.GRADED);
@@ -226,12 +226,12 @@ public class ChallengeService {
             channel.getManager().putMemberPermissionOverride(member.getIdLong(), List.of(Permission.VIEW_CHANNEL), null).queue();
 
             MessageCreateBuilder messageBuilder = new MessageCreateBuilder();
-            if(submission.getStatus() == ChallengeGrade.PASS){
+            if (submission.getStatus() == ChallengeGrade.PASS) {
 
                 //Send a message to the channel that the submission was passed
                 messageBuilder.setContent("Your submission has been passed! **Congratulations**! You have been awarded the full reward and a shiny new role.");
 
-            }else{
+            } else {
 
                 //Send a message to the channel that the submission was failed
                 messageBuilder.setContent("Your submission has been failed, it is great that you tried! You have been awarded half of the reward.");
@@ -250,10 +250,10 @@ public class ChallengeService {
         //Get a list of names of all of the people who have participated and winners
         StringBuilder participants = new StringBuilder();
         StringBuilder winners = new StringBuilder();
-        for(Submission submission : submissions){
+        for (Submission submission : submissions) {
             participants.append("**").append(guild.getMemberById(submission.getUserid()).getEffectiveName()).append("**, ");
 
-            if (submission.getStatus() == ChallengeGrade.PASS){
+            if (submission.getStatus() == ChallengeGrade.PASS) {
                 winners.append("**").append(guild.getMemberById(submission.getUserid()).getEffectiveName()).append("**, ");
             }
 
@@ -269,5 +269,4 @@ public class ChallengeService {
 
         challengeRepository.save(challenge);
     }
-
 }

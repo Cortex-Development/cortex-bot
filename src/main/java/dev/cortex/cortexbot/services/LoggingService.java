@@ -23,26 +23,26 @@ public class LoggingService {
         this.discordConfiguration = discordConfiguration;
     }
 
-    public void log(String message){
+    public void log(String message) {
         TextChannel channel = DiscordBot.getApi().getGuildById("503656531665879063").getTextChannelById(discordConfiguration.getLoggingChannel());
         channel.sendMessage(message + " [" + new Date() + "]").queue();
     }
 
-    public void log(MessageEmbed embed){
+    public void log(MessageEmbed embed) {
         TextChannel channel = DiscordBot.getApi().getGuildById(discordConfiguration.getGuildId())
                 .getTextChannelById(discordConfiguration.getLoggingChannel());
         channel.sendMessageEmbeds(embed).queue();
     }
 
-    public void logPointsGiven(String username, int points, String givenBy, @Nullable String reason){
+    public void logPointsGiven(String username, int points, String givenBy, @Nullable String reason) {
         log(points + " point(s) have been given to " + username + " by " + givenBy + (reason == null ? "." : " for \"" + reason + "\"."));
     }
 
-    public void logPointsTaken(String username, int points, String takenBy){
+    public void logPointsTaken(String username, int points, String takenBy) {
         log(points + " point(s) have been taken from " + username + " by " + takenBy + ".");
     }
 
-    public void logPointsSet(String username, int points, String setBey){
+    public void logPointsSet(String username, int points, String setBey) {
         log(points + " point(s) have been set for " + username + " by " + setBey + ".");
     }
 

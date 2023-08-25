@@ -65,36 +65,33 @@ public class PayPointsContextMenu extends UserContextMenu implements IModalHandl
         try {
             int points = Math.abs(Integer.parseInt(pointsString));
             
-            if (payerMember.getPoints() >= points) {
-                
-                payerMember.takePoints(points);
-                payeeMember.addPoints(points);
-                
-                cortexMemberRepository.save(payerMember);
-                cortexMemberRepository.save(payeeMember);
-                
-                loggingService.logPointsPayed(payee, points, payer, reason);
-
-                event.getHook().sendMessage(points + " point(s) have been given to " + payee.getName() + ". You now have a total of " + payerMember.getPoints() + " point(s).").queue();
-                
-                StringBuilder builder = new StringBuilder()
-                        .append("You have been given ")
-                        .append(points)
-                        .append(" points by ")
-                        .append(payer.getName())
-                        .append(".");
-                if (!reason.equals("")) {
-                    builder.append("for \"").append(reason).append("\". ");
-                }
-                builder.append("You now have a total of ").append(payeeMember.getPoints()).append(" community points in Cortex Development.");
-
-                payee.openPrivateChannel().flatMap(privateChannel -> privateChannel.sendMessage(
-                        builder.toString()
-                )).queue();
-                
-            } else {
+            if (payerMember.getPoints() < points) {
                 event.getHook().sendMessage("You do not have " + points + " point(s).").setEphemeral(true).queue();
             }
+            payerMember.takePoints(points);
+            payeeMember.addPoints(points);
+
+            cortexMemberRepository.save(payerMember);
+            cortexMemberRepository.save(payeeMember);
+
+            loggingService.logPointsPayed(payee, points, payer, reason);
+
+            event.getHook().sendMessage(points + " point(s) have been given to " + payee.getName() + ". You now have a total of " + payerMember.getPoints() + " point(s).").queue();
+
+            StringBuilder builder = new StringBuilder()
+                    .append("You have been given ")
+                    .append(points)
+                    .append(" points by ")
+                    .append(payer.getName())
+                    .append(".");
+            if (!reason.equals("")) {
+                builder.append("for \"").append(reason).append("\". ");
+            }
+            builder.append("You now have a total of ").append(payeeMember.getPoints()).append(" community points in Cortex Development.");
+
+            payee.openPrivateChannel().flatMap(privateChannel -> privateChannel.sendMessage(
+                    builder.toString()
+            )).queue();
             
         } catch (NumberFormatException exception) {
             event.getHook().sendMessage("Points must be a positive integer, dummy.").setEphemeral(true).queue();

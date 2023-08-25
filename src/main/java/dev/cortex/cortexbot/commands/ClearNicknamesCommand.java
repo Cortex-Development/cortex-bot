@@ -14,7 +14,7 @@ import java.util.List;
 @Component
 public class ClearNicknamesCommand extends SlashCommand {
 
-    public ClearNicknamesCommand(){
+    public ClearNicknamesCommand() {
         this.name = "clearnicknames";
         this.category = new Category("Moderation");
         this.help = "Clear nicknames from every user in the server.";

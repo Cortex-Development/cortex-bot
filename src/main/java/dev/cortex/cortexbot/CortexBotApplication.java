@@ -13,5 +13,4 @@ public class CortexBotApplication {
     public static void main(String[] args) {
         SpringApplication.run(CortexBotApplication.class, args);
     }
-
 }

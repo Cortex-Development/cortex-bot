@@ -11,16 +11,15 @@ public class PointsService {
     @Autowired
     CortexMemberRepository cortexMemberRepository;
 
-    public long getPoints(String userID){
+    public long getPoints(String userID) {
 
         CortexMember cortexMember = cortexMemberRepository.findByUserIDIs(userID);
 
-        if (cortexMember == null){
+        if (cortexMember == null) {
             return -1;
-        }else{
+        } else {
             return cortexMember.getPoints();
         }
 
-    }
-
+            }
 }

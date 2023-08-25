@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class CodeBlockCommand extends SlashCommand {
 
-    public CodeBlockCommand(){
+    public CodeBlockCommand() {
         this.name = "code";
         this.aliases = new String[]{"codeblock"};
         this.category = new Category("Programming");

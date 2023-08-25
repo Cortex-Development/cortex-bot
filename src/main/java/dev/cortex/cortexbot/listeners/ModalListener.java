@@ -24,7 +24,7 @@ public class ModalListener extends ListenerAdapter {
     @Override
     public void onModalInteraction(@NotNull ModalInteractionEvent event) {
 
-        if (event.getModalId().equals("got-helped")){
+        if (event.getModalId().equals("got-helped")) {
 
 //            String helperName = event.getValue("helper").getAsString();
 //            String proof = event.getValue("proof").getAsString();
@@ -46,7 +46,7 @@ public class ModalListener extends ListenerAdapter {
 //
 //            event.reply("Thanks! A Community Manager will take a look and give them points if they helped you.").setEphemeral(true).queue();
 
-        }else if (event.getModalId().equals("new-challenge-modal")){
+        }else if (event.getModalId().equals("new-challenge-modal")) {
 
             //Construct a new Challenge object with the given information
             String name = event.getValue("challenge-name").getAsString();
@@ -57,7 +57,7 @@ public class ModalListener extends ListenerAdapter {
             try{
                 whenEnd = Long.parseLong(event.getValue("challenge-end").getAsString());
                 reward = Long.parseLong(event.getValue("challenge-reward").getAsString());
-            }catch (NumberFormatException e){
+            }catch (NumberFormatException e) {
                 event.reply("Please enter a valid number for the end and reward fields.").queue();
                 return;
             }

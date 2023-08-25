@@ -26,8 +26,7 @@ public class Challenge {
 
     private List<String> submissions = new ArrayList<>(); //ids of submissions to this challenge
 
-    public boolean isActive(){
+    public boolean isActive() {
         return status == ChallengeStatus.ACTIVE;
     }
-
 }

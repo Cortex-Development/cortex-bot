@@ -17,6 +17,7 @@ import java.util.TreeMap;
 public class SuggestionCommand extends SlashCommand {
     private Message calcmessage;
     private final DiscordConfiguration discordConfiguration;
+
     public SuggestionCommand(DiscordConfiguration discordConfiguration) {
         this.name = "suggestions";
         this.aliases = new String[]{"topsuggestions", "topsug"};
@@ -54,7 +55,7 @@ public class SuggestionCommand extends SlashCommand {
                 Integer amount = it.next();
                 ArrayList<Message> messagelist = map.get(amount);
                 int j = 0;
-                while (i < 10 && j < messagelist.size()){
+                while (i < 10 && j < messagelist.size()) {
                     i++;
                     Message m = messagelist.get(j);
                     String content = m.getEmbeds().size() > 0 ? m.getEmbeds().get(0).getDescription() : m.getContentRaw();
@@ -75,5 +76,4 @@ public class SuggestionCommand extends SlashCommand {
         event.replyEmbeds(eb.build()).queue();
         calcmessage.delete().queue(); // Delete the "calculating" message
     }
-
 }
