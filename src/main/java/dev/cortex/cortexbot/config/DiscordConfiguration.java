@@ -9,10 +9,10 @@ public class DiscordConfiguration {
     @Value("${discord.bot.token}")
     private String botToken;
 
-    @Value("${discord.guild.id}")
+    @Value("${discord.guild.cortex}")
     private Long guildId;
 
-    @Value("${discord.owner.id}")
+    @Value("${discord.user.owner}")
     private String ownerId;
 
     @Value("${discord.channel.suggestions}")
@@ -45,7 +45,7 @@ public class DiscordConfiguration {
     @Value("${discord.role.member}")
     private Long memberRoleId;
 
-    @Value("${discord.loggingchannel}")
+    @Value("${discord.channel.logging}")
     private Long loggingChannel;
 
     public Long getLoggingChannel() {
