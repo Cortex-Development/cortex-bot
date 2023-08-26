@@ -42,9 +42,8 @@ public class Message {
     /**
      * @return True if the response was posted on discord, false if through website
      */
-    public boolean isDiscordMessage(){
+    public boolean isDiscordMessage() {
         return this.userID == null;
     }
-
 }
 

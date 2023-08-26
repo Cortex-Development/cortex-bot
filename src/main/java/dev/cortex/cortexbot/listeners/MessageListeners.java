@@ -18,14 +18,14 @@ import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 @Component
-public class MessageListeners extends ListenerAdapter{
+public class MessageListeners extends ListenerAdapter {
     private final Random random;
     private final CortexMemberRepository cortexMemberRepository;
     private final DiscordConfiguration discordConfiguration;
     private final BountyRepository bountyRepository;
 
     @Autowired
-    public MessageListeners(CortexMemberRepository cortexMemberRepository, DiscordConfiguration discordConfiguration, BountyRepository bountyRepository){
+    public MessageListeners(CortexMemberRepository cortexMemberRepository, DiscordConfiguration discordConfiguration, BountyRepository bountyRepository) {
         this.random = new Random();
         this.cortexMemberRepository = cortexMemberRepository;
         this.discordConfiguration = discordConfiguration;
@@ -35,7 +35,7 @@ public class MessageListeners extends ListenerAdapter{
     @Override
     public void onMessageReceived(@Nonnull MessageReceivedEvent event) {
 
-        if (event.getChannel().getId().equalsIgnoreCase("855669438170267698")){
+        if (event.getChannel().getId().equalsIgnoreCase("855669438170267698")) {
             event.getGuild().getTextChannelById(event.getChannel().getId()).deleteMessageById(event.getMessageId()).completeAfter(5, TimeUnit.SECONDS);
         }
 
@@ -43,19 +43,20 @@ public class MessageListeners extends ListenerAdapter{
 
             //see if the message was sent in an active bounty channel
             List<Bounty> bounties = bountyRepository.findAllByFinishedEquals(false);
-            for (Bounty bounty : bounties){
-                if (bounty.getChannelId().equalsIgnoreCase(event.getChannel().getId())){
-                    bounty.setWhenLastActive(System.currentTimeMillis());
-                    bountyRepository.save(bounty);
-                    break;
+            for (Bounty bounty : bounties) {
+                if (!bounty.getChannelId().equalsIgnoreCase(event.getChannel().getId())) {
+                    continue;
                 }
+                bounty.setWhenLastActive(System.currentTimeMillis());
+                bountyRepository.save(bounty);
+                break;
             }
 
-            if (event.getChannel().getId().equalsIgnoreCase("856772595294142475")){
+            if (event.getChannel().getId().equalsIgnoreCase("856772595294142475")) {
                 event.getGuild().getTextChannelById(event.getChannel().getId()).deleteMessageById(event.getMessageId()).completeAfter(5, TimeUnit.SECONDS);
             }
 
-//            if (!event.getMessage().getMentionedMembers().isEmpty() && event.getMessage().getMentionedMembers().get(0).getId().equalsIgnoreCase("250856681724968960")){
+//            if (!event.getMessage().getMentionedMembers().isEmpty() && event.getMessage().getMentionedMembers().get(0).getId().equalsIgnoreCase("250856681724968960")) {
 //                System.out.println(event.getMessage().getMentionedMembers());
 //                event.getGuild().getTextChannelById(event.getChannel().getId()).deleteMessageById(event.getMessageId()).completeAfter(10, TimeUnit.SECONDS);
 //                return;
@@ -88,7 +89,7 @@ public class MessageListeners extends ListenerAdapter{
             }
 
 
-            if (event.getChannel().getIdLong() == (discordConfiguration.getSuggestionsChannelId())){
+            if (event.getChannel().getIdLong() == (discordConfiguration.getSuggestionsChannelId())) {
                 EmbedBuilder eb = new EmbedBuilder();
                 eb.setAuthor(event.getAuthor().getName(), null, event.getAuthor().getAvatarUrl())
                         .setDescription(event.getMessage().getContentRaw());
@@ -100,9 +101,6 @@ public class MessageListeners extends ListenerAdapter{
                 });
                 event.getMessage().delete().queue();
             }
-
-
         }
     }
-
 }

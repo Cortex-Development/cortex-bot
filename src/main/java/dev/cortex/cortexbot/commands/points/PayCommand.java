@@ -42,7 +42,7 @@ public class PayCommand extends SlashCommand {
         //determine who was provided as an argument to this command
         User user = event.getOption("user").getAsUser();
 
-        //see if they are trying to give points to themself
+        //see if they are trying to give points to themselves
         if (user.getId().equals(event.getMember().getId()) && !event.getMember().isOwner()) {
             event.reply("You can't give points to yourself dummy.").setEphemeral(true).queue();
             return;
@@ -72,20 +72,17 @@ public class PayCommand extends SlashCommand {
 
                 event.getHook().sendMessage(points + " point(s) have been given to " + user.getName() + ". You now have a total of " + payee.getPoints() + " point(s).").queue();
 
-                //log the points payed
+                //log the points paid
                 loggingService.logPointsPayed(user.getName(), points, event.getMember().getEffectiveName());
 
-                user.openPrivateChannel().flatMap(channel -> {
-                    return channel.sendMessage("You have been given " + points + " points by " + event.getMember().getEffectiveName() + ". " +
-                            "You now have a total of " + recipient.getPoints() + " community points.");
-                }).queue();
+                user.openPrivateChannel().flatMap(channel ->
+                        channel.sendMessage("You have been given " + points + " points by " + event.getMember().getEffectiveName() + ". " +
+                                "You now have a total of " + recipient.getPoints() + " community points.")).queue();
             } else {
                 event.getHook().sendMessage("You do not have " + points + " point(s).").setEphemeral(true).queue();
             }
-
         } else {
             event.getHook().sendMessage("The user provided does not exist in our database.").setEphemeral(true).queue();
         }
     }
-
 }

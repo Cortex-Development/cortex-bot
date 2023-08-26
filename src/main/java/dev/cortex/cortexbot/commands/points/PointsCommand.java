@@ -16,7 +16,7 @@ public class PointsCommand extends SlashCommand {
 
     private final PointsService pointsService;
 
-    public PointsCommand(PointsService pointsService){
+    public PointsCommand(PointsService pointsService) {
         this.pointsService = pointsService;
         this.name = "points";
         this.help = "See how many points you or someone else has";
@@ -31,32 +31,28 @@ public class PointsCommand extends SlashCommand {
 
         event.deferReply().queue();
 
-        if (event.getOptions().isEmpty()){
+        if (event.getOptions().isEmpty()) {
 
             //Since no arguments were provided, show the user their own points amount
             long points = pointsService.getPoints(event.getUser().getId());
 
-            if (points != -1){
+            if (points != -1) {
                 event.getHook().sendMessage("You have " + points + " point(s).").setEphemeral(true).queue();
-            }else{
+            } else {
                 event.getHook().sendMessage("You don't exist!").setEphemeral(true).queue();
             }
-
-        }else{
+        } else {
 
             //determine who was provided as an argument to this command
             User user = event.getOption("user").getAsUser();
 
             long points = pointsService.getPoints(user.getId());
 
-            if (points != -1){
+            if (points != -1) {
                 event.getHook().sendMessage(user.getName() + " has " + points + " point(s).").queue();
-            }else{
+            } else {
                 event.getHook().sendMessage("The user provided does not exist.").setEphemeral(true).queue();
             }
-
         }
-
     }
-
 }

@@ -38,7 +38,6 @@ public class ChallengeCommand extends SlashCommand {
 
     @Override
     protected void execute(SlashCommandEvent slashCommandEvent) {
-        //yo momma built like a whale
     }
 
     private class Create extends SlashCommand {
@@ -153,7 +152,6 @@ public class ChallengeCommand extends SlashCommand {
 
         }
     }
-
 }
 
 

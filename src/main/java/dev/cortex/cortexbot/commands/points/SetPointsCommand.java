@@ -24,7 +24,7 @@ public class SetPointsCommand extends SlashCommand {
     private final LoggingService loggingService;
 
     @Autowired
-    public SetPointsCommand(CortexMemberRepository cortexMemberRepository, DiscordConfiguration discordConfiguration, LoggingService loggingService){
+    public SetPointsCommand(CortexMemberRepository cortexMemberRepository, DiscordConfiguration discordConfiguration, LoggingService loggingService) {
         this.cortexMemberRepository = cortexMemberRepository;
         this.discordConfiguration = discordConfiguration;
         this.loggingService = loggingService;
@@ -40,69 +40,57 @@ public class SetPointsCommand extends SlashCommand {
 
     @Override
     protected void execute(SlashCommandEvent event) {
-
         event.deferReply().queue();
 
-        if (event.getMember().isOwner() || event.getMember().getRoles().contains(event.getJDA().getRoleById(discordConfiguration.getStaffRole()))){
-
-            List<OptionMapping> options = event.getOptions();
-
-            if (options.isEmpty()){
-                event.getHook().sendMessage("Provide a person. Ex: $set-points 250856681724968960 100").setEphemeral(true).queue();
-            }else{
-
-                if (options.size() == 1){
-                    event.getHook().sendMessage("An amount of points must be provided. Ex: $set-points 250856681724968960 100").setEphemeral(true).queue();
-                }else{
-
-                    //determine who was provided as an argument to this command
-                    User user = event.getOption("user").getAsUser();
-
-                    //see if they are trying to give points to themself
-                    if (user.getId().equals(event.getMember().getId()) && !event.getMember().isOwner()){
-                        event.getHook().sendMessage("You can't set your own points dummy.").setEphemeral(true).queue();
-                        return;
-                    }
-
-                    CortexMember cortexMember = cortexMemberRepository.findByUserIDIs(user.getId());
-
-                    if (cortexMember != null){
-
-                        try{
-
-                            int points = (int) event.getOption("amount").getAsDouble();
-                            if (points <= 0){
-                                event.getHook().sendMessage("You need to provide a positive number of points.").setEphemeral(true).queue();
-                                return;
-                            }
-
-                            cortexMember.setPoints(points);
-                            cortexMemberRepository.save(cortexMember);
-
-                            event.getHook().sendMessage(points + " point(s) have been set for " + user.getName() + ".").queue();
-
-                            //log the points given
-                            loggingService.logPointsSet(user.getName(), points, event.getMember().getEffectiveName());
-
-                            user.openPrivateChannel().flatMap(channel -> {
-                                return channel.sendMessage("You now have a total of " + cortexMember.getPoints() + " community points.");
-                            }).queue();
-                        }catch (NumberFormatException ex){
-                            event.getHook().sendMessage("Unable to process request, invalid points value provided.").setEphemeral(true).queue();
-                        }
-
-                    }else{
-                        event.getHook().sendMessage("The user provided does not exist in our database.").setEphemeral(true).queue();
-                    }
-
-                }
-
-            }
-
-        }else{
+        if (!event.getMember().isOwner() && !event.getMember().getRoles().contains(event.getJDA().getRoleById(discordConfiguration.getStaffRole()))) {
             event.getHook().sendMessage("You must be staff to execute this command.").setEphemeral(true).queue();
         }
+        List<OptionMapping> options = event.getOptions();
 
+        if (options.isEmpty()) {
+            event.getHook().sendMessage("Provide a person. Ex: $set-points 250856681724968960 100").setEphemeral(true).queue();
+            return;
+        }
+
+        if (options.size() == 1) {
+            event.getHook().sendMessage("An amount of points must be provided. Ex: $set-points 250856681724968960 100").setEphemeral(true).queue();
+            return;
+        }
+
+        //determine who was provided as an argument to this command
+        User user = event.getOption("user").getAsUser();
+
+        //see if they are trying to give points to themself
+        if (user.getId().equals(event.getMember().getId()) && !event.getMember().isOwner()) {
+            event.getHook().sendMessage("You can't set your own points dummy.").setEphemeral(true).queue();
+            return;
+        }
+
+        CortexMember cortexMember = cortexMemberRepository.findByUserIDIs(user.getId());
+
+        if (cortexMember == null) {
+            event.getHook().sendMessage("The user provided does not exist in our database.").setEphemeral(true).queue();
+        }
+
+        try {
+            int points = (int) event.getOption("amount").getAsDouble();
+            if (points <= 0) {
+                event.getHook().sendMessage("You need to provide a positive number of points.").setEphemeral(true).queue();
+                return;
+            }
+
+            cortexMember.setPoints(points);
+            cortexMemberRepository.save(cortexMember);
+
+            event.getHook().sendMessage(points + " point(s) have been set for " + user.getName() + ".").queue();
+
+            //log the points given
+            loggingService.logPointsSet(user.getName(), points, event.getMember().getEffectiveName());
+
+            user.openPrivateChannel().flatMap(channel ->
+                    channel.sendMessage("You now have a total of " + cortexMember.getPoints() + " community points.")).queue();
+        } catch (NumberFormatException ex) {
+            event.getHook().sendMessage("Unable to process request, invalid points value provided.").setEphemeral(true).queue();
+        }
     }
-
 }
