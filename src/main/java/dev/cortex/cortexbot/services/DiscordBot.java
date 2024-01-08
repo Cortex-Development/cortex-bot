@@ -53,6 +53,7 @@ public class DiscordBot {
     private final ModalListener modalListener;
     private final SuggestionCommand suggestionCommand;
     private final JavaTutCommand javaTutCommand;
+    private final KotlinTutCommand kotlinTutCommand;
     private final CodeBlockCommand codeBlockCommand;
     private final LeaderboardCommand leaderboardCommand;
     private final TakePointsCommand takePointsCommand;
@@ -88,6 +89,7 @@ public class DiscordBot {
                     .addSlashCommand(suggestionCommand)
                     .addSlashCommand(codeBlockCommand)
                     .addSlashCommand(javaTutCommand)
+                    .addSlashCommand(kotlinTutCommand)
                     .addSlashCommand(pointsCommand)
                     .addSlashCommand(givePointsCommand)
                     .addSlashCommand(payCommand)

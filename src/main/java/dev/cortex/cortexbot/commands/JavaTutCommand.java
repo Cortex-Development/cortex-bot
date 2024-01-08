@@ -16,6 +16,6 @@ public class JavaTutCommand extends SlashCommand {
 
     @Override
     protected void execute(SlashCommandEvent event) {
-        event.reply("External libraries are not always a good way to get familiar with Java as so we strongly advise you to watch Kody's Java tutorials before getting into Spigot or JDA. You can find it here.\n\nhttps://www.youtube.com/playlist?list=PLfu_Bpi_zcDPNy6qznvbkGZi7eP_0EL77").queue();
+        event.reply("External libraries are not always a good way to get familiar with Java as so we strongly advise you to watch Kody's Java tutorials before getting into Spigot or JDA. You can find it [here](https://www.youtube.com/playlist?list=PLfu_Bpi_zcDPNy6qznvbkGZi7eP_0EL77).").queue();
     }
 }
