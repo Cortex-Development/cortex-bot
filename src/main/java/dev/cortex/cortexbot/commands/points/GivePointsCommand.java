@@ -41,6 +41,7 @@ public class GivePointsCommand extends SlashCommand {
 
         if (!event.getMember().isOwner() || !event.getMember().getRoles().contains(event.getJDA().getRoleById(discordConfiguration.getStaffRole()))) {
             event.getHook().sendMessage("You must be staff to execute this command.").setEphemeral(true).queue();
+            return;
         }
 
         List<OptionMapping> options = event.getOptions();
